@@ -25,7 +25,7 @@
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
-  body { padding: 12px 10px 28px; }
+  body { padding: 12px 10px 20px; }
   .app { max-width: 520px; margin: 0 auto; }
 
   .top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
@@ -118,12 +118,23 @@
   .key.on { outline: 2px solid var(--accent); outline-offset: -2px; }
 
   .service { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
-  .service.second { grid-template-columns: repeat(2, 1fr); margin-top: 6px; }
+  .service.wide { grid-template-columns: repeat(2, 1fr); }
   .service button {
     background: #1f242a; color: var(--text); border: 1px solid var(--line);
-    border-radius: 10px; padding: 9px 6px; font-size: 12px; font-family: inherit; cursor: pointer;
+    border-radius: 10px; padding: 10px 6px; font-size: 12px; font-family: inherit; cursor: pointer;
   }
   .service button:active { background: #2b3641; }
+  .service button.on { border-color: var(--accent); color: var(--accent); }
+
+  .tempo { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .tempo span { font-size: 12px; color: var(--muted); }
+
+  .status {
+    margin-top: 8px; font-size: 11px; color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    display: flex; justify-content: space-between; gap: 8px;
+  }
+  .status b { color: var(--accent); font-weight: 600; }
 
   .prog {
     margin-top: 10px; background: #12161a; border: 1px solid var(--line);
@@ -151,11 +162,30 @@
     background: #12161a; border: 1px solid var(--line); border-radius: 10px;
     padding: 8px 10px; font-size: 12px; color: var(--muted); line-height: 1.35;
   }
+
+  .modeseg {
+    position: sticky; bottom: 8px; z-index: 20;
+    display: flex; gap: 5px; margin: 12px auto 0;
+    background: rgba(24, 28, 32, .96); border: 1px solid var(--line);
+    border-radius: 14px; padding: 5px;
+    box-shadow: 0 -4px 18px rgba(0,0,0,.5);
+    backdrop-filter: blur(6px);
+  }
+  .modeseg button {
+    flex: 1; background: transparent; color: var(--muted);
+    border: 0; border-radius: 10px; padding: 11px 6px;
+    font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .modeseg button.on { background: var(--accent); color: #0d1418; }
+
+  body[data-mode="work"] .study-only { display: none !important; }
+  body.picking .study-only.regs { display: grid !important; }
+
   .foot { text-align: center; margin-top: 12px; font-size: 11px; color: var(--muted); }
   .foot a { color: var(--accent); text-decoration: none; }
 </style>
 </head>
-<body>
+<body data-mode="study">
 <div class="app">
   <div class="top">
     <label for="model">Модель</label>
@@ -174,24 +204,33 @@
       </div>
     </div>
 
-    <div class="stack" id="stack"></div>
-    <div class="regs" id="regs"></div>
+    <div class="stack study-only" id="stack"></div>
+    <div class="regs study-only" id="regs"></div>
     <div class="keys" id="keys"></div>
 
-    <div class="service">
-      <button type="button" id="btnStep">Шаг ▶</button>
-      <button type="button" id="btnRun">Пуск ⏩</button>
-      <button type="button" id="btnReset">⟲ Сброс</button>
+    <div class="service" id="service"></div>
+
+    <div class="tempo study-only" id="tempoRow">
+      <span>Темп</span>
+      <select id="tempo" aria-label="Темп автоматического шага">
+        <option value="1">1 с</option>
+        <option value="2" selected>2 с</option>
+        <option value="5">5 с</option>
+        <option value="10">10 с</option>
+        <option value="0">вручную</option>
+      </select>
     </div>
 
-    <div class="service second">
-      <button type="button" id="btnDemo">Пример: 7!</button>
-      <button type="button" id="btnProgClear">Очистить память</button>
-    </div>
+    <div class="status study-only" id="status"></div>
 
-    <div class="prog" id="prog"></div>
+    <div class="prog study-only" id="prog"></div>
 
     <div class="hint" id="hint">Готово. Клавиша f открывает второй слой, k — слой косвенных команд.</div>
+  </div>
+
+  <div class="modeseg" id="modeseg">
+    <button type="button" data-mode="work">Работа</button>
+    <button type="button" data-mode="study">Учёба</button>
   </div>
 
   <div class="foot"><a href="tests.html">Проверка ядра — 12 эталонов</a></div>
