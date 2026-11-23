@@ -203,10 +203,20 @@ print f
       steps += r.steps;
       if (r.err) { problem = 'ЕГГОГ на адресе ' + pad2(core.ST.ip); break; }
       if (r.result === 'stop') {
-        if (built.stops.indexOf(core.ST.ip) >= 0) outs.push(r.x);
-        else break;
-        core.ST.ip = (core.ST.ip + 1) % window.MKCore.PROG_LEN;
-        continue;
+        if (built.stops.indexOf(core.ST.ip) >= 0) {
+          outs.push(r.x);
+          /* Продолжаем только если дальше есть ещё один print.
+             Иначе последний С/П, за которым одни К НОП, заворачивал бы
+             прогон на адрес 00 и печатал одно и то же по кругу. */
+          var more = false;
+          for (var k = 0; k < built.stops.length; k++) {
+            if (built.stops[k] > core.ST.ip) { more = true; break; }
+          }
+          if (!more) break;
+          core.ST.ip = (core.ST.ip + 1) % window.MKCore.PROG_LEN;
+          continue;
+        }
+        break;
       }
       if (r.overflow) { problem = 'остановлено по лимиту шагов'; break; }
       break;
