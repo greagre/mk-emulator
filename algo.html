@@ -1,909 +1,621 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>mk-emulator · язык Алго</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Алго — язык для МК</title>
 <style>
-:root{
-  --bg:#eef1f5; --card:#fff; --ink:#1d2733; --muted:#6b7787; --line:#d7dee7;
-  --accent:#2f6fed; --ok:#1a8c66; --bad:#c8382f; --warn:#a96400;
-  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-}
+:root{--bg:#eef1f6;--card:#fff;--ink:#1b2430;--mut:#6b7789;--line:#dfe5ee;--acc:#2f6fed;--ok:#1a7f47;--bad:#c0392b}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:14px 12px 40px}
-h1{font-size:19px;margin:0 0 4px}
-.sub{color:var(--muted);font-size:13px;margin:0 0 14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 0 12px}
-.card h2{font-size:15px;margin:0 0 10px}
-label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
-textarea,input{width:100%;font:14px/1.5 var(--mono);color:var(--ink);background:#fbfcfe;border:1px solid var(--line);border-radius:10px;padding:10px}
-textarea{min-height:230px;resize:vertical;white-space:pre;overflow-wrap:normal;overflow-x:auto}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-@media(max-width:560px){.grid,.grid3{grid-template-columns:1fr}}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:12px}
+h1{font-size:19px;margin:6px 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+.card h2{font-size:13px;margin:0 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+textarea{width:100%;min-height:240px;border:1px solid var(--line);border-radius:10px;padding:10px;font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;resize:vertical;background:#fbfcfe}
+button{font:inherit;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;color:var(--ink)}
+button.primary{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+button.bad{color:var(--bad)}
+button.mini{padding:4px 8px;font-size:13px;border-radius:8px}
 .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-button{font:14px/1 inherit;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#f4f7fb;color:var(--ink);cursor:pointer}
-button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-button.ghost{background:#fff}
-button:active{transform:translateY(1px)}
-table{width:100%;border-collapse:collapse;font:13px/1.35 var(--mono)}
-th,td{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-th{color:var(--muted);font-weight:600;font-size:12px}
-td.ad{color:var(--muted);width:38px}
-tr.jump td.name{color:var(--accent)}
-tr.adcell td{color:var(--warn)}
-.res{font:14px/1.5 var(--mono);margin-top:10px;padding:10px;border-radius:10px;background:#f7f9fc;border:1px solid var(--line);white-space:pre-wrap}
-.res.ok{background:#eefaf4;border-color:#bfe6d5}
-.res.bad{background:#fdf0ef;border-color:#f3cfcb}
-ul.warn{margin:8px 0 0;padding-left:18px;font-size:13px;color:var(--warn)}
-ul.warn li{margin:2px 0}
-.foot{color:var(--muted);font-size:12px;margin-top:16px;text-align:center}
-a{color:var(--accent)}
-.hide{display:none}
-code{font-family:var(--mono);font-size:12px}
-.hint{font-size:13px;color:var(--muted);margin:0 0 10px}
-.hint b{color:var(--ink)}
+.tbl{width:100%;border-collapse:collapse;font:13px/1.4 ui-monospace,Menlo,Consolas,monospace}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:middle}
+.tbl th{color:var(--mut);font-weight:600}
+.tbl tr.addr td{color:#8a7a2f;background:#fdf9e8}
+.err{background:#fdecea;border:1px solid #f5c6c0;color:#8d2b20;border-radius:10px;padding:10px;font-size:14px}
+.ok{background:#eaf7ef;border:1px solid #bfe3cd;color:#14603a;border-radius:10px;padding:10px;font-size:14px}
+.warn{background:#fff6e5;border:1px solid #f0d9a8;color:#7a5a12;border-radius:10px;padding:10px;font-size:14px}
+.mut{color:var(--mut);font-size:13px}
+input.num{width:120px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:14px ui-monospace,Menlo,Consolas,monospace}
+select.reg{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:14px ui-monospace,Menlo,Consolas,monospace;background:#fff}
+.big{font:22px ui-monospace,Menlo,Consolas,monospace;font-weight:700;color:var(--ok)}
 </style>
 </head>
 <body>
-<h1>Язык Алго</h1>
-<p class="sub">Пишешь программу обычными строками — страница переводит её в коды Б3-34, показывает листинг и прогоняет в ядре.</p>
+<div class="wrap">
+<h1>Язык Алго → коды МК</h1>
 
-<section class="card">
+<div class="card">
   <h2>1. Программа</h2>
-  <p class="hint">
-    <b>переменная = выражение</b> · <b>пока условие</b> … <b>кон</b> · <b>вывод выражение</b> · <b>стоп</b><br>
-    условия: <code>&lt; &gt; &lt;= &gt;= = !=</code> · операции: <code>+ − * / ( )</code> · комментарий — <code>#</code><br>
-    ключевые слова можно писать заглавными: <code>ПОКА / КОН / СТОП / ВЫВОД</code>
-  </p>
   <textarea id="src" spellcheck="false"></textarea>
   <div class="row">
     <button class="primary" id="btnCompile">Перевести</button>
-    <button class="ghost" id="btnExFact">Пример: факториал</button>
-    <button class="ghost" id="btnExSq">Пример: сумма квадратов</button>
-    <button class="ghost" id="btnClear">Очистить</button>
+    <button id="exFact">Факториал (n вводишь сам)</button>
+    <button id="exSq">Сумма квадратов</button>
+    <button class="bad" id="btnClear">Очистить</button>
   </div>
-</section>
+  <div class="mut" style="margin-top:8px">
+    <b>вход n</b> — занять регистр под n, значение введёшь сам. <b>вывод</b> — оставить в X. <b>стоп</b> — С/П.
+    <b>пока … кон</b> — цикл. Комментарий — с #.
+  </div>
+</div>
 
-<section class="card hide" id="listCard">
+<div class="card">
   <h2>2. Во что превратилось</h2>
-  <div id="summary" class="res"></div>
-  <div id="varsOut" class="res hide"></div>
-  <div id="dataOut" class="res hide"></div>
-  <ul class="warn" id="warns"></ul>
-  <div style="margin-top:10px;max-height:430px;overflow:auto;border:1px solid var(--line);border-radius:10px">
-    <table>
-      <thead><tr><th>адр</th><th>hex</th><th>команда</th><th></th></tr></thead>
-      <tbody id="listing"></tbody>
-    </table>
-  </div>
-</section>
+  <div id="out" class="mut">Нажми «Перевести».</div>
+</div>
 
-<section class="card">
-  <h2>3. Прогон</h2>
-  <div class="grid3">
-    <div>
-      <label for="regs">Регистры на входе</label>
-      <input id="regs" placeholder="R0=7, R1=1">
-    </div>
-    <div>
-      <label for="x0">Начальный X</label>
-      <input id="x0" placeholder="0">
-    </div>
-    <div>
-      <label for="limit">Лимит шагов</label>
-      <input id="limit" placeholder="20000">
-    </div>
-  </div>
+<div class="card">
+  <h2>3. Данные для запуска</h2>
+  <div id="dataBox" class="mut">Появятся после перевода: переменная → регистр → значение.</div>
+</div>
+
+<div class="card">
+  <h2>4. Прогон</h2>
+  <div id="runOut" class="mut">—</div>
   <div class="row">
-    <button class="primary" id="btnRun">Прогнать</button>
+    <button class="primary" id="btnRun">Пуск</button>
+    <button id="btnReset">Сброс</button>
+    <button id="btnBody">Перейти в корпус</button>
+    <button id="btnJson">Скачать .json</button>
   </div>
-  <div class="res hide" id="runOut"></div>
-</section>
-
-<section class="card">
-  <h2>4. Забрать</h2>
-  <div class="grid">
-    <div>
-      <label for="pname">Название программы</label>
-      <input id="pname" placeholder="Алго: моя программа">
-    </div>
-    <div>
-      <label for="pexp">Ожидаемый X (необязательно)</label>
-      <input id="pexp" placeholder="например 5040">
-    </div>
-  </div>
-  <div class="row">
-    <button class="primary" id="btnJson">Скачать .json</button>
-    <button class="ghost" id="btnBridge">Открыть в корпусе</button>
-  </div>
-  <div class="res hide" id="saveOut"></div>
-</section>
-
-<p class="foot">
-  <a href="index.html">корпус</a> ·
-  <a href="import.html">импорт листинга</a> ·
-  <a href="tests.html">тесты ядра</a> ·
-  ядро <code>core.js</code>, надстройка <code>core-fix.js</code>
-</p>
+</div>
+</div>
 
 <script src="core.js"></script>
-<script src="core-fix.js"></script>
 <script>
-(function () {
-  'use strict';
+(function(){
+"use strict";
+var $ = function(id){ return document.getElementById(id); };
+var BRIDGE_KEY = 'mk-emulator/bridge';
+var hasCore = !!(window.MKCore && MKCore.create);
+var PROG_LEN = 105;
+try { if (hasCore && MKCore.PROG_LEN) PROG_LEN = MKCore.PROG_LEN; } catch(e){}
+var compiled = null;
+var extraRows = [];
 
-  var C = window.MKCore;
-  var PROG_LEN = (C && C.PROG_LEN) || 98;
-  var NOP = (C && C.NOP != null) ? C.NOP : 0x54;
-  var BRIDGE_KEY = 'mk-emulator/bridge';
-  var MAXREG = 15;
-  var REGCH = '0123456789abcd';
+/* ---------- имена и ключевые слова ---------- */
+function isNameStart(ch){ return /[A-Za-zА-Яа-яЁё_]/.test(ch); }
+function isNameChar(ch){ return /[A-Za-zА-Яа-яЁё0-9_]/.test(ch); }
+function notLetter(){ return '(?![A-Za-zА-Яа-яЁё0-9_])'; }
 
-  /* кириллическая «граница слова»: \b в JS с русскими буквами не работает,
-     поэтому проверяем, что сразу после слова не идёт буква/цифра/_ */
-  function kwRe(word) {
-    return new RegExp('^' + word + '(?![A-Za-zА-Яа-яЁё0-9_])', 'i');
-  }
-  var RE_WHILE = kwRe('пока');
-  var RE_END = /^кон(?:ец)?(?![A-Za-zА-Яа-яЁё0-9_])/i;
-  var RE_STOP = kwRe('стоп');
-  var RE_PRINT = kwRe('вывод');
-
-  var $ = function (id) { return document.getElementById(id); };
-  var compiled = null;
-  var lastAuto = '';
-
-  /* ---------- мелочи ---------- */
-  function hex2(c) {
-    if (C && C.hex2) return C.hex2(c);
-    return ('0' + (c & 255).toString(16).toUpperCase()).slice(-2);
-  }
-  function regName(i) { return REGCH[i] != null ? REGCH[i] : String(i); }
-  function esc(s) {
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
-  function pad2(n) { var s = String(n | 0); return s.length < 2 ? '0' + s : s; }
-  function num(v) {
-    var t = String(v == null ? '' : v).replace(/\s/g, '').replace(/,/g, '.').replace(/−/g, '-');
-    var n = parseFloat(t);
-    return isNaN(n) ? NaN : n;
-  }
-  function plain(v) {
-    if (v == null || isNaN(v)) return '?';
-    return String(+v);
-  }
-  function sortIdx(a, b) { return a - b; }
-
-  var LABELS = {
-    0x0A: '·', 0x0B: '/-/', 0x0C: 'ВП', 0x0D: 'Cx', 0x0E: 'В↑', 0x0F: 'Вx',
-    0x10: '+', 0x11: '−', 0x12: '×', 0x13: '÷', 0x14: '↔',
-    0x50: 'С/П', 0x51: 'БП', 0x52: 'В/О', 0x53: 'ПП', 0x54: 'К НОП',
-    0x57: 'F x≠0', 0x59: 'F x≥0', 0x5C: 'F x<0', 0x5E: 'F x=0'
-  };
-
-  function labelOf(code) {
-    if (C && C.cmdName) {
-      var n = C.cmdName(code);
-      if (n && n !== '?') return n;
+/* ---------- токены выражения ---------- */
+function tokenize(s){
+  var t = [], i = 0;
+  while (i < s.length){
+    var ch = s[i];
+    if (/\s/.test(ch)) { i++; continue; }
+    if (/[0-9]/.test(ch) || (ch === '.' && /[0-9]/.test(s[i+1] || ''))){
+      var num = '';
+      while (i < s.length && /[0-9.]/.test(s[i])) { num += s[i]; i++; }
+      if (num.split('.').length > 2) throw { msg: 'две точки в числе «' + num + '»' };
+      t.push({ k: 'num', v: num });
+      continue;
     }
-    if (code >= 0 && code <= 9) return String(code);
-    if (code >= 0x60 && code <= 0x6E) return 'П→X ' + regName(code - 0x60);
-    if (code >= 0x40 && code <= 0x4E) return 'X→П ' + regName(code - 0x40);
-    return LABELS[code] || '?';
-  }
-  function isJump(code) {
-    return code === 0x51 || code === 0x53 || code === 0x57 ||
-           code === 0x59 || code === 0x5C || code === 0x5E;
-  }
-
-  /* ---------- разбор выражений ---------- */
-  function tokenize(text) {
-    var out = [], i = 0, s = String(text);
-    while (i < s.length) {
-      var ch = s[i];
-      if (/\s/.test(ch)) { i++; continue; }
-      var rest = s.slice(i);
-      var m = rest.match(/^\d+(?:[.,]\d+)?/);
-      if (m) { out.push({ t: 'num', v: m[0] }); i += m[0].length; continue; }
-      var mi = rest.match(/^[A-Za-zА-Яа-яЁё_][A-Za-zА-Яа-яЁё0-9_]*/);
-      if (mi) { out.push({ t: 'name', v: mi[0] }); i += mi[0].length; continue; }
-      if (ch === '×' || ch === 'х') { out.push({ t: 'op', v: '*' }); i++; continue; }
-      if (ch === '÷' || ch === ':') { out.push({ t: 'op', v: '/' }); i++; continue; }
-      if (ch === '−' || ch === '–' || ch === '-') { out.push({ t: 'op', v: '-' }); i++; continue; }
-      if ('+*/()'.indexOf(ch) >= 0) { out.push({ t: 'op', v: ch }); i++; continue; }
-      throw new Error('непонятный символ «' + ch + '»');
+    if (isNameStart(ch)){
+      var nm = '';
+      while (i < s.length && isNameChar(s[i])) { nm += s[i]; i++; }
+      t.push({ k: 'name', v: nm });
+      continue;
     }
-    if (!out.length) throw new Error('пустое выражение');
-    return out;
+    var op = ch;
+    if (op === '−') op = '-';
+    if (op === '×') op = '*';
+    if (op === '÷') op = '/';
+    if ('+-*/()'.indexOf(op) >= 0){ t.push({ k: 'op', v: op }); i++; continue; }
+    throw { msg: 'непонятный символ «' + ch + '»' };
   }
+  return t;
+}
 
-  function prio(op) {
-    if (op === 'u-') return 3;
-    if (op === '*' || op === '/') return 2;
-    if (op === '+' || op === '-') return 1;
-    return 0;
-  }
-
-  function toRPN(tokens) {
-    var out = [], stack = [], prev = null;
-    tokens.forEach(function (tk) {
-      if (tk.t === 'num' || tk.t === 'name') { out.push(tk); prev = tk; return; }
-      if (tk.v === '(') { stack.push(tk); prev = tk; return; }
-      if (tk.v === ')') {
-        while (stack.length && stack[stack.length - 1].v !== '(') out.push(stack.pop());
-        if (!stack.length) throw new Error('лишняя закрывающая скобка');
-        stack.pop();
-        prev = tk;
-        return;
-      }
-      if (tk.v === '-' && (!prev || (prev.t === 'op' && prev.v !== ')'))) {
-        stack.push({ t: 'op', v: 'u-' });
-        prev = tk;
-        return;
-      }
-      var p = prio(tk.v);
-      while (stack.length && stack[stack.length - 1].v !== '(' &&
-             prio(stack[stack.length - 1].v) >= p) {
-        out.push(stack.pop());
-      }
-      stack.push(tk);
-      prev = tk;
-    });
-    while (stack.length) {
-      var s = stack.pop();
-      if (s.v === '(') throw new Error('лишняя открывающая скобка');
-      out.push(s);
+/* ---------- обратная польская запись ---------- */
+function toRPN(tokens){
+  var out = [], ops = [];
+  var prec = { neg: 3, '*': 2, '/': 2, '+': 1, '-': 1 };
+  for (var i = 0; i < tokens.length; i++){
+    var tk = tokens[i];
+    if (tk.k === 'num' || tk.k === 'name'){ out.push(tk); continue; }
+    if (tk.v === '('){ ops.push(tk); continue; }
+    if (tk.v === ')'){
+      while (ops.length && ops[ops.length-1].v !== '(') out.push(ops.pop());
+      if (!ops.length) throw { msg: 'лишняя «)»' };
+      ops.pop();
+      continue;
     }
-    return out;
-  }
-
-  /* значение, если выражение — просто число (для начальных данных) */
-  function literalValue(expr) {
-    var t = String(expr).replace(/\s/g, '').replace(/,/g, '.');
-    var m = t.match(/^([+-]?)(\d+(?:\.\d+)?)$/);
-    if (!m) return null;
-    var v = parseFloat(m[2]);
-    if (isNaN(v)) return null;
-    return m[1] === '-' ? -v : v;
-  }
-
-  /* ---------- компилятор ---------- */
-  function Compiler() {
-    this.cells = [];
-    this.fixups = [];
-    this.warns = [];
-    this.vars = {};
-    this.line = 0;
-  }
-
-  Compiler.prototype.emit = function (code, label, kind) {
-    this.cells.push({ code: code & 255, label: label || '', kind: kind || 'cmd' });
-  };
-  Compiler.prototype.emitDigit = function (d) {
-    this.cells.push({ code: d & 255, label: '', kind: 'addr' });
-  };
-
-  Compiler.prototype.regOf = function (name) {
-    var low = String(name).toLowerCase();
-    var m = low.match(/^r([0-9a-d])$/);
-    if (m) return REGCH.indexOf(m[1]);
-    if (Object.prototype.hasOwnProperty.call(this.vars, low)) return this.vars[low];
-    var used = {}, self = this;
-    Object.keys(this.vars).forEach(function (k) { used[self.vars[k]] = true; });
-    for (var i = 0; i < MAXREG; i++) {
-      if (!used[i]) { this.vars[low] = i; return i; }
+    var prev = i > 0 ? tokens[i-1] : null;
+    var isNeg = (tk.v === '-') && (!prev || (prev.k === 'op' && prev.v !== ')'));
+    var o = isNeg ? 'neg' : tk.v;
+    while (ops.length){
+      var top = ops[ops.length-1];
+      if (top.v === '(') break;
+      var p1 = prec[o], p2 = prec[top.v];
+      if (p2 > p1 || (p2 === p1 && o !== 'neg')) out.push(ops.pop());
+      else break;
     }
-    throw new Error('кончились регистры (их 15) — переменная «' + name + '» не поместилась');
-  };
-
-  Compiler.prototype.genNumber = function (text) {
-    var s = String(text).replace(',', '.');
-    if (!/^\d+(\.\d+)?$/.test(s)) throw new Error('число «' + text + '» не понял');
-    if (s.replace('.', '').length > 6) {
-      this.warns.push('Строка ' + this.line + ': число «' + text + '» длиннее 6 знаков — в X оно не влезет');
-    }
-    for (var i = 0; i < s.length; i++) {
-      var ch = s[i];
-      if (ch === '.') this.emit(0x0A, '·');
-      else this.emit(+ch, ch);
-    }
-  };
-
-  Compiler.prototype.genExpr = function (text) {
-    var rpn = toRPN(tokenize(text));
-    var self = this;
-    rpn.forEach(function (tk) {
-      if (tk.t === 'num') { self.genNumber(tk.v); return; }
-      if (tk.t === 'name') {
-        var idx = self.regOf(tk.v);
-        self.emit(0x60 + idx, 'П→X ' + regName(idx));
-        return;
-      }
-      if (tk.v === 'u-') { self.emit(0x0B, '/-/'); return; }
-      if (tk.v === '+') { self.emit(0x10, '+'); return; }
-      if (tk.v === '-') { self.emit(0x11, '−'); return; }
-      if (tk.v === '*') { self.emit(0x12, '×'); return; }
-      if (tk.v === '/') { self.emit(0x13, '÷'); return; }
-      throw new Error('оператор «' + tk.v + '» не поддержан');
-    });
-  };
-
-  Compiler.prototype.genAssign = function (node) {
-    var idx = this.regOf(node.name);
-    this.genExpr(node.expr);
-    this.emit(0x40 + idx, 'X→П ' + regName(idx));
-  };
-
-  Compiler.prototype.emitJump = function (code, label) {
-    var at = this.cells.length;
-    this.emit(code, LABELS[code] || '?');
-    this.emitDigit(0);
-    this.emitDigit(0);
-    this.fixups.push({ at: at, label: label });
-  };
-
-  Compiler.prototype.genCondJump = function (cond, outLabel) {
-    this.genExpr(cond.left);
-    this.genExpr(cond.right);
-    this.emit(0x11, '−');
-    var op = cond.op;
-    if (op === '<') this.emitJump(0x59, outLabel);
-    else if (op === '>=') this.emitJump(0x5C, outLabel);
-    else if (op === '=') this.emitJump(0x57, outLabel);
-    else if (op === '!=') this.emitJump(0x5E, outLabel);
-    else if (op === '>') { this.emitJump(0x5C, outLabel); this.emitJump(0x5E, outLabel); }
-    else if (op === '<=') {
-      var skip = { addr: this.cells.length + 6, name: 'skip' };
-      this.emitJump(0x5C, skip);
-      this.emitJump(0x57, outLabel);
-    } else {
-      throw new Error('сравнение «' + op + '» не поддержано');
-    }
-  };
-
-  Compiler.prototype.genWhile = function (node) {
-    var out = { addr: null, name: 'out' };
-    var start = this.cells.length;
-    this.genCondJump(node.cond, out);
-    var self = this;
-    node.body.forEach(function (n) { self.genNode(n); });
-    this.emit(0x51, 'БП');
-    this.emitDigit(Math.floor(start / 10));
-    this.emitDigit(start % 10);
-    out.addr = this.cells.length;
-  };
-
-  Compiler.prototype.genNode = function (n) {
-    if (n.type === 'assign') { this.genAssign(n); return; }
-    if (n.type === 'print') { this.genExpr(n.expr); return; }
-    if (n.type === 'stop') { this.emit(0x50, 'С/П'); return; }
-    if (n.type === 'while') { this.genWhile(n); return; }
-    throw new Error('неизвестная инструкция');
-  };
-
-  Compiler.prototype.resolve = function () {
-    var self = this;
-    var prog = new Array(PROG_LEN);
-    for (var i = 0; i < PROG_LEN; i++) prog[i] = NOP;
-
-    this.fixups.forEach(function (f) {
-      var t = f.label.addr;
-      if (t == null) throw new Error('внутренняя ошибка: метка «' + (f.label.name || '?') + '» не проставлена');
-      if (t > 99) throw new Error('переход на адрес ' + t + ' — больше 99, адрес в две цифры не влезает');
-      self.cells[f.at + 1].code = Math.floor(t / 10);
-      self.cells[f.at + 2].code = t % 10;
-    });
-
-    this.cells.forEach(function (c, i) { if (i < PROG_LEN) prog[i] = c.code; });
-    return prog;
-  };
-
-  /* ---------- разбор программы ---------- */
-  function stripComment(line) {
-    var i = line.indexOf('#');
-    return (i >= 0 ? line.slice(0, i) : line).trim();
+    ops.push({ k: 'op', v: o });
   }
+  while (ops.length){
+    var x = ops.pop();
+    if (x.v === '(') throw { msg: 'не хватает «)»' };
+    out.push(x);
+  }
+  return out;
+}
 
-  function findCmp(s) {
-    var depth = 0;
-    var ops = ['<=', '>=', '!=', '==', '<>', '<', '>', '='];
-    for (var i = 0; i < s.length; i++) {
-      var ch = s[i];
-      if (ch === '(') { depth++; continue; }
-      if (ch === ')') { depth--; continue; }
-      if (depth !== 0) continue;
-      for (var k = 0; k < ops.length; k++) {
-        if (s.substr(i, ops[k].length) === ops[k]) {
-          return { left: s.slice(0, i).trim(), op: ops[k], right: s.slice(i + ops[k].length).trim() };
-        }
-      }
+/* ---------- разбор программы ---------- */
+function kwTest(word, line){
+  return new RegExp('^' + word + notLetter(), 'i').test(line);
+}
+
+function splitCond(s){
+  var depth = 0, found = null;
+  for (var i = 0; i < s.length; i++){
+    var ch = s[i];
+    if (ch === '(') depth++;
+    else if (ch === ')') depth--;
+    else if (depth === 0){
+      var two = s.substr(i, 2);
+      if (two === '<=' || two === '>=' || two === '!=' || two === '<>'){ found = { op: two, at: i }; break; }
+      if (ch === '<' || ch === '>' || ch === '='){ found = { op: ch, at: i }; break; }
     }
-    return null;
   }
+  if (!found) throw { msg: 'в условии нужен знак сравнения: < > <= >= = !=' };
+  var left = s.slice(0, found.at).trim();
+  var right = s.slice(found.at + found.op.length).trim();
+  if (!left || !right) throw { msg: 'в условии не хватает левой или правой части' };
+  return { op: found.op, left: left, right: right };
+}
 
-  function parseCond(text, lineNo) {
-    var found = findCmp(text);
-    if (!found) return { left: text.trim(), op: '!=', right: '0', line: lineNo };
-    var op = found.op;
-    if (op === '<>') op = '!=';
-    if (op === '==') op = '=';
-    if (!found.left) throw new Error('Строка ' + lineNo + ': в условии нет левой части');
-    if (!found.right) throw new Error('Строка ' + lineNo + ': в условии нет правой части');
-    return { left: found.left, op: op, right: found.right, line: lineNo };
-  }
-
-  var NAME_RE = /^[A-Za-zА-Яа-яЁё_][A-Za-zА-Яа-яЁё0-9_]*$/;
-
-  function parseProgram(lines) {
-    var root = { type: 'block', body: [] };
-    var stack = [root];
-
-    lines.forEach(function (raw, idx) {
-      var lineNo = idx + 1;
-      var line = stripComment(raw);
-      if (!line) return;
+function parseProgram(src){
+  var lines = src.split(/\r?\n/);
+  var root = [], stack = [root];
+  for (var idx = 0; idx < lines.length; idx++){
+    var lineNo = idx + 1;
+    var line = lines[idx].replace(/#.*$/, '').trim();
+    if (!line) continue;
+    try {
       var cur = stack[stack.length - 1];
-
-      if (RE_WHILE.test(line)) {
-        var condText = line.replace(RE_WHILE, '').trim();
-        if (!condText) throw new Error('Строка ' + lineNo + ': у «пока» нет условия');
-        var node = { type: 'while', cond: parseCond(condText, lineNo), body: [], line: lineNo };
-        cur.body.push(node);
-        stack.push(node);
-        return;
-      }
-      if (RE_END.test(line)) {
-        if (stack.length === 1) throw new Error('Строка ' + lineNo + ': «кон» без «пока»');
+      if (kwTest('кон', line) || kwTest('конец', line)){
+        if (stack.length === 1) throw { msg: '«кон» без «пока»' };
         stack.pop();
-        return;
+        continue;
       }
-      if (RE_STOP.test(line)) { cur.body.push({ type: 'stop', line: lineNo }); return; }
-      if (RE_PRINT.test(line)) {
-        var expr = line.replace(RE_PRINT, '').trim();
-        if (!expr) throw new Error('Строка ' + lineNo + ': «вывод» без выражения');
-        cur.body.push({ type: 'print', expr: expr, line: lineNo });
-        return;
+      var mWhile = new RegExp('^пока' + notLetter() + '\\s*(.+)$', 'i').exec(line);
+      if (mWhile){
+        var w = { type: 'while', cond: splitCond(mWhile[1]), body: [] };
+        cur.push(w); stack.push(w.body);
+        continue;
       }
+      var mInput = new RegExp('^вход' + notLetter() + '\\s+([A-Za-zА-Яа-яЁё_][A-Za-zА-Яа-яЁё0-9_]*)\\s*$', 'i').exec(line);
+      if (mInput){ cur.push({ type: 'input', name: mInput[1] }); continue; }
+      var mPrint = new RegExp('^вывод' + notLetter() + '\\s*(.+)$', 'i').exec(line);
+      if (mPrint){ cur.push({ type: 'print', expr: mPrint[1] }); continue; }
+      if (kwTest('стоп', line)){ cur.push({ type: 'stop' }); continue; }
+      var mAssign = new RegExp('^([A-Za-zА-Яа-яЁё_][A-Za-zА-Яа-яЁё0-9_]*)\\s*=\\s*(.+)$').exec(line);
+      if (mAssign){ cur.push({ type: 'assign', name: mAssign[1], expr: mAssign[2] }); continue; }
+      throw { msg: 'не понял строку' };
+    } catch (e){
+      throw { line: lineNo, msg: e.msg || 'ошибка', whole: lines[idx].trim() };
+    }
+  }
+  if (stack.length > 1) throw { line: lines.length, msg: 'не хватает «кон»' };
+  return root;
+}
 
-      var m = line.match(/^([A-Za-zА-Яа-яЁё_][A-Za-zА-Яа-яЁё0-9_]*)\s*=\s*(.+)$/);
-      if (m) {
-        if (!NAME_RE.test(m[1])) throw new Error('Строка ' + lineNo + ': плохое имя «' + m[1] + '»');
-        cur.body.push({ type: 'assign', name: m[1], expr: m[2], line: lineNo });
-        return;
+/* ---------- генерация кодов ---------- */
+var OPS = { '+': 0x10, '-': 0x11, '*': 0x12, '/': 0x13, 'neg': 0x0B };
+
+function compile(src){
+  var root = parseProgram(src);
+  var cells = [], vars = {}, owner = {}, auto = 0, fix = [], marks = {}, inputs = [], lid = 0;
+
+  function err(msg){ throw { line: 0, msg: msg }; }
+  function emit(c){ cells.push(c); }
+
+  function regOf(name){
+    if (vars[name] != null) return vars[name];
+    var idx = null, low = name.toLowerCase();
+    var m = /^r([0-9]|[a-e])$/.exec(low);
+    if (m) idx = /[0-9]/.test(m[1]) ? +m[1] : 10 + 'abcde'.indexOf(m[1]);
+    else { while (owner[auto] != null) auto++; idx = auto; }
+    if (idx > 14) err('не хватило регистров для «' + name + '» (всего 15: R0…Rd)');
+    if (owner[idx] != null && owner[idx] !== name) err('регистр R' + idx.toString(16) + ' уже занят: ' + owner[idx]);
+    vars[name] = idx; owner[idx] = name;
+    return idx;
+  }
+
+  function emitNum(v){
+    var s = String(v).replace(',', '.');
+    for (var i = 0; i < s.length; i++){
+      var ch = s[i];
+      if (ch >= '0' && ch <= '9') emit(+ch);
+      else if (ch === '.') emit(0x0A);
+      else if (ch === '-') emit(0x0B);
+      else err('число не понял: ' + v);
+    }
+  }
+
+  function genExpr(text){
+    var rpn = toRPN(tokenize(text));
+    for (var i = 0; i < rpn.length; i++){
+      var t = rpn[i];
+      if (t.k === 'num') emitNum(t.v);
+      else if (t.k === 'name') emit(0x60 + regOf(t.v));
+      else {
+        if (OPS[t.v] == null) err('неизвестная операция «' + t.v + '»');
+        emit(OPS[t.v]);
       }
-      throw new Error('Строка ' + lineNo + ': не понял «' + line + '»');
-    });
-
-    if (stack.length > 1) {
-      var open = stack[stack.length - 1];
-      throw new Error('Строка ' + open.line + ': «пока» без «кон»');
     }
-    if (!root.body.length) throw new Error('Программа пустая');
-    return root.body;
   }
 
-  /* ---------- начальные данные и раскладка ---------- */
-  /* Размещение: как переменные легли по регистрам.
-     Начальные данные: простые присваивания в начале программы (до первого цикла/вывода). */
-  function buildLayout(nodes, c) {
-    var init = {};
-    var order = [];
+  function jump(code, label){
+    var p = cells.length;
+    emit(code); emit(0); emit(0);
+    fix.push({ d: p + 1, e: p + 2, label: label });
+  }
+  function mark(label){ marks[label] = cells.length; }
 
-    for (var i = 0; i < nodes.length; i++) {
-      var n = nodes[i];
-      if (n.type !== 'assign') break;
-      var idx = c.regOf(n.name);
-      if (order.indexOf(idx) < 0) order.push(idx);
-      var lit = literalValue(n.expr);
-      if (lit != null) init[idx] = lit;
-    }
-
-    var layout = {};
-    Object.keys(c.vars).forEach(function (k) { layout[k] = c.vars[k]; });
-
-    return { init: init, layout: layout, order: order };
+  function genCondJump(cond, outLabel, id){
+    genExpr(cond.left);
+    genExpr(cond.right);
+    emit(0x11);
+    var op = cond.op;
+    if (op === '<'){ jump(0x59, outLabel); return; }
+    if (op === '>='){ jump(0x5C, outLabel); return; }
+    if (op === '='){ jump(0x57, outLabel); return; }
+    if (op === '!=' || op === '<>'){ jump(0x5E, outLabel); return; }
+    if (op === '>'){ jump(0x5C, outLabel); jump(0x5E, outLabel); return; }
+    if (op === '<='){ var body = 'le' + id; jump(0x5C, body); jump(0x57, outLabel); mark(body); return; }
+    err('неизвестное сравнение «' + op + '»');
   }
 
-  function initToText(init) {
-    var keys = Object.keys(init).map(Number).sort(sortIdx);
-    return keys.map(function (k) {
-      return 'R' + regName(k) + '=' + plain(init[k]);
-    }).join(', ');
+  function genWhile(n){
+    var id = ++lid;
+    var top = 'w' + id + '_top', out = 'w' + id + '_out';
+    mark(top);
+    genCondJump(n.cond, out, id);
+    genNodes(n.body);
+    jump(0x51, top);
+    mark(out);
   }
 
-  function layoutText(layout, init) {
-    var keys = Object.keys(layout);
-    keys.sort(function (a, b) { return layout[a] - layout[b]; });
-    return keys.map(function (name) {
-      var idx = layout[name];
-      var has = init && Object.prototype.hasOwnProperty.call(init, idx);
-      return name + ' → R' + regName(idx) + (has ? ' = ' + plain(init[idx]) : '');
-    }).join(', ');
+  function genNodes(list){
+    for (var i = 0; i < list.length; i++){
+      var n = list[i];
+      if (n.type === 'input'){
+        regOf(n.name);
+        if (inputs.indexOf(n.name) < 0) inputs.push(n.name);
+      } else if (n.type === 'assign'){
+        genExpr(n.expr);
+        emit(0x40 + regOf(n.name));
+      } else if (n.type === 'print'){
+        genExpr(n.expr);
+      } else if (n.type === 'stop'){
+        emit(0x50);
+      } else if (n.type === 'while'){
+        genWhile(n);
+      } else {
+        err('неизвестная конструкция');
+      }
+    }
   }
 
-  /* ---------- компиляция целиком ---------- */
-  function compile(source) {
-    var c = new Compiler();
-    var nodes = parseProgram(String(source).split(/\r?\n/));
+  genNodes(root);
 
-    nodes.forEach(function (n) {
-      c.line = n.line || 0;
-      c.genNode(n);
-    });
-
-    var last = c.cells[c.cells.length - 1];
-    if (!last || last.code !== 0x50) {
-      c.emit(0x50, 'С/П');
-      c.warns.push('В конец добавлен «С/П», чтобы программа остановилась.');
-    }
-
-    if (c.cells.length > PROG_LEN) {
-      c.warns.push('Программа занимает ' + c.cells.length + ' ячеек, а памяти ' + PROG_LEN + ' — не влезает.');
-    }
-
-    var meta = buildLayout(nodes, c);
-    var prog = c.resolve();
-    return {
-      prog: prog, cells: c.cells, vars: c.vars, warns: c.warns,
-      init: meta.init, layout: meta.layout
-    };
+  for (var f = 0; f < fix.length; f++){
+    var fx = fix[f], a = marks[fx.label];
+    if (a == null) err('внутренняя ошибка: метка не найдена');
+    if (a > 99) err('адрес ' + a + ' больше 99 — программа не влезает в лимит');
+    cells[fx.d] = Math.floor(a / 10);
+    cells[fx.e] = a % 10;
   }
 
-  /* ---------- вывод ---------- */
-  function render(res) {
-    compiled = res;
-    $('listCard').classList.remove('hide');
+  return { cells: cells, vars: vars, inputs: inputs, fixCount: fix.length };
+}
 
-    var sum = $('summary');
-    var body = $('listing');
-    body.innerHTML = '';
+/* ---------- подписи команд ---------- */
+var PLAIN = {
+  0x0A: '·', 0x0B: '/−/', 0x0C: 'ВП', 0x0D: 'Cx', 0x0E: 'В↑', 0x14: '↔',
+  0x50: 'С/П', 0x51: 'БП', 0x52: 'В/О', 0x53: 'ПП', 0x54: 'NOP',
+  0x55: 'К П→X', 0x56: 'К X→П',
+  0x57: 'F x≠0', 0x59: 'F x≥0', 0x5C: 'F x<0', 0x5E: 'F x=0',
+  0x15: 'К ∨', 0x16: 'К ∧', 0x17: 'К ⊕', 0x18: 'К ⊕', 0x19: 'К ИНВ',
+  0x1A: 'К ЗН', 0x1B: 'К |x|', 0x1C: 'К ЗН', 0x1D: 'К x²',
+  0x10: '+', 0x11: '−', 0x12: '×', 0x13: '÷'
+};
 
-    var used = res.cells.length;
-    var lastAddr = used - 1;
-    var jumps = 0;
-    res.cells.forEach(function (c) { if (isJump(c.code)) jumps++; });
+function cmdLabel(code, isAddrPart){
+  if (isAddrPart) return 'адрес';
+  if (code >= 0 && code <= 9) return String(code);
+  if (code >= 0x40 && code <= 0x4E) return 'X→П ' + (code - 0x40).toString(16);
+  if (code >= 0x60 && code <= 0x6E) return 'П→X ' + (code - 0x60).toString(16);
+  if (code >= 0x80 && code <= 0x8E) return 'К ' + (code - 0x80).toString(16);
+  if (PLAIN[code] != null) return PLAIN[code];
+  return '0x' + ('0' + code.toString(16)).slice(-2);
+}
 
-    sum.className = 'res ' + (used > PROG_LEN ? 'bad' : 'ok');
-    sum.textContent =
-      'ячеек занято: ' + used + ' из ' + PROG_LEN +
-      '\nпоследний адрес: ' + pad2(lastAddr) +
-      '\nпереходов: ' + jumps +
-      (used > PROG_LEN ? '\nПЕРЕПОЛНЕНИЕ: ' + (used - PROG_LEN) + ' ячеек за пределами памяти' : '');
+function hex2(code){
+  try { if (window.MKCore && MKCore.hex2) return MKCore.hex2(code); } catch(e){}
+  return ('0' + code.toString(16).toUpperCase()).slice(-2);
+}
 
-    /* размещение: переменная → регистр */
-    var vars = res.vars, keys = Object.keys(vars);
-    var box = $('varsOut');
-    if (keys.length) {
-      box.classList.remove('hide');
-      box.className = 'res';
-      box.textContent = 'размещение (переменная → регистр): ' + layoutText(res.layout, res.init);
-    } else {
-      box.classList.add('hide');
-    }
+function isJumpCode(code){
+  return code === 0x51 || code === 0x53 || code === 0x57 || code === 0x59 || code === 0x5C || code === 0x5E;
+}
 
-    /* начальные данные, которые уедут в корпус */
-    var dataBox = $('dataOut');
-    var dataKeys = Object.keys(res.init).map(Number).sort(sortIdx);
-    if (dataKeys.length) {
-      dataBox.classList.remove('hide');
-      dataBox.className = 'res';
-      dataBox.textContent = 'начальные данные (уйдут в корпус): ' + initToText(res.init);
-    } else {
-      dataBox.classList.add('hide');
-    }
-
-    /* автозаполнение поля регистров, если пользователь его не правил */
-    var field = $('regs');
-    var auto = initToText(res.init);
-    if (auto && (!field.value.trim() || field.value === lastAuto)) {
-      field.value = auto;
-      lastAuto = auto;
-    }
-
-    res.cells.forEach(function (c, i) {
-      var tr = document.createElement('tr');
-      if (c.kind === 'addr') tr.className = 'adcell';
-      else if (isJump(c.code)) tr.className = 'jump';
-      tr.innerHTML =
-        '<td class="ad">' + pad2(i) + '</td>' +
-        '<td>' + hex2(c.code) + '</td>' +
-        '<td class="name">' + esc(c.kind === 'addr' ? (c.code) : (c.label || labelOf(c.code))) + '</td>' +
-        '<td>' + (c.kind === 'addr' ? 'адрес' : '') + '</td>';
-      body.appendChild(tr);
-    });
-
-    var w = $('warns');
-    w.innerHTML = '';
-    (res.warns || []).forEach(function (t) {
-      var li = document.createElement('li');
-      li.textContent = t;
-      w.appendChild(li);
-    });
+/* ---------- отрисовка ---------- */
+function render(){
+  var out = $('out');
+  if (!compiled){
+    out.innerHTML = '<span class="mut">Нажми «Перевести».</span>';
+    return;
   }
-
-  /* ---------- регистры из поля ---------- */
-  function regIndex(ch) {
-    if (/^[0-9]$/.test(ch)) return +ch;
-    var i = 'abcd'.indexOf(String(ch).toLowerCase());
-    return i < 0 ? -1 : 10 + i;
+  var cells = compiled.cells;
+  if (!cells.length){
+    out.innerHTML = '<div class="warn">Программа пустая — переводить нечего.</div>';
+    return;
   }
+  var addrFlags = {};
+  for (var i = 0; i < cells.length - 2; i++){
+    if (isJumpCode(cells[i])){ addrFlags[i+1] = true; addrFlags[i+2] = true; }
+  }
+  var html = '';
+  if (cells.length > PROG_LEN){
+    html += '<div class="err" style="margin-bottom:8px">Не влезает: ' + cells.length + ' ячеек, а лимит ' + PROG_LEN + '.</div>';
+  }
+  var used = cells.length;
+  html += '<div style="margin-bottom:8px"><b>' + used + '</b> из ' + PROG_LEN + ' ячеек · последний адрес <b>' + (used - 1) + '</b> · переходов <b>' + compiled.fixCount + '</b></div>';
+  html += '<table class="tbl"><thead><tr><th>адр</th><th>hex</th><th>команда</th></tr></thead><tbody>';
+  for (var a = 0; a < cells.length; a++){
+    var isAddr = !!addrFlags[a];
+    var label = isAddr ? ('→ ' + (cells[a] === 0 && cells[a+1] === undefined ? '' : '')) : '';
+    html += '<tr' + (isAddr ? ' class="addr"' : '') + '><td>' + a + '</td><td>' + hex2(cells[a]) + '</td><td>'
+          + (isAddr ? 'адресная цифра' : cmdLabel(cells[a], false)) + '</td></tr>';
+  }
+  html += '</tbody></table>';
 
-  function parseRegs(s) {
-    var out = {};
-    var t = String(s || '').trim();
-    if (!t) return out;
-    var parts = t.split(/[;,\n]+/).map(function (x) { return x.trim(); }).filter(Boolean);
-    var named = parts.some(function (p) { return /^[Rr]?\s*[0-9a-dA-D]\s*=/.test(p); });
-    if (named) {
-      parts.forEach(function (p) {
-        var m = p.match(/^[Rr]?\s*([0-9a-dA-D])\s*=\s*(.+)$/);
-        if (!m) return;
-        var idx = regIndex(m[1]);
-        var v = num(m[2]);
-        if (idx >= 0 && !isNaN(v)) out[idx] = v;
-      });
-    } else {
-      parts.forEach(function (p, i) {
-        var v = num(p);
-        if (!isNaN(v)) out[i] = v;
-      });
+  var lay = [];
+  Object.keys(compiled.vars).sort(function(x, y){ return compiled.vars[x] - compiled.vars[y]; }).forEach(function(k){
+    lay.push(k + ' → R' + compiled.vars[k].toString(16));
+  });
+  html += '<div class="ok" style="margin-top:10px">размещение: ' + (lay.length ? lay.join(', ') : 'переменных нет') + '</div>';
+  if (compiled.inputs.length){
+    html += '<div class="mut" style="margin-top:6px">входные: ' + compiled.inputs.join(', ') + ' — значения вводишь в разделе 3.</div>';
+  }
+  out.innerHTML = html;
+}
+
+function renderData(){
+  var box = $('dataBox');
+  if (!compiled){
+    box.innerHTML = '<span class="mut">Появятся после перевода.</span>';
+    return;
+  }
+  var keys = Object.keys(compiled.vars).sort(function(x, y){ return compiled.vars[x] - compiled.vars[y]; });
+  if (!keys.length && !extraRows.length){
+    box.innerHTML = '<div class="warn">Переменных нет — программе нечего получать на вход.</div>';
+    return;
+  }
+  var h = '<table class="tbl"><thead><tr><th>переменная</th><th>регистр</th><th>значение</th></tr></thead><tbody>';
+  keys.forEach(function(k){
+    var r = compiled.vars[k];
+    var isIn = compiled.inputs.indexOf(k) >= 0;
+    h += '<tr><td>' + k + (isIn ? ' <span class="mut">(вход)</span>' : '') + '</td>'
+       + '<td>R' + r.toString(16) + '</td>'
+       + '<td><input class="num" data-reg="' + r + '" id="val' + r + '" placeholder="0" inputmode="decimal"></td></tr>';
+  });
+  h += '</tbody></table>';
+  h += '<div class="row"><select class="reg" id="extraReg">';
+  for (var r = 0; r < 15; r++) h += '<option value="' + r + '">R' + r.toString(16) + '</option>';
+  h += '</select><input class="num" id="extraVal" placeholder="значение" inputmode="decimal">'
+     + '<button class="mini" id="btnExtra">Положить в регистр</button></div>';
+  h += '<div id="extraList" class="mut" style="margin-top:6px"></div>';
+  box.innerHTML = h;
+  $('btnExtra').onclick = function(){
+    var r = +$('extraReg').value;
+    var v = parseFloat(String($('extraVal').value).replace(',', '.'));
+    if (!isFinite(v)) return;
+    extraRows.push({ reg: r, val: v });
+    $('extraVal').value = '';
+    drawExtras();
+  };
+  drawExtras();
+}
+
+function drawExtras(){
+  var box = $('extraList');
+  if (!box) return;
+  if (!extraRows.length){ box.innerHTML = ''; return; }
+  box.innerHTML = extraRows.map(function(e, i){
+    return '<div>R' + e.reg.toString(16) + ' = ' + e.val + ' <button class="mini bad" data-del="' + i + '">×</button></div>';
+  }).join('');
+  Array.prototype.forEach.call(box.querySelectorAll('[data-del]'), function(b){
+    b.onclick = function(){ extraRows.splice(+b.getAttribute('data-del'), 1); drawExtras(); };
+  });
+}
+
+function collectData(){
+  var data = {}, layout = {};
+  if (!compiled) return { data: data, layout: layout };
+  Object.keys(compiled.vars).forEach(function(k){
+    var r = compiled.vars[k];
+    layout[k] = r;
+    var el = $('val' + r);
+    if (el && String(el.value).trim() !== ''){
+      var v = parseFloat(String(el.value).replace(',', '.'));
+      if (isFinite(v)) data[r] = v;
     }
-    return out;
-  }
+  });
+  extraRows.forEach(function(e){ data[e.reg] = e.val; });
+  return { data: data, layout: layout };
+}
 
-  function entryData() {
-    var regs = parseRegs($('regs').value);
-    if (!Object.keys(regs).length && compiled && compiled.init) regs = compiled.init;
-    return regs;
-  }
+function dataText(data){
+  var keys = Object.keys(data);
+  if (!keys.length) return 'пусто';
+  return keys.sort(function(a, b){ return a - b; }).map(function(k){ return 'R' + k + '=' + data[k]; }).join(', ');
+}
 
-  /* ---------- прогон ---------- */
-  function regsAfterText(core) {
-    if (!compiled) return '';
-    var st = core.ST || {};
-    var R = st.R;
-    if (!R || typeof R.length !== 'number') return '';
-    var layout = compiled.layout || {};
-    var names = Object.keys(layout);
-    names.sort(function (a, b) { return layout[a] - layout[b]; });
-    var parts = [];
-    names.forEach(function (name) {
-      var idx = layout[name];
-      var v = R[idx];
-      if (v == null || isNaN(v)) return;
-      parts.push(name + ' = ' + core.fmt(v));
-    });
-    return parts.join(', ');
-  }
-
-  function doRun() {
-    var out = $('runOut');
-    out.classList.remove('hide');
-
-    if (!compiled) {
-      out.className = 'res bad';
-      out.textContent = 'Сначала нажми «Перевести».';
-      return;
-    }
-    if (!C) {
-      out.className = 'res bad';
-      out.textContent = 'Ядро core.js не загрузилось — прогон недоступен. Перевод в коды при этом работает.';
-      return;
-    }
-
-    var regs = entryData();
-    var x0 = num($('x0').value);
-    if (isNaN(x0)) x0 = 0;
-    var limit = parseInt($('limit').value, 10);
-    if (!limit || limit < 1) limit = 20000;
-    if (limit > 200000) limit = 200000;
-
+/* ---------- прогон ---------- */
+function readRegs(core){
+  var res = {};
+  for (var r = 0; r < 15; r++){
+    var v = null;
     try {
-      var core = C.create({});
-      core.setProgram(compiled.prog);
-      core.reset(true);
-      Object.keys(regs).forEach(function (k) { core.setRegister(+k, regs[k]); });
-      core.setX(x0);
+      if (typeof core.getRegister === 'function') v = core.getRegister(r);
+      else if (core.ST && core.ST.R) v = core.ST.R[r];
+      else if (core.regs) v = core.regs[r];
+    } catch(e){ v = null; }
+    if (typeof v === 'number' && isFinite(v)) res[r] = v;
+  }
+  return res;
+}
 
-      var r = core.run(limit);
-      var verdict = r.result === 'stop' ? 'С/П достигнуто'
-        : r.result === 'error' ? 'ошибка выполнения'
-        : 'лимит шагов';
-
-      out.className = 'res ' + (r.result === 'stop' ? 'ok'
-        : (r.result === 'error' ? 'bad' : ''));
-
-      var inText = Object.keys(regs).map(function (k) {
-        return 'R' + (C.REG_NAMES ? C.REG_NAMES[k] : regName(+k)) + ' = ' + core.fmt(regs[k]);
-      }).join(', ');
-
-      var after = regsAfterText(core);
-
-      out.textContent =
-        'на входе: ' + (inText || 'регистры по умолчанию') + ', X = ' + core.fmt(x0) + '\n' +
-        'X = ' + core.fmt(r.x) + '\n' +
-        'шагов: ' + r.steps + '\n' +
-        'итог: ' + verdict +
-        (after ? '\nрегистры после: ' + after : '');
-
-      if (r.result === 'cont') {
-        out.textContent += '\n\nПрограмма не дошла до С/П — скорее всего зациклилась. Проверь условие «пока» и шаг изменения счётчика.';
-      }
-    } catch (e) {
-      out.className = 'res bad';
-      out.textContent = 'Ошибка ядра: ' + e.message;
+function doRun(){
+  var box = $('runOut');
+  if (!compiled){ box.innerHTML = '<div class="warn">Сначала «Перевести».</div>'; return; }
+  if (!hasCore){ box.innerHTML = '<div class="err">Ядро core.js не загрузилось — прогон невозможен.</div>'; return; }
+  var got = collectData();
+  try {
+    var core = MKCore.create({});
+    core.setProgram(compiled.cells.slice());
+    if (typeof core.reset === 'function') core.reset(true);
+    Object.keys(got.data).forEach(function(k){ core.setRegister(+k, got.data[k]); });
+    if (typeof core.setX === 'function') core.setX(0);
+    var res = core.run(20000) || {};
+    var after = readRegs(core);
+    var h = '';
+    h += '<div>вход: <b>' + dataText(got.data) + '</b></div>';
+    h += '<div style="margin-top:6px">результат X: <span class="big">' + (res.x != null ? res.x : '—') + '</span></div>';
+    h += '<div class="mut" style="margin-top:4px">шагов: ' + (res.steps != null ? res.steps : '—')
+       + ' · остановка: ' + (res.result || '—') + '</div>';
+    var keys = Object.keys(after);
+    if (keys.length){
+      h += '<div style="margin-top:8px">регистры после:</div><div class="mut">' + keys.map(function(k){
+        var nm = '';
+        Object.keys(compiled.vars).forEach(function(v){ if (compiled.vars[v] === +k) nm = v; });
+        return 'R' + k + (nm ? '(' + nm + ')' : '') + ' = ' + after[k];
+      }).join(' · ') + '</div>';
     }
+    box.innerHTML = h;
+  } catch (e){
+    box.innerHTML = '<div class="err">Сбой прогона: ' + (e && e.message ? e.message : e) + '</div>';
   }
+}
 
-  /* ---------- отдать дальше ---------- */
-  function programName() {
-    var v = ($('pname').value || '').trim();
-    return v || 'Алго ' + new Date().toISOString().slice(0, 16).replace('T', ' ');
+/* ---------- мост в корпус ---------- */
+function openInBody(){
+  if (!compiled){ alert('Сначала «Перевести».'); return; }
+  var got = collectData();
+  var payload = {
+    prog: compiled.cells.slice(),
+    data: got.data,
+    layout: got.layout,
+    inputs: compiled.inputs,
+    from: 'Язык Алго'
+  };
+  try {
+    localStorage.setItem(BRIDGE_KEY, JSON.stringify(payload));
+  } catch(e){
+    alert('Не смог сохранить данные для корпуса: ' + e);
+    return;
   }
+  location.assign('index.html');
+}
 
-  function exportJson() {
-    var out = $('saveOut');
-    out.classList.remove('hide');
-    if (!compiled) {
-      out.className = 'res bad';
-      out.textContent = 'Сначала нажми «Перевести».';
-      return;
-    }
-    var name = programName();
-    var data = entryData();
-    var exp = num($('pexp').value);
+/* ---------- примеры ---------- */
+var EX_FACT = [
+  '# факториал: n вводишь сам в разделе «Данные»',
+  'вход n',
+  's = 1',
+  'i = 0',
+  'пока i < n',
+  '  i = i + 1',
+  '  s = s * i',
+  'кон',
+  'вывод s',
+  'стоп'
+].join('\n');
 
-    var entry = { name: name, prog: compiled.prog, data: data, layout: compiled.layout };
-    if (!isNaN(exp)) { entry.expect = exp; entry.check = 'алго → X = ' + exp; }
+var EX_SQ = [
+  '# сумма квадратов 1..n',
+  'вход n',
+  's = 0',
+  'i = 1',
+  'пока i <= n',
+  '  s = s + i * i',
+  '  i = i + 1',
+  'кон',
+  'вывод s',
+  'стоп'
+].join('\n');
 
-    var payload = {
-      app: 'mk-emulator',
-      model: 'b3-34',
-      saved: new Date().toISOString(),
-      programs: [entry]
-    };
-
-    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'b3-34-algo.json';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-
-    out.className = 'res ok';
-    out.textContent = 'Файл собран: «' + name + '»\n' +
-      'Данные: ' + (initToText(data) || 'без регистров') + '\n' +
-      'Размещение: ' + (layoutText(compiled.layout, compiled.init) || '—') + '\n' +
-      'В корпусе: ☰ → «Импорт» → выбрать этот файл.';
+/* ---------- запуск ---------- */
+function doCompile(){
+  var out = $('out');
+  try {
+    compiled = compile($('src').value);
+    extraRows = [];
+    render();
+    renderData();
+  } catch (e){
+    compiled = null;
+    var msg = 'Ошибка';
+    if (e.line) msg += ' в строке ' + e.line;
+    msg += ': ' + (e.msg || e);
+    if (e.whole) msg += '<div class="mut" style="margin-top:6px">' + e.whole.replace(/</g, '&lt;') + '</div>';
+    out.innerHTML = '<div class="err">' + msg + '</div>';
+    $('dataBox').innerHTML = '<span class="mut">Появятся после перевода.</span>';
   }
+}
 
-  function openInBody() {
-    var out = $('saveOut');
-    out.classList.remove('hide');
-    if (!compiled) {
-      out.className = 'res bad';
-      out.textContent = 'Сначала нажми «Перевести».';
-      return;
-    }
-    var data = entryData();
-    try {
-      localStorage.setItem(BRIDGE_KEY, JSON.stringify({
-        prog: compiled.prog,
-        data: data,
-        layout: compiled.layout,
-        from: 'Язык Алго'
-      }));
-    } catch (e) {
-      out.className = 'res bad';
-      out.textContent = 'Не удалось передать программу в корпус: ' + e.message;
-      return;
-    }
-    out.className = 'res ok';
-    out.textContent = 'Передаю в корпус: программа + данные (' +
-      (initToText(data) || 'пусто') + ')\nРазмещение: ' +
-      (layoutText(compiled.layout, compiled.init) || '—') +
-      '\nЕсли не открылось само — нажми «корпус» внизу.';
-    setTimeout(function () { location.href = 'index.html'; }, 350);
-  }
+$('btnCompile').onclick = doCompile;
+$('btnRun').onclick = doRun;
+$('btnReset').onclick = function(){
+  $('runOut').innerHTML = '<span class="mut">Сброс. Введи значение и снова «Пуск».</span>';
+  document.querySelectorAll('input.num[data-reg]').forEach(function(el){
+    if (el.getAttribute('data-keep') !== '1') el.value = '';
+  });
+};
+$('btnBody').onclick = openInBody;
+$('btnJson').onclick = function(){
+  if (!compiled){ alert('Сначала «Перевести».'); return; }
+  var got = collectData();
+  var obj = {
+    model: 'b3-34',
+    prog: compiled.cells,
+    data: got.data,
+    layout: got.layout,
+    inputs: compiled.inputs,
+    src: $('src').value
+  };
+  var blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'algo-program.json';
+  a.click();
+};
+$('exFact').onclick = function(){ $('src').value = EX_FACT; doCompile(); };
+$('exSq').onclick = function(){ $('src').value = EX_SQ; doCompile(); };
+$('btnClear').onclick = function(){
+  $('src').value = '';
+  compiled = null; extraRows = [];
+  render(); renderData();
+  $('runOut').innerHTML = '<span class="mut">—</span>';
+};
 
-  /* ---------- примеры ---------- */
-  var EX_FACT = [
-    '# факториал: n! = 5040 при n = 7',
-    'n = 7',
-    's = 1',
-    'i = 0',
-    'пока i < n',
-    '  i = i + 1',
-    '  s = s * i',
-    'кон',
-    'вывод s',
-    'стоп'
-  ].join('\n');
-
-  var EX_SQ = [
-    '# сумма квадратов 1..5 = 55',
-    'n = 5',
-    's = 0',
-    'i = 0',
-    'пока i < n',
-    '  i = i + 1',
-    '  s = s + i * i',
-    'кон',
-    'вывод s',
-    'стоп'
-  ].join('\n');
-
-  /* ---------- запуск ---------- */
-  function init() {
-    if (!C) {
-      var note = document.createElement('div');
-      note.className = 'res bad';
-      note.textContent = 'Ядро core.js не загрузилось: перевод в коды и листинг работают, прогон — нет.';
-      $('listCard').parentNode.insertBefore(note, $('listCard'));
-    }
-
-    $('src').value = EX_FACT;
-    $('regs').value = '';
-    $('x0').value = '0';
-    $('limit').value = '20000';
-
-    $('btnCompile').addEventListener('click', function () {
-      var out = $('runOut');
-      $('saveOut').classList.add('hide');
-      try {
-        var res = compile($('src').value);
-        render(res);
-        out.classList.add('hide');
-      } catch (e) {
-        $('listCard').classList.remove('hide');
-        $('summary').className = 'res bad';
-        $('summary').textContent = e.message;
-        $('varsOut').classList.add('hide');
-        $('dataOut').classList.add('hide');
-        $('warns').innerHTML = '';
-        $('listing').innerHTML = '';
-        compiled = null;
-      }
-    });
-
-    $('btnExFact').addEventListener('click', function () {
-      $('src').value = EX_FACT;
-      $('regs').value = '';
-      lastAuto = '';
-      $('pexp').value = '5040';
-      $('btnCompile').click();
-    });
-
-    $('btnExSq').addEventListener('click', function () {
-      $('src').value = EX_SQ;
-      $('regs').value = '';
-      lastAuto = '';
-      $('pexp').value = '55';
-      $('btnCompile').click();
-    });
-
-    $('btnClear').addEventListener('click', function () {
-      $('src').value = '';
-      $('listCard').classList.add('hide');
-      $('runOut').classList.add('hide');
-      $('saveOut').classList.add('hide');
-      compiled = null;
-      lastAuto = '';
-    });
-
-    $('btnRun').addEventListener('click', doRun);
-    $('btnJson').addEventListener('click', exportJson);
-    $('btnBridge').addEventListener('click', openInBody);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+$('src').value = EX_FACT;
+doCompile();
 })();
 </script>
 </body>
