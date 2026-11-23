@@ -118,11 +118,33 @@
   .key.on { outline: 2px solid var(--accent); outline-offset: -2px; }
 
   .service { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
+  .service.second { grid-template-columns: repeat(2, 1fr); margin-top: 6px; }
   .service button {
     background: #1f242a; color: var(--text); border: 1px solid var(--line);
     border-radius: 10px; padding: 9px 6px; font-size: 12px; font-family: inherit; cursor: pointer;
   }
   .service button:active { background: #2b3641; }
+
+  .prog {
+    margin-top: 10px; background: #12161a; border: 1px solid var(--line);
+    border-radius: 10px; padding: 6px; max-height: 260px; overflow: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .prog-head { display: flex; justify-content: space-between; gap: 8px;
+    font-size: 11px; color: var(--muted); padding: 2px 6px 6px; }
+  .prog-head b { color: var(--accent); font-weight: 600; }
+  .prow {
+    display: grid; grid-template-columns: 30px 1fr auto; gap: 8px;
+    align-items: center; padding: 4px 6px; border-radius: 6px;
+    font-size: 12px; cursor: pointer;
+  }
+  .prow:active { background: #1b2530; }
+  .prow.cur { background: #24405a; }
+  .prow.empty { opacity: .45; }
+  .paddr { color: var(--muted); }
+  .plabel { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pcode { color: var(--muted); font-size: 11px; }
+  .prow.cur .pcode { color: #a9cbe8; }
 
   .hint {
     margin-top: 10px; min-height: 34px;
@@ -161,6 +183,13 @@
       <button type="button" id="btnRun">Пуск ⏩</button>
       <button type="button" id="btnReset">⟲ Сброс</button>
     </div>
+
+    <div class="service second">
+      <button type="button" id="btnDemo">Пример: 7!</button>
+      <button type="button" id="btnProgClear">Очистить память</button>
+    </div>
+
+    <div class="prog" id="prog"></div>
 
     <div class="hint" id="hint">Готово. Клавиша f открывает второй слой, k — слой косвенных команд.</div>
   </div>
