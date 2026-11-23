@@ -35,6 +35,7 @@ select.reg{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:1
 .rg span{font-size:14px;font-weight:600;word-break:break-all}
 .rg.on{background:#eaf7ef;border-color:#bfe3cd}
 .rg.hot{background:#e8f0ff;border-color:#b9cdfb}
+#mkToast{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:99999;max-width:92vw;padding:12px 16px;border-radius:12px;background:#1a7f47;color:#fff;font:600 14px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.28);text-align:center;white-space:pre-line;pointer-events:none}
 </style>
 </head>
 <body>
@@ -67,13 +68,19 @@ select.reg{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:1
 </div>
 
 <div class="card">
-  <h2>4. Прогон</h2>
+  <h2>4. Прогон и файл</h2>
   <div id="runOut" class="mut">—</div>
   <div class="row">
     <button class="primary" id="btnRun">Пуск</button>
     <button id="btnReset">Сброс</button>
     <button id="btnBody">Перейти в корпус</button>
     <button id="btnJson">Скачать .json</button>
+    <button id="btnJsonLoad">Загрузить .json</button>
+    <input type="file" id="jsonFile" accept=".json,application/json" hidden>
+  </div>
+  <div id="fileNote" class="mut" style="margin-top:8px">
+    Файл один и тот же для Алго и для корпуса: формат <b>programs[]</b>, значения регистров внутри.
+    Такой файл принимает и библиотека 📂 в калькуляторе, и эта страница.
   </div>
 </div>
 </div>
@@ -91,6 +98,21 @@ var REG_NAMES = (hasCore && MKCore.REG_NAMES) ? MKCore.REG_NAMES : ['0','1','2',
 
 var compiled = null;
 var inputRegs = {};   /* регистр -> число, введённое пользователем */
+
+/* ---------- крупная плашка поверх страницы ---------- */
+var toastTimer = null;
+function toast(text, kind, ms){
+  var old = $('mkToast');
+  if (old && old.parentNode) old.parentNode.removeChild(old);
+  var d = document.createElement('div');
+  d.id = 'mkToast';
+  d.textContent = text;
+  if (kind === 'bad') d.style.background = '#c0392b';
+  else if (kind === 'warn') d.style.background = '#a86a00';
+  document.body.appendChild(d);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ if (d.parentNode) d.parentNode.removeChild(d); }, ms || 5000);
+}
 
 /* ---------- имена и ключевые слова ---------- */
 function isNameStart(ch){ return /[A-Za-zА-Яа-яЁё_]/.test(ch); }
@@ -577,6 +599,93 @@ function openInBody(){
   location.assign('index.html');
 }
 
+/* ---------- имя программы по исходнику ---------- */
+function guessSrcName(src){
+  var lines = String(src || '').split(/\r?\n/);
+  for (var i = 0; i < lines.length; i++){
+    var t = lines[i].trim().replace(/^#+\s*/, '').trim();
+    if (!t) continue;
+    var cut = t.indexOf(':');
+    if (cut > 0) t = t.slice(0, cut).trim();
+    if (t) return t.length > 32 ? t.slice(0, 32) + '…' : t;
+  }
+  return 'Из МК-Алго';
+}
+
+/* ---------- разбор файла: единый формат ---------- */
+function progFromFile(obj){
+  if (!obj) return null;
+  var list = [];
+  if (Array.isArray(obj)) list = obj;
+  else if (Array.isArray(obj.programs)) list = obj.programs;
+  else if (Array.isArray(obj.prog)) list = [obj];
+  return list.length ? list[0] : null;
+}
+
+function loadJsonFile(file){
+  if (!file) return;
+  var note = $('fileNote');
+  note.className = 'mut';
+  note.textContent = 'Читаю ' + file.name + '…';
+
+  var fr = new FileReader();
+  fr.onerror = function(){ note.className = 'err'; note.textContent = 'Не смог прочитать файл'; };
+  fr.onload = function(){
+    var obj;
+    try { obj = JSON.parse(String(fr.result)); }
+    catch(e){ note.className = 'err'; note.textContent = 'Это не JSON: ' + e.message; return; }
+
+    var p = progFromFile(obj);
+    if (!p){ note.className = 'err'; note.textContent = 'В файле нет программы: жду programs[] или prog[]'; return; }
+    if (!Array.isArray(p.prog) || !p.prog.length){ note.className = 'err'; note.textContent = 'Поле prog пустое или не массив'; return; }
+
+    var name = p.name || p.title || guessSrcName(p.src);
+    var okCompiled = true;
+
+    if (p.src){
+      $('src').value = p.src;
+      okCompiled = doCompile();
+    } else {
+      compiled = {
+        cells: p.prog.slice(),
+        vars: p.layout || {},
+        inputs: p.inputs || [],
+        fixCount: 0,
+        autoStop: false
+      };
+      render();
+      renderData();
+    }
+
+    inputRegs = {};
+    if (p.data && typeof p.data === 'object'){
+      Object.keys(p.data).forEach(function(k){
+        var v = parseFloat(p.data[k]);
+        if (isFinite(v)) inputRegs[+k] = v;
+      });
+    }
+    renderData();
+
+    var nregs = Object.keys(inputRegs).length;
+    var regTxt = nregs
+      ? Object.keys(inputRegs).sort(function(a, b){ return a - b; }).map(function(k){
+          return 'R' + REG_NAMES[+k] + '=' + fmtNum(inputRegs[k]);
+        }).join(', ')
+      : 'регистры пустые';
+
+    note.className = (okCompiled && nregs) ? 'ok' : 'warn';
+    note.innerHTML = 'Загружено «' + name + '» · ' + p.prog.length + ' ячеек · ' + regTxt
+      + (!nregs ? ' — в файле не было значений регистров, введи их в разделе 3.' : '');
+
+    $('runOut').innerHTML = nregs
+      ? '<div class="ok">Данные из файла подставлены — можно нажимать «Пуск».</div>'
+      : '<div class="warn">Данных в файле нет — введи входные значения в разделе 3.</div>';
+
+    toast('Загружено «' + name + '»\n' + p.prog.length + ' ячеек · ' + regTxt, nregs ? 'ok' : 'warn', 6000);
+  };
+  fr.readAsText(file);
+}
+
 /* ---------- примеры ---------- */
 var EX_FACT = [
   '# факториал: n вводишь сам в разделе 3 (R0)',
@@ -611,13 +720,16 @@ function clearPanels(){
   $('runOut').innerHTML = '<span class="mut">—</span>';
 }
 
+/* ВАЖНО: введённые значения регистров больше НЕ стираются при повторном
+   «Перевести». Раньше inputRegs = {} обнулял их, и в файл уходило пустое
+   data — именно поэтому в algo-program.json было "data": {}. */
 function doCompile(){
   try {
     compiled = compile($('src').value);
-    inputRegs = {};
     render();
     renderData();
     $('runOut').innerHTML = '<span class="mut">Введи значения в разделе 3 и нажми «Пуск».</span>';
+    return true;
   } catch (e){
     compiled = null;
     var msg = 'Ошибка';
@@ -627,6 +739,7 @@ function doCompile(){
     $('out').innerHTML = '<div class="err">' + msg + '</div>';
     $('dataBox').innerHTML = '<span class="mut">Появятся после перевода.</span>';
     $('runOut').innerHTML = '<span class="mut">—</span>';
+    return false;
   }
 }
 
@@ -640,16 +753,52 @@ $('btnReset').onclick = function(){
 
 $('btnBody').onclick = openInBody;
 
+/* ---------- файл: единый формат programs[] v2 ---------- */
 $('btnJson').onclick = function(){
   if (!compiled){ alert('Сначала «Перевести».'); return; }
   var got = collectData();
-  var obj = { model: 'b3-34', prog: compiled.cells, data: got.data, layout: got.layout, inputs: compiled.inputs, src: $('src').value };
+  var name = guessSrcName($('src').value);
+
+  var obj = {
+    app: 'mk-emulator',
+    format: 'programs',
+    version: 2,
+    model: 'b3-34',
+    saved: new Date().toISOString(),
+    programs: [{
+      name: name,
+      prog: compiled.cells,
+      data: got.data,
+      layout: got.layout,
+      inputs: compiled.inputs,
+      src: $('src').value,
+      savedAt: Date.now()
+    }]
+  };
+
   var blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'algo-program.json';
   a.click();
+
+  var n = Object.keys(got.data).length;
+  var note = $('fileNote');
+  note.className = n ? 'ok' : 'warn';
+  note.innerHTML = n
+    ? 'Сохранено «' + name + '» · ' + compiled.cells.length + ' ячеек · ' + dataText(got.data)
+      + '. Этот файл примет и библиотека 📂 в калькуляторе.'
+    : 'Сохранено «' + name + '», но значений регистров не было'
+      + (compiled.inputs.length ? ': введи ' + compiled.inputs.join(', ') + ' в разделе 3 и сохрани снова.' : '.');
+
+  toast('Сохранено «' + name + '»\n' + compiled.cells.length + ' ячеек · ' + dataText(got.data), n ? 'ok' : 'warn', 6000);
 };
+
+$('btnJsonLoad').onclick = function(){ $('jsonFile').click(); };
+$('jsonFile').addEventListener('change', function(){
+  loadJsonFile(this.files && this.files[0]);
+  this.value = '';
+});
 
 $('exFact').onclick = function(){ $('src').value = EX_FACT; compiled = null; inputRegs = {}; clearPanels(); };
 $('exSq').onclick = function(){ $('src').value = EX_SQ; compiled = null; inputRegs = {}; clearPanels(); };
