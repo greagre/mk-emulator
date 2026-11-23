@@ -438,6 +438,22 @@ function drawRegs(){
   box.innerHTML = h;
 }
 
+/* Единственный вход для значений регистров.
+   Пишет в inputRegs, обновляет поле в таблице (если ввод был не из неё)
+   и перерисовывает сетку R0…Rd. Возвращает число или null, если пусто. */
+function applyReg(r, raw, fromField){
+  var s = String(raw == null ? '' : raw).trim();
+  var v = parseFloat(s.replace(',', '.'));
+  var ok = (s !== '' && isFinite(v));
+  if (!ok) delete inputRegs[r]; else inputRegs[r] = v;
+  if (!fromField){
+    var inp = document.querySelector('#dataBox input.num[data-reg="' + r + '"]');
+    if (inp) inp.value = ok ? fmtNum(v) : '';
+  }
+  drawRegs();
+  return ok ? v : null;
+}
+
 function renderData(){
   var box = $('dataBox');
   if (!compiled){
@@ -461,7 +477,7 @@ function renderData(){
     h += '<div class="warn">Переменных нет — программе нечего получать на вход.</div>';
   }
   h += '<div class="row"><select class="reg" id="extraReg">';
-  for (var r = 0; r < REG_COUNT; r++) h += '<option value="' + r + '">R' + REG_NAMES[r] + '</option>';
+  for (var rr = 0; rr < REG_COUNT; rr++) h += '<option value="' + rr + '">R' + REG_NAMES[rr] + '</option>';
   h += '</select><input class="num" id="extraVal" placeholder="значение" inputmode="decimal">'
      + '<button class="mini" id="btnExtra">Положить в регистр</button></div>';
   h += '<div class="regs" id="regs"></div>';
@@ -469,23 +485,20 @@ function renderData(){
 
   Array.prototype.forEach.call(box.querySelectorAll('input.num[data-reg]'), function(el){
     el.oninput = function(){
-      var r = +el.getAttribute('data-reg');
-      var raw = String(el.value).trim();
-      var v = parseFloat(raw.replace(',', '.'));
-      if (raw === '' || !isFinite(v)) delete inputRegs[r];
-      else inputRegs[r] = v;
-      drawRegs();
+      applyReg(+el.getAttribute('data-reg'), el.value, true);
     };
   });
 
   $('btnExtra').onclick = function(){
     var r = +$('extraReg').value;
-    var v = parseFloat(String($('extraVal').value).replace(',', '.'));
-    if (!isFinite(v)){ $('runOut').innerHTML = '<div class="warn">Введи число в поле рядом с кнопкой.</div>'; return; }
-    inputRegs[r] = v;
+    var v = applyReg(r, $('extraVal').value, false);
+    if (v === null){
+      $('runOut').innerHTML = '<div class="warn">Введи число в поле рядом с кнопкой.</div>';
+      return;
+    }
     $('extraVal').value = '';
-    drawRegs();
-    $('runOut').innerHTML = '<div class="ok">R' + REG_NAMES[r] + ' = ' + fmtNum(v) + ' — значение в регистре, можно нажимать «Пуск».</div>';
+    $('runOut').innerHTML = '<div class="ok">R' + REG_NAMES[r] + ' = ' + fmtNum(v)
+      + ' — значение и в таблице, и в сетке регистров. Можно нажимать «Пуск».</div>';
   };
 
   drawRegs();
