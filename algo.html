@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mk-emulator · язык Алго</title>
+<style>
+:root{
+  --bg:#eef1f5; --card:#fff; --ink:#1d2733; --muted:#6b7787; --line:#d7dee7;
+  --accent:#2f6fed; --ok:#1a8c66; --bad:#c8382f; --warn:#a96400;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:14px 12px 40px}
+h1{font-size:19px;margin:0 0 4px}
+.sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 0 12px}
+.card h2{font-size:15px;margin:0 0 10px}
+label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+textarea,input{width:100%;font:14px/1.5 var(--mono);color:var(--ink);background:#fbfcfe;border:1px solid var(--line);border-radius:10px;padding:10px}
+textarea{min-height:230px;resize:vertical;white-space:pre;overflow-wrap:normal;overflow-x:auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:560px){.grid,.grid3{grid-template-columns:1fr}}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+button{font:14px/1 inherit;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#f4f7fb;color:var(--ink);cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.ghost{background:#fff}
+button:active{transform:translateY(1px)}
+table{width:100%;border-collapse:collapse;font:13px/1.35 var(--mono)}
+th,td{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px}
+td.ad{color:var(--muted);width:38px}
+tr.jump td.name{color:var(--accent)}
+tr.adcell td{color:var(--warn)}
+.res{font:14px/1.5 var(--mono);margin-top:10px;padding:10px;border-radius:10px;background:#f7f9fc;border:1px solid var(--line);white-space:pre-wrap}
+.res.ok{background:#eefaf4;border-color:#bfe6d5}
+.res.bad{background:#fdf0ef;border-color:#f3cfcb}
+ul.warn{margin:8px 0 0;padding-left:18px;font-size:13px;color:var(--warn)}
+ul.warn li{margin:2px 0}
+.foot{color:var(--muted);font-size:12px;margin-top:16px;text-align:center}
+a{color:var(--accent)}
+.hide{display:none}
+code{font-family:var(--mono);font-size:12px}
+.hint{font-size:13px;color:var(--muted);margin:0 0 10px}
+.hint b{color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font:12px/1 var(--mono);background:#f1f5fb;border:1px solid var(--line);border-radius:999px;padding:5px 9px;color:var(--muted)}
+</style>
+</head>
+<body>
+<h1>Язык Алго</h1>
+<p class="sub">Пишешь программу обычными строками — страница переводит её в коды Б3-34, показывает листинг и прогоняет в ядре.</p>
+
+<section class="card">
+  <h2>1. Программа</h2>
+  <p class="hint">
+    <b>переменная = выражение</b> · <b>пока условие</b> … <b>кон</b> · <b>вывод выражение</b> · <b>стоп</b><br>
+    условия: <code>&lt; &gt; &lt;= &gt;= = !=</code> · операции: <code>+ − * / ( )</code> · комментарий — <code>#</code>
+  </p>
+  <textarea id="src" spellcheck="false"></textarea>
+  <div class="row">
+    <button class="primary" id="btnCompile">Перевести</button>
+    <button class="ghost" id="btnExFact">Пример: факториал</button>
+    <button class="ghost" id="btnExSq">Пример: сумма квадратов</button>
+    <button class="ghost" id="btnClear">Очистить</button>
+  </div>
+</section>
+
+<section class="card hide" id="listCard">
+  <h2>2. Во что превратилось</h2>
+  <div id="summary" class="res"></div>
+  <div id="varsOut" class="res hide"></div>
+  <ul class="warn" id="warns"></ul>
+  <div style="margin-top:10px;max-height:430px;overflow:auto;border:1px solid var(--line);border-radius:10px">
+    <table>
+      <thead><tr><th>адр</th><th>hex</th><th>команда</th><th></th></tr></thead>
+      <tbody id="listing"></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h2>3. Прогон</h2>
+  <div class="grid3">
+    <div>
+      <label for="regs">Регистры (необязательно)</label>
+      <input id="regs" placeholder="R0=7, R1=1">
+    </div>
+    <div>
+      <label for="x0">Начальный X</label>
+      <input id="x0" placeholder="0">
+    </div>
+    <div>
+      <label for="limit">Лимит шагов</label>
+      <input id="limit" placeholder="20000">
+    </div>
+  </div>
+  <div class="row">
+    <button class="primary" id="btnRun">Прогнать</button>
+  </div>
+  <div class="res hide" id="runOut"></div>
+</section>
+
+<section class="card">
+  <h2>4. Забрать</h2>
+  <div class="grid">
+    <div>
+      <label for="pname">Название программы</label>
+      <input id="pname" placeholder="Алго: моя программа">
+    </div>
+    <div>
+      <label for="pexp">Ожидаемый X (необязательно)</label>
+      <input id="pexp" placeholder="например 5040">
+    </div>
+  </div>
+  <div class="row">
+    <button class="primary" id="btnJson">Скачать .json</button>
+    <button class="ghost" id="btnBridge">Открыть в корпусе</button>
+  </div>
+  <div class="res hide" id="saveOut"></div>
+</section>
+
+<p class="foot">
+  <a href="index.html">корпус</a> ·
+  <a href="import.html">импорт листинга</a> ·
+  <a href="tests.html">тесты ядра</a> ·
+  ядро <code>core.js</code>, надстройка <code>core-fix.js</code>
+</p>
+
+<script src="core.js"></script>
+<script src="core-fix.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var C = window.MKCore;
+  var PROG_LEN = (C && C.PROG_LEN) || 98;
+  var NOP = (C && C.NOP != null) ? C.NOP : 0x54;
+  var BRIDGE_KEY = 'mk-emulator/bridge';
+  var MAXREG = 15;
+  var REGCH = '0123456789abcd';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var compiled = null;
+
+  /* ---------- мелочи ---------- */
+  function hex2(c) {
+    if (C && C.hex2) return C.hex2(c);
+    return ('0' + (c & 255).toString(16).toUpperCase()).slice(-2);
+  }
+  function regName(i) { return REGCH[i] != null ? REGCH[i] : String(i); }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function pad2(n) { var s = String(n | 0); return s.length < 2 ? '0' + s : s; }
+  function num(v) {
+    var t = String(v == null ? '' : v).replace(/\s/g, '').replace(/,/g, '.').replace(/−/g, '-');
+    var n = parseFloat(t);
+    return isNaN(n) ? NaN : n;
+  }
+
+  var LABELS = {
+    0x0A: '·', 0x0B: '/-/', 0x0C: 'ВП', 0x0D: 'Cx', 0x0E: 'В↑', 0x0F: 'Вx',
+    0x10: '+', 0x11: '−', 0x12: '×', 0x13: '÷', 0x14: '↔',
+    0x50: 'С/П', 0x51: 'БП', 0x52: 'В/О', 0x53: 'ПП', 0x54: 'К НОП',
+    0x57: 'F x≠0', 0x59: 'F x≥0', 0x5C: 'F x<0', 0x5E: 'F x=0'
+  };
+
+  function labelOf(code) {
+    if (C && C.cmdName) {
+      var n = C.cmdName(code);
+      if (n && n !== '?') return n;
+    }
+    if (code >= 0 && code <= 9) return String(code);
+    if (code >= 0x60 && code <= 0x6E) return 'П→X ' + regName(code - 0x60);
+    if (code >= 0x40 && code <= 0x4E) return 'X→П ' + regName(code - 0x40);
+    return LABELS[code] || '?';
+  }
+  function isJump(code) {
+    return code === 0x51 || code === 0x53 || code === 0x57 ||
+           code === 0x59 || code === 0x5C || code === 0x5E;
+  }
+
+  /* ---------- разбор выражений ---------- */
+  function tokenize(text) {
+    var out = [], i = 0, s = String(text);
+    while (i < s.length) {
+      var ch = s[i];
+      if (/\s/.test(ch)) { i++; continue; }
+      var rest = s.slice(i);
+      var m = rest.match(/^\d+(?:[.,]\d+)?/);
+      if (m) { out.push({ t: 'num', v: m[0] }); i += m[0].length; continue; }
+      var mi = rest.match(/^[A-Za-zА-Яа-яЁё_][A-Za-zА-Яа-яЁё0-9_]*/);
+      if (mi) { out.push({ t: 'name', v: mi[0] }); i += mi[0].length; continue; }
+      if (ch === '×' || ch === 'х') { out.push({ t: 'op', v: '*' }); i++; continue; }
+      if (ch === '÷' || ch === ':') { out.push({ t: 'op', v: '/' }); i++; continue; }
+      if (ch === '−' || ch === '–' || ch === '-') { out.push({ t: 'op', v: '-' }); i++; continue; }
+      if ('+*/()'.indexOf(ch) >= 0) { out.push({ t: 'op', v: ch }); i++; continue; }
+      throw new Error('непонятный символ «' + ch + '»');
+    }
+    if (!out.length) throw new Error('пустое выражение');
+    return out;
+  }
+
+  function prio(op) {
+    if (op === 'u-') return 3;
+    if (op === '*' || op === '/') return 2;
+    if (op === '+' || op === '-') return 1;
+    return 0;
+  }
+
+  function toRPN(tokens) {
+    var out = [], stack = [], prev = null;
+    tokens.forEach(function (tk) {
+      if (tk.t === 'num' || tk.t === 'name') { out.push(tk); prev = tk; return; }
+      if (tk.v === '(') { stack.push(tk); prev = tk; return; }
+      if (tk.v === ')') {
+        while (stack.length && stack[stack.length - 1].v !== '(') out.push(stack.pop());
+        if (!stack.length) throw new Error('лишняя закрывающая скобка');
+        stack.pop();
+        prev = tk;
+        return;
+      }
+      if (tk.v === '-' && (!prev || (prev.t === 'op' && prev.v !== ')'))) {
+        stack.push({ t: 'op', v: 'u-' });
+        prev = tk;
+        return;
+      }
+      var p = prio(tk.v);
+      while (stack.length && stack[stack.length - 1].v !== '(' &&
+             prio(stack[stack.length - 1].v) >= p) {
+        out.push(stack.pop());
+      }
+      stack.push(tk);
+      prev = tk;
+    });
+    while (stack.length) {
+      var s = stack.pop();
+      if (s.v === '(') throw new Error('лишняя открывающая скобка');
+      out.push(s);
+    }
+    return out;
+  }
+
+  /* ---------- компилятор ---------- */
+  function Compiler() {
+    this.cells = [];
+    this.fixups = [];
+    this.warns = [];
+    this.vars = {};
+    this.line = 0;
+  }
+
+  Compiler.prototype.emit = function (code, label, kind) {
+    this.cells.push({ code: code & 255, label: label || '', kind: kind || 'cmd' });
+  };
+  Compiler.prototype.emitDigit = function (d) {
+    this.cells.push({ code: d & 255, label: '', kind: 'addr' });
+  };
+
+  Compiler.prototype.regOf = function (name) {
+    var low = String(name).toLowerCase();
+    var m = low.match(/^r([0-9a-d])$/);
+    if (m) return REGCH.indexOf(m[1]);
+    if (Object.prototype.hasOwnProperty.call(this.vars, low)) return this.vars[low];
+    var used = {}, self = this;
+    Object.keys(this.vars).forEach(function (k) { used[self.vars[k]] = true; });
+    for (var i = 0; i < MAXREG; i++) {
+      if (!used[i]) { this.vars[low] = i; return i; }
+    }
+    throw new Error('кончились регистры (их 15) — переменная «' + name + '» не поместилась');
+  };
+
+  Compiler.prototype.genNumber = function (text) {
+    var s = String(text).replace(',', '.');
+    if (!/^\d+(\.\d+)?$/.test(s)) throw new Error('число «' + text + '» не понял');
+    if (s.replace('.', '').length > 6) {
+      this.warns.push('Строка ' + this.line + ': число «' + text + '» длиннее 6 знаков — в X оно не влезет');
+    }
+    for (var i = 0; i < s.length; i++) {
+      var ch = s[i];
+      if (ch === '.') this.emit(0x0A, '·');
+      else this.emit(+ch, ch);
+    }
+  };
+
+  Compiler.prototype.genExpr = function (text) {
+    var rpn = toRPN(tokenize(text));
+    var self = this;
+    rpn.forEach(function (tk) {
+      if (tk.t === 'num') { self.genNumber(tk.v); return; }
+      if (tk.t === 'name') {
+        var idx = self.regOf(tk.v);
+        self.emit(0x60 + idx, 'П→X ' + regName(idx));
+        return;
+      }
+      if (tk.v === 'u-') { self.emit(0x0B, '/-/'); return; }
+      if (tk.v === '+') { self.emit(0x10, '+'); return; }
+      if (tk.v === '-') { self.emit(0x11, '−'); return; }
+      if (tk.v === '*') { self.emit(0x12, '×'); return; }
+      if (tk.v === '/') { self.emit(0x13, '÷'); return; }
+      throw new Error('оператор «' + tk.v + '» не поддержан');
+    });
+  };
+
+  Compiler.prototype.genAssign = function (node) {
+    var idx = this.regOf(node.name);
+    this.genExpr(node.expr);
+    this.emit(0x40 + idx, 'X→П ' + regName(idx));
+  };
+
+  Compiler.prototype.emitJump = function (code, label) {
+    var at = this.cells.length;
+    this.emit(code, LABELS[code] || '?');
+    this.emitDigit(0);
+    this.emitDigit(0);
+    this.fixups.push({ at: at, label: label });
+  };
+
+  Compiler.prototype.genCondJump = function (cond, outLabel) {
+    this.genExpr(cond.left);
+    this.genExpr(cond.right);
+    this.emit(0x11, '−');
+    var op = cond.op;
+    if (op === '<') this.emitJump(0x59, outLabel);
+    else if (op === '>=') this.emitJump(0x5C, outLabel);
+    else if (op === '=') this.emitJump(0x57, outLabel);
+    else if (op === '!=') this.emitJump(0x5E, outLabel);
+    else if (op === '>') { this.emitJump(0x5C, outLabel); this.emitJump(0x5E, outLabel); }
+    else if (op === '<=') {
+      var skip = { addr: this.cells.length + 6, name: 'skip' };
+      this.emitJump(0x5C, skip);
+      this.emitJump(0x57, outLabel);
+    } else {
+      throw new Error('сравнение «' + op + '» не поддержано');
+    }
+  };
+
+  Compiler.prototype.genWhile = function (node) {
+    var out = { addr: null, name: 'out' };
+    var start = this.cells.length;
+    this.genCondJump(node.cond, out);
+    var self = this;
+    node.body.forEach(function (n) { self.genNode(n); });
+    this.emit(0x51, 'БП');
+    this.emitDigit(Math.floor(start / 10));
+    this.emitDigit(start % 10);
+    out.addr = this.cells.length;
+  };
+
+  Compiler.prototype.genNode = function (n) {
+    if (n.type === 'assign') { this.genAssign(n); return; }
+    if (n.type === 'print') { this.genExpr(n.expr); return; }
+    if (n.type === 'stop') { this.emit(0x50, 'С/П'); return; }
+    if (n.type === 'while') { this.genWhile(n); return; }
+    throw new Error('неизвестная инструкция');
+  };
+
+  Compiler.prototype.resolve = function () {
+    var self = this;
+    var prog = new Array(PROG_LEN);
+    for (var i = 0; i < PROG_LEN; i++) prog[i] = NOP;
+
+    this.fixups.forEach(function (f) {
+      var t = f.label.addr;
+      if (t == null) throw new Error('внутренняя ошибка: метка «' + (f.label.name || '?') + '» не проставлена');
+      if (t > 99) throw new Error('переход на адрес ' + t + ' — больше 99, адрес в две цифры не влезает');
+      self.cells[f.at + 1].code = Math.floor(t / 10);
+      self.cells[f.at + 2].code = t % 10;
+    });
+
+    this.cells.forEach(function (c, i) { if (i < PROG_LEN) prog[i] = c.code; });
+    return prog;
+  };
+
+  /* ---------- разбор программы ---------- */
+  function stripComment(line) {
+    var i = line.indexOf('#');
+    return (i >= 0 ? line.slice(0, i) : line).trim();
+  }
+
+  function findCmp(s) {
+    var depth = 0;
+    var ops = ['<=', '>=', '!=', '==', '<>', '<', '>', '='];
+    for (var i = 0; i < s.length; i++) {
+      var ch = s[i];
+      if (ch === '(') { depth++; continue; }
+      if (ch === ')') { depth--; continue; }
+      if (depth !== 0) continue;
+      for (var k = 0; k < ops.length; k++) {
+        if (s.substr(i, ops[k].length) === ops[k]) {
+          return { left: s.slice(0, i).trim(), op: ops[k], right: s.slice(i + ops[k].length).trim() };
+        }
+      }
+    }
+    return null;
+  }
+
+  function parseCond(text, lineNo) {
+    var found = findCmp(text);
+    if (!found) return { left: text.trim(), op: '!=', right: '0', line: lineNo };
+    var op = found.op;
+    if (op === '<>') op = '!=';
+    if (op === '==') op = '=';
+    if (!found.left) throw new Error('Строка ' + lineNo + ': в условии нет левой части');
+    if (!found.right) throw new Error('Строка ' + lineNo + ': в условии нет правой части');
+    return { left: found.left, op: op, right: found.right, line: lineNo };
+  }
+
+  var NAME_RE = /^[A-Za-zА-Яа-яЁё_][A-Za-zА-Яа-яЁё0-9_]*$/;
+
+  function parseProgram(lines) {
+    var root = { type: 'block', body: [] };
+    var stack = [root];
+
+    lines.forEach(function (raw, idx) {
+      var lineNo = idx + 1;
+      var line = stripComment(raw);
+      if (!line) return;
+      var cur = stack[stack.length - 1];
+
+      if (/^пока\b/i.test(line)) {
+        var condText = line.replace(/^пока\b/i, '').trim();
+        if (!condText) throw new Error('Строка ' + lineNo + ': у «пока» нет условия');
+        var node = { type: 'while', cond: parseCond(condText, lineNo), body: [], line: lineNo };
+        cur.body.push(node);
+        stack.push(node);
+        return;
+      }
+      if (/^кон(ец)?\b/i.test(line)) {
+        if (stack.length === 1) throw new Error('Строка ' + lineNo + ': «кон» без «пока»');
+        stack.pop();
+        return;
+      }
+      if (/^стоп\b/i.test(line)) { cur.body.push({ type: 'stop', line: lineNo }); return; }
+      if (/^вывод\b/i.test(line)) {
+        var expr = line.replace(/^вывод\b/i, '').trim();
+        if (!expr) throw new Error('Строка ' + lineNo + ': «вывод» без выражения');
+        cur.body.push({ type: 'print', expr: expr, line: lineNo });
+        return;
+      }
+
+      var m = line.match(/^([A-Za-zА-Яа-яЁё_][A-Za-zА-Яа-яЁё0-9_]*)\s*=\s*(.+)$/);
+      if (m) {
+        if (!NAME_RE.test(m[1])) throw new Error('Строка ' + lineNo + ': плохое имя «' + m[1] + '»');
+        cur.body.push({ type: 'assign', name: m[1], expr: m[2], line: lineNo });
+        return;
+      }
+      throw new Error('Строка ' + lineNo + ': не понял «' + line + '»');
+    });
+
+    if (stack.length > 1) {
+      var open = stack[stack.length - 1];
+      throw new Error('Строка ' + open.line + ': «пока» без «кон»');
+    }
+    if (!root.body.length) throw new Error('Программа пустая');
+    return root.body;
+  }
+
+  /* ---------- компиляция целиком ---------- */
+  function compile(source) {
+    var c = new Compiler();
+    var nodes = parseProgram(String(source).split(/\r?\n/));
+
+    nodes.forEach(function (n) {
+      c.line = n.line || 0;
+      c.genNode(n);
+    });
+
+    var last = c.cells[c.cells.length - 1];
+    if (!last || last.code !== 0x50) {
+      c.emit(0x50, 'С/П');
+      c.warns.push('В конец добавлен «С/П», чтобы программа остановилась.');
+    }
+
+    if (c.cells.length > PROG_LEN) {
+      c.warns.push('Программа занимает ' + c.cells.length + ' ячеек, а памяти ' + PROG_LEN + ' — не влезает.');
+    }
+
+    var prog = c.resolve();
+    return { prog: prog, cells: c.cells, vars: c.vars, warns: c.warns };
+  }
+
+  /* ---------- вывод ---------- */
+  function render(res) {
+    compiled = res;
+    $('listCard').classList.remove('hide');
+
+    var sum = $('summary');
+    var body = $('listing');
+    body.innerHTML = '';
+
+    var used = res.cells.length;
+    var lastAddr = used - 1;
+    var jumps = 0;
+    res.cells.forEach(function (c) { if (isJump(c.code)) jumps++; });
+
+    sum.className = 'res ' + (used > PROG_LEN ? 'bad' : 'ok');
+    sum.textContent =
+      'ячеек занято: ' + used + ' из ' + PROG_LEN +
+      '\nпоследний адрес: ' + pad2(lastAddr) +
+      '\nпереходов: ' + jumps +
+      (used > PROG_LEN ? '\nПЕРЕПОЛНЕНИЕ: ' + (used - PROG_LEN) + ' ячеек за пределами памяти' : '');
+
+    /* таблица переменных */
+    var vars = res.vars, keys = Object.keys(vars);
+    var box = $('varsOut');
+    if (keys.length) {
+      box.classList.remove('hide');
+      box.className = 'res';
+      box.textContent = 'переменные → регистры: ' + keys.map(function (k) {
+        return k + ' → R' + regName(vars[k]);
+      }).join(', ');
+    } else {
+      box.classList.add('hide');
+    }
+
+    res.cells.forEach(function (c, i) {
+      var tr = document.createElement('tr');
+      if (c.kind === 'addr') tr.className = 'adcell';
+      else if (isJump(c.code)) tr.className = 'jump';
+      tr.innerHTML =
+        '<td class="ad">' + pad2(i) + '</td>' +
+        '<td>' + hex2(c.code) + '</td>' +
+        '<td class="name">' + esc(c.kind === 'addr' ? (c.code) : (c.label || labelOf(c.code))) + '</td>' +
+        '<td>' + (c.kind === 'addr' ? 'адрес' : '') + '</td>';
+      body.appendChild(tr);
+    });
+
+    var w = $('warns');
+    w.innerHTML = '';
+    (res.warns || []).forEach(function (t) {
+      var li = document.createElement('li');
+      li.textContent = t;
+      w.appendChild(li);
+    });
+  }
+
+  /* ---------- регистры из поля ---------- */
+  function regIndex(ch) {
+    if (/^[0-9]$/.test(ch)) return +ch;
+    var i = 'abcd'.indexOf(String(ch).toLowerCase());
+    return i < 0 ? -1 : 10 + i;
+  }
+
+  function parseRegs(s) {
+    var out = {};
+    var t = String(s || '').trim();
+    if (!t) return out;
+    var parts = t.split(/[;,\n]+/).map(function (x) { return x.trim(); }).filter(Boolean);
+    var named = parts.some(function (p) { return /^[Rr]?\s*[0-9a-dA-D]\s*=/.test(p); });
+    if (named) {
+      parts.forEach(function (p) {
+        var m = p.match(/^[Rr]?\s*([0-9a-dA-D])\s*=\s*(.+)$/);
+        if (!m) return;
+        var idx = regIndex(m[1]);
+        var v = num(m[2]);
+        if (idx >= 0 && !isNaN(v)) out[idx] = v;
+      });
+    } else {
+      parts.forEach(function (p, i) {
+        var v = num(p);
+        if (!isNaN(v)) out[i] = v;
+      });
+    }
+    return out;
+  }
+
+  /* ---------- прогон ---------- */
+  function doRun() {
+    var out = $('runOut');
+    out.classList.remove('hide');
+
+    if (!compiled) {
+      out.className = 'res bad';
+      out.textContent = 'Сначала нажми «Перевести».';
+      return;
+    }
+    if (!C) {
+      out.className = 'res bad';
+      out.textContent = 'Ядро core.js не загрузилось — прогон недоступен. Перевод в коды при этом работает.';
+      return;
+    }
+
+    var regs = parseRegs($('regs').value);
+    var x0 = num($('x0').value);
+    if (isNaN(x0)) x0 = 0;
+    var limit = parseInt($('limit').value, 10);
+    if (!limit || limit < 1) limit = 20000;
+    if (limit > 200000) limit = 200000;
+
+    try {
+      var core = C.create({});
+      core.setProgram(compiled.prog);
+      core.reset(true);
+      Object.keys(regs).forEach(function (k) { core.setRegister(+k, regs[k]); });
+      core.setX(x0);
+
+      var r = core.run(limit);
+      var verdict = r.result === 'stop' ? 'С/П достигнуто'
+        : r.result === 'error' ? 'ошибка выполнения'
+        : 'лимит шагов';
+
+      out.className = 'res ' + (r.result === 'stop' ? 'ok'
+        : (r.result === 'error' ? 'bad' : ''));
+
+      var regsText = Object.keys(regs).map(function (k) {
+        return 'R' + (C.REG_NAMES ? C.REG_NAMES[k] : regName(+k)) + ' = ' + core.fmt(regs[k]);
+      }).join(', ');
+
+      out.textContent =
+        'вход: ' + (regsText || 'регистры по умолчанию') + ', X = ' + core.fmt(x0) + '\n' +
+        'X = ' + core.fmt(r.x) + '\n' +
+        'шагов: ' + r.steps + '\n' +
+        'итог: ' + verdict;
+
+      if (r.result === 'cont') {
+        out.textContent += '\n\nПрограмма не дошла до С/П — скорее всего зациклилась. Проверь условие «пока» и шаг изменения счётчика.';
+      }
+    } catch (e) {
+      out.className = 'res bad';
+      out.textContent = 'Ошибка ядра: ' + e.message;
+    }
+  }
+
+  /* ---------- отдать дальше ---------- */
+  function programName() {
+    var v = ($('pname').value || '').trim();
+    return v || 'Алго ' + new Date().toISOString().slice(0, 16).replace('T', ' ');
+  }
+
+  function exportJson() {
+    var out = $('saveOut');
+    out.classList.remove('hide');
+    if (!compiled) {
+      out.className = 'res bad';
+      out.textContent = 'Сначала нажми «Перевести».';
+      return;
+    }
+    var name = programName();
+    var data = parseRegs($('regs').value);
+    var exp = num($('pexp').value);
+
+    var entry = { name: name, prog: compiled.prog, data: data };
+    if (!isNaN(exp)) { entry.expect = exp; entry.check = 'алго → X = ' + exp; }
+
+    var payload = {
+      app: 'mk-emulator',
+      model: 'b3-34',
+      saved: new Date().toISOString(),
+      programs: [entry]
+    };
+
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'b3-34-algo.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+
+    out.className = 'res ok';
+    out.textContent = 'Файл собран: «' + name + '»\n' +
+      'В корпусе: ☰ → «Импорт» → выбрать этот файл.';
+  }
+
+  function openInBody() {
+    var out = $('saveOut');
+    out.classList.remove('hide');
+    if (!compiled) {
+      out.className = 'res bad';
+      out.textContent = 'Сначала нажми «Перевести».';
+      return;
+    }
+    try {
+      localStorage.setItem(BRIDGE_KEY, JSON.stringify({
+        prog: compiled.prog,
+        data: parseRegs($('regs').value),
+        from: 'Язык Алго'
+      }));
+    } catch (e) {
+      out.className = 'res bad';
+      out.textContent = 'Не удалось передать программу в корпус: ' + e.message;
+      return;
+    }
+    out.className = 'res ok';
+    out.textContent = 'Передаю в корпус… если не открылось само — нажми «корпус» внизу.';
+    setTimeout(function () { location.href = 'index.html'; }, 350);
+  }
+
+  /* ---------- примеры ---------- */
+  var EX_FACT = [
+    '# факториал: n! = 5040 при n = 7',
+    'n = 7',
+    's = 1',
+    'i = 0',
+    'пока i < n',
+    '  i = i + 1',
+    '  s = s * i',
+    'кон',
+    'вывод s',
+    'стоп'
+  ].join('\n');
+
+  var EX_SQ = [
+    '# сумма квадратов 1..5 = 55',
+    'n = 5',
+    's = 0',
+    'i = 0',
+    'пока i < n',
+    '  i = i + 1',
+    '  s = s + i * i',
+    'кон',
+    'вывод s',
+    'стоп'
+  ].join('\n');
+
+  /* ---------- запуск ---------- */
+  function init() {
+    if (!C) {
+      var note = document.createElement('div');
+      note.className = 'res bad';
+      note.textContent = 'Ядро core.js не загрузилось: перевод в коды и листинг работают, прогон — нет.';
+      $('listCard').parentNode.insertBefore(note, $('listCard'));
+    }
+
+    $('src').value = EX_FACT;
+    $('regs').value = '';
+    $('x0').value = '0';
+    $('limit').value = '20000';
+
+    $('btnCompile').addEventListener('click', function () {
+      var out = $('runOut');
+      $('saveOut').classList.add('hide');
+      try {
+        var res = compile($('src').value);
+        render(res);
+        out.classList.add('hide');
+      } catch (e) {
+        $('listCard').classList.remove('hide');
+        $('summary').className = 'res bad';
+        $('summary').textContent = e.message;
+        $('varsOut').classList.add('hide');
+        $('warns').innerHTML = '';
+        $('listing').innerHTML = '';
+        compiled = null;
+      }
+    });
+
+    $('btnExFact').addEventListener('click', function () {
+      $('src').value = EX_FACT;
+      $('regs').value = '';
+      $('pexp').value = '5040';
+      $('btnCompile').click();
+    });
+
+    $('btnExSq').addEventListener('click', function () {
+      $('src').value = EX_SQ;
+      $('regs').value = '';
+      $('pexp').value = '55';
+      $('btnCompile').click();
+    });
+
+    $('btnClear').addEventListener('click', function () {
+      $('src').value = '';
+      $('listCard').classList.add('hide');
+      $('runOut').classList.add('hide');
+      $('saveOut').classList.add('hide');
+      compiled = null;
+    });
+
+    $('btnRun').addEventListener('click', doRun);
+    $('btnJson').addEventListener('click', exportJson);
+    $('btnBridge').addEventListener('click', openInBody);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
