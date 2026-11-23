@@ -143,6 +143,8 @@
   }
   .topbtn:active { background: var(--sel); border-color: var(--accent); color: var(--sel-ink); }
   #themeBtn { font-size: 16px; min-width: 42px; }
+  a.topbtn { text-decoration: none; display: inline-flex; align-items: center;
+    justify-content: center; font-size: 12px; font-weight: 600; }
 
   .calc {
     background: linear-gradient(180deg, var(--case), var(--case2));
@@ -498,6 +500,7 @@
     <select id="model" aria-label="Модель калькулятора"></select>
     <button type="button" class="topbtn" id="themeBtn" title="Тема">▤</button>
     <button type="button" class="topbtn" id="shelfOpen" title="Библиотека программ">☰</button>
+    <a class="topbtn" href="lang.html" title="МК-Алго — написать программу текстом">Алго</a>
   </div>
 
   <div class="calc">
@@ -578,7 +581,10 @@
     <button type="button" data-mode="study">Учёба</button>
   </div>
 
-  <div class="foot"><a href="tests.html">Проверка ядра — 12 эталонов</a></div>
+  <div class="foot">
+    <a href="lang.html">МК-Алго — язык программ</a> ·
+    <a href="tests.html">Проверка ядра — 12 эталонов</a>
+  </div>
 </div>
 
 <div class="shelf" id="shelf" hidden>
@@ -631,7 +637,7 @@
 <script src="core.js?v=14"></script>
 <script src="profiles.js?v=14"></script>
 <script src="ui.js?v=14"></script>
-<script src="shelf.js?v=14"></script>
+<script src="shelf.js?v=15"></script>
 
 <script>
 /* Переключатель угла Р-ГРД-Г.
