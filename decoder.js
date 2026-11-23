@@ -1,5 +1,5 @@
 /* =========================================================
-   mk-emulator / decoder.js  (v2)
+   mk-emulator / decoder.js  (v3)
    Читает программу Б3-34 (массив кодов) и переводит её в текст.
 
    Ничего не исполняет, ядро и файлы программ не меняет.
@@ -17,8 +17,15 @@
      — F L0..L3: из регистра вычитается 1; не ноль -> переход по адресу.
 
    v2: листинг выводится моноширинным текстом (одна строка — одна ячейка),
-   с подсветкой (listingHtml), компактной раскладкой для узкого экрана
-   и отдельным табличным вариантом (режим 'listingTable').
+       с компактной раскладкой для узкого экрана и табличным вариантом.
+   v3: подсветка работает ВО ВСЕХ режимах, а не только в листинге:
+       — кратко и подробно строятся как строки из сегментов
+         (briefHtml / detailedHtml), текст остаётся доступен
+         (briefText / detailedText) для копирования и скачивания;
+       — «таблицей» — настоящая HTML-таблица с цветными ячейками
+         (listingTableHtml), текстовая версия сохранена (listingTable).
+       render(model, mode, {html:true}) отдаёт размеченный вариант,
+       render(model, mode) — чистый текст для буфера и файла.
    ========================================================= */
 (function (global) {
   'use strict';
@@ -419,63 +426,95 @@
     return conf === 'heuristic' ? '~' : (conf === 'unknown' ? '?' : '');
   }
 
-  /* ---------- кратко и подробно ---------- */
-
-  function briefText(model) {
-    if (model.empty) return '# программа пуста';
-    var out = headLines(model);
-    out.push('');
-
-    var printed = {};
-    model.steps.forEach(function (s) {
-      if (s.kind === 'addr') return;
-      if (printed[s.addr]) return;
-      if (model.marks[s.addr]) out.push('# м' + pad2(s.addr) + ':');
-
-      if (s.kind === 'nop') return;
-      if (s.parts) s.parts.forEach(function (p) { printed[p.addr] = true; });
-
-      var ind = new Array(depthOf(model, s.addr) * 2 + 1).join(' ');
-      if (s.text) out.push(ind + s.text);
-      else out.push(ind + '# не переведено · шаг ' + pad2(s.addr) + ' · код 0x' + s.hex + ' (' + s.cmd + ')');
-    });
-
-    return out.join('\n');
+  function confCls(conf) {
+    return conf === 'exact' ? 'kExact' : (conf === 'heuristic' ? 'kHeur' : 'kUnk');
   }
 
-  function detailedText(model) {
-    if (model.empty) return '# программа пуста';
-    var out = headLines(model);
-    out.push('');
+  function bodyCls(conf) {
+    return conf === 'unknown' ? 'kUnk' : (conf === 'heuristic' ? 'kHeur' : 'kTxt');
+  }
+
+  function indentOf(model, addr) {
+    return new Array(depthOf(model, addr) * 2 + 1).join(' ');
+  }
+
+  /* ---------- сегменты: одна сборка для кратко и подробно ---------- */
+
+  function textSegments(model, opts) {
+    var detailed = !!(opts && opts.detailed);
+    var lines = [];
+
+    if (model.empty) return [[{ t: '# программа пуста', cls: 'kCmt' }]];
+
+    headLines(model).forEach(function (h) { lines.push([{ t: h, cls: 'kHead' }]); });
+    lines.push([]);
 
     var printed = {};
     model.steps.forEach(function (s) {
       if (s.kind === 'addr') return;
       if (printed[s.addr]) return;
-      if (model.marks[s.addr]) out.push('# м' + pad2(s.addr) + ':');
 
-      if (s.parts) s.parts.forEach(function (p) { printed[p.addr] = true; });
+      if (s.parts) {
+        s.parts.forEach(function (p) { printed[p.addr] = true; });
+      }
 
-      var ind = new Array(depthOf(model, s.addr) * 2 + 1).join(' ');
+      if (model.marks[s.addr]) lines.push([{ t: '# м' + pad2(s.addr) + ':', cls: 'kMark' }]);
+
+      var ind = indentOf(model, s.addr);
 
       if (s.kind === 'nop') {
-        out.push(ind + '# ' + pad2(s.addr) + ' · К НОП · 0x54 — пустой шаг');
+        if (detailed) lines.push([{ t: ind + '# ' + pad2(s.addr) + ' · К НОП · 0x54 — пустой шаг', cls: 'kCmt' }]);
         return;
       }
 
-      if (s.text) out.push(ind + s.text);
+      if (s.text) {
+        lines.push([{ t: ind }, { t: s.text, cls: bodyCls(s.conf) }]);
+      } else {
+        lines.push([{ t: ind + '# не переведено · шаг ' + pad2(s.addr) + ' · код 0x' + s.hex + ' (' + s.cmd + ')', cls: 'kUnk' }]);
+      }
 
-      out.push(ind + '  # ' + pad2(s.addr) + ' · ' + s.cmd + ' · 0x' + s.hex + ' · ' + confLabel(s.conf));
-      (s.notes || []).forEach(function (n) { out.push(ind + '  #   ' + n); });
-      out.push('');
+      if (detailed) {
+        lines.push([
+          { t: ind + '  # ', cls: 'kCmt' },
+          { t: pad2(s.addr) + ' · ' + s.cmd + ' · 0x' + s.hex + ' · ', cls: 'kCmt' },
+          { t: confLabel(s.conf), cls: 'kConf ' + confCls(s.conf) }
+        ]);
+        (s.notes || []).forEach(function (n) {
+          lines.push([{ t: ind + '  #   ' + n, cls: 'kCmt' }]);
+        });
+        lines.push([]);
+      }
     });
 
-    if (model.warnings.length) {
-      out.push('# ВНИМАНИЕ');
-      model.warnings.forEach(function (w) { out.push('# - ' + w); });
+    if (detailed && model.warnings.length) {
+      lines.push([{ t: '# ВНИМАНИЕ', cls: 'kUnk' }]);
+      model.warnings.forEach(function (w) {
+        lines.push([{ t: '# - ' + w, cls: 'kCmt' }]);
+      });
     }
-    return out.join('\n');
+
+    return lines;
   }
+
+  function linesToText(lines) {
+    return lines.map(function (segs) {
+      return segs.map(function (s) { return s.t; }).join('');
+    }).join('\n');
+  }
+
+  function linesToHtml(lines) {
+    return lines.map(function (segs) {
+      return segs.map(function (s) {
+        if (!s.cls) return esc(s.t);
+        return '<span class="' + s.cls + '">' + esc(s.t) + '</span>';
+      }).join('');
+    }).join('\n');
+  }
+
+  function briefText(model) { return linesToText(textSegments(model, { detailed: false })); }
+  function briefHtml(model) { return linesToHtml(textSegments(model, { detailed: false })); }
+  function detailedText(model) { return linesToText(textSegments(model, { detailed: true })); }
+  function detailedHtml(model) { return linesToHtml(textSegments(model, { detailed: true })); }
 
   /* ---------- листинг: строки по ячейкам ---------- */
 
@@ -560,15 +599,15 @@
 
     if (compact) {
       var body = row.cmd + (row.text && row.text !== row.cmd ? ' · ' + row.text : '');
-      segs.push({ t: body, cls: row.conf === 'unknown' ? 'kUnk' : (row.conf === 'heuristic' ? 'kHeur' : 'kTxt') });
+      segs.push({ t: body, cls: bodyCls(row.conf) });
       var mk = confMark(row.conf);
       if (mk) { segs.push({ t: ' ' + mk, cls: 'kMark' }); }
     } else {
       segs.push({ t: padTo(row.cmd, 17), cls: 'kCmd' });
       segs.push({ t: '  ' });
-      segs.push({ t: padTo(row.text, 40), cls: row.conf === 'unknown' ? 'kUnk' : 'kTxt' });
+      segs.push({ t: padTo(row.text, 40), cls: bodyCls(row.conf) });
       segs.push({ t: '  ' });
-      segs.push({ t: confLabel(row.conf), cls: 'kConf k' + (row.conf === 'exact' ? 'Exact' : (row.conf === 'heuristic' ? 'Heur' : 'Unk')) });
+      segs.push({ t: confLabel(row.conf), cls: 'kConf ' + confCls(row.conf) });
     }
     return segs;
   }
@@ -601,6 +640,25 @@
     return lines;
   }
 
+  function unknownBlocks(model, built) {
+    var out = [];
+    var unknown = built.rows.filter(function (r) { return r.conf === 'unknown'; });
+    if (unknown.length) {
+      out.push('');
+      out.push('ЧТО НЕ ПЕРЕВЕДЕНО И ПОЧЕМУ:');
+      unknown.forEach(function (r) {
+        out.push('ячейка ' + r.addr + ' · код 0x' + r.hex + ' · ' + r.cmd);
+        (r.notes || []).forEach(function (n) { out.push('   ' + n); });
+      });
+    }
+    if (model.warnings.length) {
+      out.push('');
+      out.push('ВНИМАНИЕ:');
+      model.warnings.forEach(function (w) { out.push('- ' + w); });
+    }
+    return out;
+  }
+
   /* моноширинный ТЕКСТ листинга — то, что копируется и скачивается */
   function listingText(model, opts) {
     if (model.empty) return 'Программа пуста: в памяти нет ни одной значащей ячейки.';
@@ -613,23 +671,7 @@
       out.push(segmentsToText(rowSegments(row, built.aw, compact)));
     });
 
-    var unknown = built.rows.filter(function (r) { return r.conf === 'unknown'; });
-    if (unknown.length) {
-      out.push('');
-      out.push('ЧТО НЕ ПЕРЕВЕДЕНО И ПОЧЕМУ:');
-      unknown.forEach(function (r) {
-        out.push('ячейка ' + r.addr + ' · код 0x' + r.hex + ' · ' + r.cmd);
-        (r.notes || []).forEach(function (n) { out.push('   ' + n); });
-      });
-    }
-
-    if (model.warnings.length) {
-      out.push('');
-      out.push('ВНИМАНИЕ:');
-      model.warnings.forEach(function (w) { out.push('- ' + w); });
-    }
-
-    return out.join('\n');
+    return out.concat(unknownBlocks(model, built)).join('\n');
   }
 
   /* тот же листинг, но с подсветкой — вставлять через innerHTML */
@@ -646,90 +688,87 @@
       html += '\n' + segmentsToHtml(rowSegments(row, built.aw, compact));
     });
 
-    var unknown = built.rows.filter(function (r) { return r.conf === 'unknown'; });
-    if (unknown.length) {
-      html += '\n\n' + esc('ЧТО НЕ ПЕРЕВЕДЕНО И ПОЧЕМУ:');
-      unknown.forEach(function (r) {
-        html += '\n' + esc('ячейка ' + r.addr + ' · код 0x' + r.hex + ' · ' + r.cmd);
-        (r.notes || []).forEach(function (n) { html += '\n' + esc('   ' + n); });
-      });
-    }
-
-    if (model.warnings.length) {
-      html += '\n\n' + esc('ВНИМАНИЕ:');
-      model.warnings.forEach(function (w) { html += '\n' + esc('- ' + w); });
-    }
+    var tail = unknownBlocks(model, built);
+    if (tail.length) html += '\n' + tail.map(function (l) { return esc(l); }).join('\n');
 
     return html;
   }
 
-  /* ---------- прежний табличный вариант (по желанию) ---------- */
+  /* ---------- табличный вариант: текст и настоящая HTML-таблица ---------- */
+
   function listingTable(model) {
     if (model.empty) return 'Программа пуста: в памяти нет ни одной значащей ячейки.';
 
+    var built = buildListing(model);
     var lines = [];
     var name = model.meta.name ? model.meta.name : 'Программа';
     lines.push('ЛИСТИНГ: ' + name + ' · ячеек ' + model.len);
     if (model.meta.saved) lines.push('файл от ' + model.meta.saved);
     lines.push('');
-    lines.push('адр | код  | команда         | текст                                   | достоверность');
-    lines.push('----+------+-----------------+-----------------------------------------+---------------');
+    lines.push('адр | код  | команда          | текст                                    | достоверность');
+    lines.push('----+------+------------------+------------------------------------------+---------------');
 
-    var printed = {};
-    model.steps.forEach(function (s) {
-      if (printed[s.addr]) return;
-
-      var cmd, text, conf;
-
-      if (s.kind === 'addr') {
-        cmd = (s.code >= 0 && s.code <= 9) ? 'цифра адреса ' + s.code : 'цифра адреса (не цифра: 0x' + hex2(s.code) + ')';
-        text = 'часть команды с адреса ' + pad2(s.partOf);
-        conf = 'точно';
-      } else if (s.kind === 'num') {
-        s.parts.forEach(function (p) { printed[p.addr] = true; });
-        cmd = 'ввод числа';
-        text = 'X = ' + (s.text ? s.text.replace('X = ', '') : '?');
-        conf = 'точно';
-      } else if (s.kind === 'nop') {
-        cmd = 'К НОП';
-        text = 'пустой шаг';
-        conf = 'точно';
-      } else {
-        if (s.parts) s.parts.forEach(function (p) { printed[p.addr] = true; });
-        cmd = s.cmd;
-        text = s.text ? s.text : 'НЕ ПЕРЕВЕДЕНО';
-        conf = confLabel(s.conf);
-      }
-
-      lines.push(pad2(s.addr) + ' | 0x' + hex2(s.code) + ' | ' + padTo(cmd, 15) + ' | ' + padTo(text, 39) + ' | ' + conf);
+    built.rows.forEach(function (r) {
+      lines.push(r.addr + ' | 0x' + r.hex + ' | ' + padTo(r.cmd, 16) + ' | ' + padTo(r.text, 40) + ' | ' + confLabel(r.conf));
     });
 
-    if (model.warnings.length) {
-      lines.push('');
-      lines.push('ВНИМАНИЕ:');
-      model.warnings.forEach(function (w) { lines.push('- ' + w); });
-    }
+    return lines.concat(unknownBlocks(model, built)).join('\n');
+  }
 
-    var unknown = model.steps.filter(function (s) { return s.conf === 'unknown'; });
+  /* таблица с цветными ячейками — для экрана */
+  function listingTableHtml(model) {
+    if (model.empty) return '<p class="kCmt">Программа пуста: в памяти нет ни одной значащей ячейки.</p>';
+
+    var built = buildListing(model);
+    var name = model.meta.name ? model.meta.name : 'Программа';
+
+    var html = '<div class="tblcap">ЛИСТИНГ · ' + esc(name) + ' · ячеек ' + model.len +
+      (model.meta.saved ? ' · файл от ' + esc(model.meta.saved) : '') + '</div>';
+
+    html += '<table class="lst"><thead><tr>' +
+      '<th class="tAddr">адр</th><th class="tHex">код</th><th class="tCmd">команда</th>' +
+      '<th>текст</th><th class="tConf">достоверность</th></tr></thead><tbody>';
+
+    built.rows.forEach(function (r) {
+      html += '<tr' + (r.isMark ? ' class="ismark"' : '') + '>' +
+        '<td class="tAddr">' + (r.isMark ? '<span class="kMark">м' + esc(r.addr) + ':</span>' : esc(r.addr)) + '</td>' +
+        '<td class="tHex">' + esc(r.hex) + '</td>' +
+        '<td class="tCmd">' + esc(r.cmd) + '</td>' +
+        '<td class="' + bodyCls(r.conf) + '">' + esc(r.text) + '</td>' +
+        '<td class="tConf ' + confCls(r.conf) + '">' + esc(confLabel(r.conf)) + '</td>' +
+        '</tr>';
+    });
+
+    html += '</tbody></table>';
+
+    var unknown = built.rows.filter(function (r) { return r.conf === 'unknown'; });
     if (unknown.length) {
-      lines.push('');
-      lines.push('ЧТО НЕ ПЕРЕВЕДЕНО И ПОЧЕМУ:');
-      unknown.forEach(function (s) {
-        lines.push('шаг ' + pad2(s.addr) + ' · код 0x' + s.hex + ' · ' + s.cmd);
-        (s.notes || []).forEach(function (n) { lines.push('   ' + n); });
+      html += '<div class="tblblock"><div class="tblh kUnk">ЧТО НЕ ПЕРЕВЕДЕНО И ПОЧЕМУ</div>';
+      unknown.forEach(function (r) {
+        html += '<div class="kUnk">ячейка ' + esc(r.addr) + ' · код 0x' + esc(r.hex) + ' · ' + esc(r.cmd) + '</div>';
+        (r.notes || []).forEach(function (n) { html += '<div class="kCmt">' + esc(n) + '</div>'; });
       });
+      html += '</div>';
     }
 
-    return lines.join('\n');
+    if (model.warnings.length) {
+      html += '<div class="tblblock"><div class="tblh kUnk">ВНИМАНИЕ</div>';
+      model.warnings.forEach(function (w) { html += '<div class="kCmt">— ' + esc(w) + '</div>'; });
+      html += '</div>';
+    }
+
+    return html;
   }
 
   function render(model, mode, opts) {
     if (!model) return '';
     opts = opts || {};
-    if (mode === 'listing') return opts.html ? listingHtml(model, opts) : listingText(model, opts);
-    if (mode === 'listingTable') return listingTable(model);
-    if (mode === 'brief') return briefText(model);
-    return detailedText(model);
+    var html = !!opts.html;
+
+    if (mode === 'listing') return html ? listingHtml(model, opts) : listingText(model, opts);
+    if (mode === 'listingTable') return html ? listingTableHtml(model) : listingTable(model);
+    if (mode === 'brief') return html ? briefHtml(model) : briefText(model);
+    return html ? detailedHtml(model) : detailedText(model);
   }
 
   global.B3Decode = {
