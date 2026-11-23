@@ -2,12 +2,18 @@
    mk-emulator / ui.js
    Только показ и нажатия. Никаких вычислений:
    всё считает core, здесь лишь чтение состояния и отрисовка.
+
+   Два режима:
+     work  — «Работа»: корпус, дисплей, клавиатура, Пуск/Сброс.
+     study — «Учёба»: плюс стек, регистры, листинг, Шаг/Авто/00.
    ========================================================= */
 (function () {
   'use strict';
 
   var MODELS = window.MKProfiles || {};
   var STORE_KEY = 'mk-emulator/state/';
+  var MODE_KEY = 'mk-emulator/mode';
+  var TEMPO_KEY = 'mk-emulator/tempo';
   var RUN_LIMIT = 200000;
 
   /* Демонстрационная программа: 7! — 5040.
@@ -36,13 +42,22 @@
     regs: document.getElementById('regs'),
     keys: document.getElementById('keys'),
     prog: document.getElementById('prog'),
-    hint: document.getElementById('hint')
+    hint: document.getElementById('hint'),
+    service: document.getElementById('service'),
+    tempo: document.getElementById('tempo'),
+    tempoRow: document.getElementById('tempoRow'),
+    status: document.getElementById('status'),
+    modeseg: document.getElementById('modeseg')
   };
 
   var profile = null;
   var core = null;
   var pick = null;
   var storeKey = '';
+
+  var uiMode = 'study';
+  var autoTimer = null;
+  var stepCount = 0;
 
   /* ---------- модели ---------- */
   function buildModelList() {
@@ -64,15 +79,41 @@
     el.modelName.textContent = profile.model;
     core = window.MKCore.create({ onEvent: onEvent });
     pick = null;
+    stepCount = 0;
+    stopAuto();
     loadState();
     render();
     setHint('Модель ' + profile.model + '. Клавиша f — второй слой, k — косвенные команды.');
+  }
+
+  /* ---------- режим Работа / Учёба ---------- */
+  function setMode(mode, silent) {
+    uiMode = (mode === 'work') ? 'work' : 'study';
+    document.body.dataset.mode = uiMode;
+    try { localStorage.setItem(MODE_KEY, uiMode); } catch (e) {}
+    Array.prototype.forEach.call(el.modeseg.querySelectorAll('button'), function (b) {
+      b.classList.toggle('on', b.dataset.mode === uiMode);
+    });
+    if (uiMode === 'work') stopAuto();
+    render();
+    if (!silent) {
+      setHint(uiMode === 'work'
+        ? 'Режим «Работа»: клавиатура и Пуск. Переключись в «Учёбу», чтобы видеть листинг и шаги.'
+        : 'Режим «Учёба»: стек, регистры, листинг, шаг с любого адреса и авто-прогон с темпом.');
+    }
+  }
+
+  function loadMode() {
+    var m = null;
+    try { m = localStorage.getItem(MODE_KEY); } catch (e) {}
+    setMode(m === 'work' ? 'work' : 'study', true);
   }
 
   /* ---------- события ядра ---------- */
   function onEvent(type, data) {
     if (type === 'pick-register') {
       pick = { mode: (data && data.mode) || 'stox' };
+      document.body.classList.toggle('picking', !!pick);
       render();
       return;
     }
@@ -126,6 +167,8 @@
     renderStack();
     renderRegs();
     renderKeys();
+    renderService();
+    renderStatus();
     renderProgram();
     saveState();
   }
@@ -171,6 +214,7 @@
           d.addEventListener('click', function () {
             var mode = pick.mode === 'stox' ? 'sto' : (pick.mode === 'loadx' ? 'ld' : 'k');
             pick = null;
+            document.body.classList.remove('picking');
             core.key({ a: 'reg', r: idx, mode: mode });
             render();
           });
@@ -195,6 +239,48 @@
       b.addEventListener('click', function () { press(k); });
       el.keys.appendChild(b);
     });
+  }
+
+  /* ---------- служебные кнопки по режиму ---------- */
+  function mkBtn(text, handler, on) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = text;
+    if (on) b.classList.add('on');
+    b.addEventListener('click', handler);
+    return b;
+  }
+
+  function renderService() {
+    el.service.innerHTML = '';
+    el.service.classList.toggle('wide', uiMode === 'work');
+
+    if (uiMode === 'work') {
+      el.service.appendChild(mkBtn('▶ Пуск', function () { runProgram(); render(); }));
+      el.service.appendChild(mkBtn('⟲ Сброс', function () { doReset(); }));
+      el.service.appendChild(mkBtn('Пример: 7!', function () { loadDemo(); }));
+      el.service.appendChild(mkBtn('Очистить память', function () { clearProg(); }));
+      return;
+    }
+
+    el.service.appendChild(mkBtn('Шаг ▶', function () { doStep(); }));
+    el.service.appendChild(mkBtn(autoTimer ? '⏸ Стоп' : '▷ Авто', function () { toggleAuto(); }, !!autoTimer));
+    el.service.appendChild(mkBtn('00', function () { setAddressZero(); }));
+    el.service.appendChild(mkBtn('⟲ Сброс', function () { doReset(); }));
+    el.service.appendChild(mkBtn('Пример: 7!', function () { loadDemo(); }));
+    el.service.appendChild(mkBtn('Очистить память', function () { clearProg(); }));
+  }
+
+  function renderStatus() {
+    if (!el.status) return;
+    var MK = window.MKCore;
+    el.status.innerHTML = '';
+    var l = document.createElement('span');
+    l.innerHTML = 'шаг <b>' + stepCount + '</b> · PC <b>' + pad2(core.ST.ip) + '</b> / ' + MK.PROG_LEN;
+    var r = document.createElement('span');
+    r.textContent = autoTimer ? 'авто ' + tempoSec() + ' с' : 'вручную';
+    el.status.appendChild(l);
+    el.status.appendChild(r);
   }
 
   /* ---------- листинг программы ---------- */
@@ -262,16 +348,22 @@
       row.appendChild(t);
       row.appendChild(c);
 
-      (function (addr) {
+      (function (addr, label, empty) {
         row.addEventListener('click', function () {
           core.ST.ip = addr;
-          setHint('Адрес ' + pad2(addr) + (info.empty ? ' — пустая ячейка' : ': ' + info.label));
+          setHint('Адрес ' + pad2(addr) + (empty ? ' — пустая ячейка' : ': ' + label));
           render();
         });
-      })(i);
+      })(i, info.label, info.empty);
 
       el.prog.appendChild(row);
       i += wide;
+    }
+
+    var cur = el.prog.querySelector('.prow.cur');
+    if (cur && uiMode === 'study' && el.prog.scrollHeight > el.prog.clientHeight) {
+      var top = cur.offsetTop - el.prog.clientHeight / 2;
+      el.prog.scrollTop = Math.max(0, top);
     }
   }
 
@@ -288,6 +380,7 @@
 
   function runProgram() {
     var res = core.run(RUN_LIMIT);
+    stepCount += (res && res.steps) || 0;
     if (res.overflow) {
       setHint('Остановлено по лимиту шагов (' + RUN_LIMIT + ') — похоже на вечный цикл');
     } else if (res.err) {
@@ -297,50 +390,109 @@
     }
   }
 
-  /* ---------- служебные кнопки ---------- */
-  document.getElementById('btnStep').addEventListener('click', function () {
+  function doStep() {
     var r = core.step();
+    stepCount++;
     if (r === 'stop') setHint('С/П на адресе ' + pad2(core.ST.ip));
     else if (r === 'error') setHint('Ошибка выполнения на адресе ' + pad2(core.ST.ip));
     else setHint('Шаг выполнен · адрес ' + pad2(core.ST.ip));
     render();
-  });
+  }
 
-  document.getElementById('btnRun').addEventListener('click', function () {
-    runProgram();
-    render();
-  });
-
-  document.getElementById('btnReset').addEventListener('click', function () {
+  function doReset() {
+    stopAuto();
     core.reset(false);
     pick = null;
+    document.body.classList.remove('picking');
+    stepCount = 0;
     setHint('Сброшено: стек, регистры и адрес 00');
     render();
-  });
+  }
 
-  var btnProgClear = document.getElementById('btnProgClear');
-  if (btnProgClear) btnProgClear.addEventListener('click', function () {
+  function setAddressZero() {
+    stopAuto();
+    core.ST.ip = 0;
+    setHint('Счётчик команд на адресе 00');
+    render();
+  }
+
+  function clearProg() {
+    stopAuto();
     core.clearProgram();
     core.ST.ip = 0;
+    stepCount = 0;
     setHint('Программная память очищена, адрес 00');
     render();
-  });
+  }
 
-  var btnDemo = document.getElementById('btnDemo');
-  if (btnDemo) btnDemo.addEventListener('click', function () {
+  function loadDemo() {
+    stopAuto();
     core.setProgram(DEMO_FACT, false);
     core.setX(7);
     pick = null;
-    setHint('Пример 7! в памяти: R0 = 7. Нажми «Пуск ⏩» — должно получиться 5040.');
+    document.body.classList.remove('picking');
+    stepCount = 0;
+    setHint('Пример 7! в памяти: R0 = 7. Нажми «Пуск» — должно получиться 5040.');
     render();
-  });
+  }
 
+  /* ---------- авто-прогон с темпом ---------- */
+  function tempoSec() {
+    return parseInt(el.tempo && el.tempo.value, 10) || 0;
+  }
+
+  function toggleAuto() {
+    if (autoTimer) { stopAuto(); setHint('Авто остановлено на адресе ' + pad2(core.ST.ip)); render(); return; }
+    var sec = tempoSec();
+    if (!sec) { setHint('Темп «вручную»: жми «Шаг ▶» по одной команде.'); return; }
+    autoTimer = setInterval(function () {
+      var r = core.step();
+      stepCount++;
+      render();
+      if (r === 'stop' || r === 'error') {
+        stopAuto();
+        setHint(r === 'stop'
+          ? 'Авто: С/П на адресе ' + pad2(core.ST.ip) + ' · X = ' + core.fmt(core.ST.X)
+          : 'Авто: ошибка на адресе ' + pad2(core.ST.ip));
+        render();
+      }
+    }, sec * 1000);
+    setHint('Авто: шаг каждые ' + sec + ' с');
+    render();
+  }
+
+  function stopAuto() {
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+  }
+
+  /* ---------- обработчики вне клавиатуры ---------- */
   el.model.addEventListener('change', function () {
     try { localStorage.removeItem(storeKey); } catch (e) {}
     setModel(el.model.value);
   });
 
+  el.modeseg.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-mode]');
+    if (b) setMode(b.dataset.mode);
+  });
+
+  if (el.tempo) {
+    el.tempo.addEventListener('change', function () {
+      try { localStorage.setItem(TEMPO_KEY, el.tempo.value); } catch (e) {}
+      if (autoTimer) { stopAuto(); toggleAuto(); } else renderTitleOnly();
+    });
+  }
+
+  function renderTitleOnly() {
+    renderStatus();
+  }
+
   /* ---------- старт ---------- */
   buildModelList();
   setModel(el.model.value || Object.keys(MODELS)[0]);
+  try {
+    var savedTempo = localStorage.getItem(TEMPO_KEY);
+    if (savedTempo && el.tempo) el.tempo.value = savedTempo;
+  } catch (e) {}
+  loadMode();
 })();
