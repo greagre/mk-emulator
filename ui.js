@@ -392,7 +392,9 @@
     var l = document.createElement('span');
     l.innerHTML = 'шаг <b>' + stepCount + '</b> · PC <b>' + pad2(core.ST.ip) + '</b> / ' + MK.PROG_LEN;
     var r = document.createElement('span');
-    r.textContent = autoTimer ? 'авто ' + tempoSec() + ' с' : 'вручную';
+    r.textContent = autoTimer
+      ? 'авто ' + tempoSec() + ' с'
+      : (instantTempo() ? 'мгновенно' : 'вручную');
     el.status.appendChild(l);
     el.status.appendChild(r);
   }
@@ -681,10 +683,30 @@
     return parseInt(el.tempo && el.tempo.value, 10) || 0;
   }
 
+  /* «мгновенно» — темп без пауз: весь прогон за один такт */
+  function instantTempo() {
+    return !!(el.tempo && String(el.tempo.value) === 'instant');
+  }
+
+  function ensureInstantTempo() {
+    if (!el.tempo) return;
+    if (el.tempo.querySelector('option[value="instant"]')) return;
+    var o = document.createElement('option');
+    o.value = 'instant';
+    o.textContent = 'мгновенно';
+    el.tempo.insertBefore(o, el.tempo.firstChild);
+  }
+
   function toggleAuto() {
     if (autoTimer) {
       stopAuto();
       setHint('Авто остановлено на адресе ' + pad2(core.ST.ip));
+      render();
+      return;
+    }
+    if (instantTempo()) {
+      runProgram();
+      setHint('Авто: мгновенный прогон · шагов ' + stepCount + ' · X = ' + core.fmt(core.ST.X));
       render();
       return;
     }
@@ -798,6 +820,7 @@
   /* ---------- старт ---------- */
   buildModelList();
   setModel(el.model.value || Object.keys(MODELS)[0]);
+  ensureInstantTempo();
   try {
     var savedTempo = localStorage.getItem(TEMPO_KEY);
     if (savedTempo && el.tempo) el.tempo.value = savedTempo;
