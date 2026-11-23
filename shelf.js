@@ -8,6 +8,7 @@
    • проверка: прогон с данными из описания и сверка с эталоном
    • выгрузка и загрузка файла .json (единый формат programs[] v2)
    • мост из языка «МК-Алго» (algo.html → index.html)
+   • время: плашка импорта и каждая своя программа показывают дату
 
    ФОРМАТ ФАЙЛА (один и тот же у корпуса и у Алго):
      {
@@ -183,6 +184,29 @@
     }, ms || 5000);
   }
 
+  /* ---------- время ----------
+     В файле бывает строка saved ("2026-11-23T11:54:02.550Z" — UTC),
+     а в записи библиотеки число savedAt (Date.now(), мс).
+     Обе приводим к местному времени устройства. */
+  function fmtWhen(v) {
+    if (!v) return '';
+    var d = (v instanceof Date) ? v : new Date(v);
+    if (isNaN(d.getTime())) return '';
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return p(d.getDate()) + '.' + p(d.getMonth() + 1) + '.' + d.getFullYear() +
+           ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+
+  /* короткая метка для имени файла/записи: «23.11 14:54» */
+  function fmtShort(v) {
+    if (!v) return '';
+    var d = (v instanceof Date) ? v : new Date(v);
+    if (isNaN(d.getTime())) return '';
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return p(d.getDate()) + '.' + p(d.getMonth() + 1) +
+           ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+
   /* ---------- мои программы ---------- */
   function loadLib() {
     try {
@@ -271,6 +295,18 @@
     mine.forEach(function (p) {
       num++;
       var n = num;
+
+      /* дата: когда запись сохранена или загружена из файла —
+         при одинаковых именах это единственный способ их различить */
+      var meta = [];
+      if (p.savedAt) meta.push('сохранено ' + fmtWhen(p.savedAt));
+      else if (p.saved) meta.push('файл от ' + fmtWhen(p.saved));
+      if (p.src) meta.push('из МК-Алго');
+      if (p.layout) {
+        var keys = Object.keys(p.layout);
+        if (keys.length) meta.push('переменные: ' + keys.join(', '));
+      }
+
       ui.list.appendChild(row(n, p.name, p.check || '', p.input || '', {
         onLoad: function () { applyProgram(p.prog, p.data || {}, p.name, n); },
         onCheck: function () { checkProgram(p, 'm:' + p.name, n); },
@@ -280,11 +316,11 @@
           renderShelf();
         },
         last: builtinLast['m:' + p.name]
-      }, true));
+      }, true, meta.join(' · ')));
     });
   }
 
-  function row(num, title, check, input, acts, removable) {
+  function row(num, title, check, input, acts, removable, meta) {
     var d = el('div', 'srow');
 
     var n = el('div', 'snum', pad2(num));
@@ -294,6 +330,13 @@
     if (check) sub.push(check);
     if (input) sub.push(input);
     if (sub.length) body.appendChild(el('div', 'ssub', sub.join(' · ')));
+
+    if (meta) {
+      var m = el('div', 'smeta', meta);
+      m.style.cssText = 'font:12px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;' +
+                        'opacity:.72;margin-top:3px;';
+      body.appendChild(m);
+    }
 
     if (acts.last) {
       var st = el('div', 'sres ' + (acts.last.ok ? 'ok' : 'bad'),
@@ -445,7 +488,8 @@
     window.MKUI.hint('Сохранено «' + name + '» под номером ' + pad2(num) +
       ': ' + prog.length + ' ячеек, регистров ' + Object.keys(regs).length);
     toast('Сохранено «' + name + '» · ' + pad2(num) + '\n' +
-      prog.length + ' ячеек · ' + regsText(regs));
+      prog.length + ' ячеек · ' + regsText(regs) + '\n' +
+      'в списке: ' + fmtWhen(entry.savedAt));
     renderShelf();
   }
 
@@ -523,27 +567,56 @@
         return;
       }
 
+      /* время из самого файла: saved (ISO) — общий штамп сохранения */
+      var fileSaved = obj && obj.saved ? obj.saved : null;
+
       var arr = loadLib();
       var added = 0, replaced = 0;
       var normalized = [];
+      var renamed = [];
 
       incoming.forEach(function (p) {
         var name = String(p.name || p.title || guessName(p.src)).trim() || 'Без названия';
+        var stamp = p.savedAt || (fileSaved ? Date.parse(fileSaved) : 0) || Date.now();
+
         var entry = {
           name: name,
           prog: p.prog.slice(),
           data: (p.data && typeof p.data === 'object') ? p.data : {},
-          savedAt: p.savedAt || Date.now()
+          savedAt: stamp
         };
         if (p.layout) entry.layout = p.layout;
         if (p.inputs) entry.inputs = p.inputs;
         if (p.src) entry.src = p.src;
-
-        normalized.push(entry);
+        if (fileSaved) entry.saved = fileSaved;
 
         var idx = -1;
         for (var k = 0; k < arr.length; k++) if (arr[k].name === name) { idx = k; break; }
-        if (idx >= 0) { arr[idx] = entry; replaced++; } else { arr.push(entry); added++; }
+
+        if (idx < 0) {
+          /* имени в списке нет — просто добавляем */
+          arr.push(entry);
+          added++;
+        } else if (JSON.stringify(arr[idx].prog) === JSON.stringify(entry.prog)) {
+          /* это тот же самый код — обновляем запись и её время, без дубля */
+          arr[idx] = entry;
+          replaced++;
+        } else {
+          /* имя занято, а код ДРУГОЙ: не затираем старую программу,
+             а кладём рядом новую с временем в названии */
+          var alt = name + ' · ' + fmtShort(stamp);
+          var base = alt, s = 2;
+          while (arr.some(function (x) { return x.name === alt; })) {
+            alt = base + ' (' + s + ')';
+            s++;
+          }
+          entry.name = alt;
+          arr.push(entry);
+          added++;
+          renamed.push(alt);
+        }
+
+        normalized.push(entry);
       });
 
       saveLib(arr);
@@ -552,9 +625,18 @@
       var first = normalized[0];
       applyProgram(first.prog, first.data, first.name, null, true);
 
-      var inLib = 'в библиотеку: +' + added + (replaced ? ', заменено ' + replaced : '');
-      toast('Загружено в корпус: «' + first.name + '»\n' +
-            first.prog.length + ' ячеек · ' + regsText(first.data) + '\n' + inLib, 'ok', 7000);
+      var regLine = regsText(first.data);
+      var when = fmtWhen(p.savedAt || fileSaved);
+      var libLine = 'список: +' + added + (replaced ? ' · обновлено ' + replaced : '');
+
+      var msg = 'Загружено в корпус: «' + first.name + '»\n' +
+                first.prog.length + ' ячеек · ' + regLine + '\n' +
+                (when ? 'файл от ' + when : 'дата в файле не указана') + '\n' +
+                libLine;
+      if (renamed.length) msg += '\nсохранено как: ' + renamed.join(', ');
+
+      var hasRegs = Object.keys(first.data || {}).length > 0;
+      toast(msg, hasRegs ? 'ok' : 'warn', 9000);
 
       renderShelf();
     };
@@ -598,6 +680,7 @@
     builtin: BUILTIN,
     takeBridge: takeBridge,
     toast: toast,
+    fmtWhen: fmtWhen,
     formatFile: function (list) {
       return {
         app: 'mk-emulator',
