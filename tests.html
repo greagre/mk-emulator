@@ -35,7 +35,7 @@
   .row.bad{border-color:#6a2f2c;}
   .ic{font-size:18px; line-height:1.2;}
   .nm{font-weight:600; font-size:15px;}
-  .dt{color:var(--muted); font-size:13px; margin-top:3px; font-family:ui-monospace,monospace;}
+  .dt{color:var(--muted); font-size:13px; margin-top:3px; font-family:ui-monospace,monospace; word-break:break-word;}
   .dt b{color:var(--text); font-weight:600;}
   button.go{
     margin-top:14px; width:100%; padding:14px;
@@ -133,17 +133,17 @@
     },
 
     {
-      name: 'Факториал: 7! = 5040 (программа с L0)',
+      name: 'Факториал: 7! = 5040 (ввод n в X, цикл L0)',
       run: function(core){
         core.setProgram([
-          0x40,       /* 00: X→П0 — n в регистр 0        */
-          0x01,       /* 01: 1                           */
-          0xD0,       /* 02: К П→X0 — R0 в X             */
-          0x12,       /* 03: ×                           */
-          0x5D, 0x00, 0x02, /* 04: F L0 02 — цикл до нуля */
-          0x50        /* 07: С/П                         */
+          0x40,             /* 00: X→П0 — n уходит в регистр 0          */
+          0x01,             /* 01: 1                                    */
+          0xD0,             /* 02: К П→X0 — R0 снова в X                */
+          0x12,             /* 03: ×                                    */
+          0x5D, 0x00, 0x02, /* 04: F L0 02 — уменьшить R0, пока не ноль */
+          0x50              /* 07: С/П                                  */
         ]);
-        core.ST.R[0] = 7;
+        core.setX(7);
         var r = core.run(5000);
         return { value: core.ST.X, note: r.steps + ' шагов' };
       },
@@ -151,14 +151,14 @@
     },
 
     {
-      name: 'Условие x=0 истинно: идём дальше (→ 1)',
+      name: 'Условие x=0 истинно: идём следующей командой (→ 1)',
       run: function(core){
         core.setProgram([
-          0x5E, 0x00, 0x04,  /* 00: F x=0 04 — условие */
-          0x01,              /* 03: 1                  */
-          0x50,              /* 04: С/П                */
-          0x02,              /* 05: 2                  */
-          0x50               /* 06: С/П                */
+          0x5E, 0x00, 0x04,  /* 00: F x=0 04 — если X=0, переход на 04 */
+          0x01,              /* 03: 1                                  */
+          0x50,              /* 04: С/П                                */
+          0x02,              /* 05: 2                                  */
+          0x50               /* 06: С/П                                */
         ]);
         core.setX(0);
         core.run(200);
@@ -168,7 +168,7 @@
     },
 
     {
-      name: 'Условие x=0 ложно: переход по адресу (→ 2)',
+      name: 'Условие x=0 ложно: значения не меняется (остаётся 5)',
       run: function(core){
         core.setProgram([
           0x5E, 0x00, 0x04,
@@ -188,9 +188,9 @@
       name: 'Косвенная запись: К X→П6 при R6=5 пишет в R6',
       run: function(core){
         core.setProgram([
-          0x04, 0x02,  /* 00: число 42        */
-          0xB6,        /* 02: К X→П 6         */
-          0x50         /* 03: С/П              */
+          0x04, 0x02,  /* 00: число 42 */
+          0xB6,        /* 02: К X→П 6  */
+          0x50         /* 03: С/П      */
         ]);
         core.ST.R[6] = 5;
         core.run(200);
@@ -200,13 +200,14 @@
     },
 
     {
-      name: 'Косвенное чтение: К П→X6 возвращает R6 в X',
+      name: 'Косвенное чтение: К П→X6 при R6=6 читает R7',
       run: function(core){
         core.setProgram([
           0xD6,  /* 00: К П→X6 */
           0x50   /* 01: С/П    */
         ]);
-        core.ST.R[6] = 321;
+        core.ST.R[6] = 6;
+        core.ST.R[7] = 321;
         core.run(200);
         return core.ST.X;
       },
@@ -214,7 +215,7 @@
     },
 
     {
-      name: 'Снимок состояния восстанавливается',
+      name: 'Снимок состояния восстанавливается (8 ↑ 9 + = 17)',
       run: function(core){
         press(core, [D(8), UP, D(9), C(0x10)]);
         var snap = core.snapshot();
@@ -229,7 +230,7 @@
       name: 'Бесконечный цикл останавливается лимитом',
       run: function(core){
         core.setProgram([
-          0x51, 0x00, 0x00, /* 00: БП 00 — вечный переход на себя */
+          0x51, 0x00, 0x00, /* 00: БП 00 — переход на себя */
           0x50
         ]);
         var r = core.run(500);
