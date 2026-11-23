@@ -626,7 +626,10 @@
       applyProgram(first.prog, first.data, first.name, null, true);
 
       var regLine = regsText(first.data);
-      var when = fmtWhen(p.savedAt || fileSaved);
+      /* время берём у первой загруженной записи: здесь раньше стояла
+         переменная p из forEach — снаружи её нет, ловили ReferenceError,
+         и плашка импорта вместе с перерисовкой списка не срабатывали */
+      var when = fmtWhen(first.savedAt || fileSaved);
       var libLine = 'список: +' + added + (replaced ? ' · обновлено ' + replaced : '');
 
       var msg = 'Загружено в корпус: «' + first.name + '»\n' +
