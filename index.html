@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#eef1f6">
+<meta name="theme-color" content="#d7d3c4">
 <title>ЭЛЕКТРОНИКА Б3-34 — эмулятор</title>
 <style>
   :root {
@@ -44,6 +44,7 @@
     --soft-shadow: 0 -4px 18px rgba(0,0,0,.5);
   }
 
+  /* --- светлая --- */
   body[data-theme="light"] {
     --bg: #eef1f6;
     --panel: #ffffff;
@@ -80,6 +81,45 @@
     --lcd-frame: #d3dae4;
     --calc-shadow: 0 10px 26px rgba(31,45,61,.14), inset 0 1px 0 #ffffff;
     --soft-shadow: 0 -4px 18px rgba(31,45,61,.12);
+  }
+
+  /* --- классика: бежевый корпус, тёмный ЖК, зелёные цифры --- */
+  body[data-theme="classic"] {
+    --bg: #b3af9f;
+    --panel: #eae6d8;
+    --card: #f2eee1;
+    --chip: #ddd8c9;
+    --chip2: #e4e0d3;
+    --edge: #cdc8b7;
+    --edge2: #d8d3c4;
+    --line: #b1ac9b;
+    --text: #23231f;
+    --muted: #67634f;
+    --num: #8b8776;
+    --accent: #2e8f36;
+    --accent-ink: #ffffff;
+    --sel: #dcebd6;
+    --sel-ink: #1d5d24;
+    --ok: #2e8f36;
+    --bad: #b6362c;
+
+    --case: #dcd8c9;
+    --case2: #c9c4b2;
+    --key: #3a3a36;
+    --key2: #48483f;
+    --key-shadow: #24241e;
+    --dark: #33332e;
+    --blue: #2f5f9e;
+    --blue-ink: #ffffff;
+    --red: #ad3a32;
+    --red-ink: #ffffff;
+    --pref: #33332e;
+
+    --lcd: #14170f;
+    --lcd-ink: #7cf25c;
+    --lcd-frame: #c6c1b0;
+    --calc-shadow: 0 12px 28px rgba(58,53,38,.30), inset 0 1px 0 rgba(255,255,255,.55);
+    --soft-shadow: 0 -4px 18px rgba(58,53,38,.22);
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -140,25 +180,27 @@
     font-size: 11px; color: var(--muted); font-family: ui-monospace, Menlo, Consolas, monospace; }
   .lcd-sub b { color: var(--text); font-weight: 600; }
 
-  .stack { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 0; }
+  .stack { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 5px; margin: 0; }
   .cell {
     background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
-    padding: 5px 4px; text-align: center; min-width: 0;
+    padding: 6px 4px; text-align: center; min-width: 0; aspect-ratio: 1 / 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
   .cell b { display: block; font-size: 10px; color: var(--muted); font-weight: 600; }
   .cell span { display: block; font-size: 12px; font-family: ui-monospace, Menlo, monospace;
-    overflow: hidden; text-overflow: ellipsis; }
+    max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
   .cell.cur { border-color: var(--accent); background: var(--sel); }
   .cell.cur span { color: var(--sel-ink); }
 
-  .regs { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .regs { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 5px; }
   .reg {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 7px;
-    color: var(--muted); padding: 4px 2px; font: inherit; cursor: default;
-    display: flex; flex-direction: column; align-items: center; min-width: 0;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    color: var(--muted); padding: 6px 3px; font: inherit; cursor: default;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-width: 0; aspect-ratio: 1 / 1;
   }
   .reg b { font-size: 10px; font-weight: 700; }
-  .reg span { font-size: 10px; font-family: ui-monospace, Menlo, monospace;
+  .reg span { font-size: 11px; font-family: ui-monospace, Menlo, monospace;
     max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .reg.pick { cursor: pointer; border-color: var(--accent); color: var(--text); background: var(--sel); }
   .reg.pick:active { filter: brightness(.96); }
@@ -189,6 +231,30 @@
   .key.pref { background: linear-gradient(180deg, var(--chip2), var(--pref)); color: var(--accent); }
   body[data-theme="light"] .key.pref { background: var(--pref); }
   .key.on { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  /* --- подписи в классике: тёмные клавиши со светящимися зелёными символами --- */
+  body[data-theme="classic"] .lcd {
+    border-radius: 4px;
+    text-shadow: 0 0 8px rgba(124,242,92,.45);
+  }
+  body[data-theme="classic"] .lcd.err { color: #ff8a6b; text-shadow: 0 0 8px rgba(255,138,107,.4); }
+  body[data-theme="classic"] .lcd-sub b { color: #24451b; }
+  body[data-theme="classic"] .key { color: #8be27b; text-shadow: 0 0 6px rgba(139,226,123,.30); }
+  body[data-theme="classic"] .key.blue { background: var(--blue); color: #ffffff; text-shadow: none; }
+  body[data-theme="classic"] .key.red { background: var(--red); color: #ffffff; text-shadow: none; }
+  body[data-theme="classic"] .key.dark { background: var(--dark); color: #cfe9c8; text-shadow: none; }
+  body[data-theme="classic"] .key.pref { background: var(--pref); color: #7bdcc4; text-shadow: 0 0 6px rgba(123,220,196,.30); }
+  body[data-theme="classic"] .brand #modelName { color: #2e8f36; }
+  body[data-theme="classic"] .cell { background: #1f211b; border-color: #383a2f; }
+  body[data-theme="classic"] .cell b { color: #7bdcc4; }
+  body[data-theme="classic"] .cell span { color: #7cf25c; font-weight: 700; }
+  body[data-theme="classic"] .cell.cur { background: #2b3a25; border-color: #6fd85a; }
+  body[data-theme="classic"] .cell.cur span { color: #b6ff9f; }
+  body[data-theme="classic"] .reg { background: #1f211b; border-color: #383a2f; color: #7bdcc4; }
+  body[data-theme="classic"] .reg span { color: #7cf25c; font-weight: 700; }
+  body[data-theme="classic"] .reg.pick { background: #2b3a25; border-color: #6fd85a; }
+  body[data-theme="classic"] .service button.on { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+  body[data-theme="classic"] .prog { background: #efeade; }
 
   .service { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
   .service.wide { grid-template-columns: repeat(2, 1fr); }
@@ -381,12 +447,12 @@
   .foot a { color: var(--accent); text-decoration: none; }
 </style>
 </head>
-<body data-theme="light" data-mode="study" data-tab="num">
+<body data-theme="classic" data-mode="study" data-tab="num">
 <div class="app">
   <div class="top">
     <label for="model">Модель</label>
     <select id="model" aria-label="Модель калькулятора"></select>
-    <button type="button" class="topbtn" id="themeBtn" title="Светлая / тёмная тема">☾</button>
+    <button type="button" class="topbtn" id="themeBtn" title="Тема">▤</button>
     <button type="button" class="topbtn" id="shelfOpen" title="Библиотека программ">☰</button>
   </div>
 
@@ -476,27 +542,37 @@
 <script>
 (function () {
   var KEY = 'mk-emulator/theme';
+  var ORDER = ['classic', 'light', 'dark'];
+  var ICON = { classic: '▤', light: '☀', dark: '☾' };
+  var NAME = { classic: 'классика — бежевый корпус', light: 'светлая', dark: 'тёмная' };
+  var META = { classic: '#d7d3c4', light: '#eef1f6', dark: '#15181b' };
   var btn = document.getElementById('themeBtn');
   var meta = document.querySelector('meta[name="theme-color"]');
+
   function apply(theme) {
+    if (ORDER.indexOf(theme) < 0) theme = 'classic';
     document.body.dataset.theme = theme;
-    btn.textContent = theme === 'light' ? '☾' : '☀';
-    btn.title = theme === 'light' ? 'Тёмная тема' : 'Светлая тема';
-    if (meta) meta.setAttribute('content', theme === 'light' ? '#eef1f6' : '#15181b');
+    btn.textContent = ICON[theme];
+    btn.title = 'Тема: ' + NAME[theme] + ' — нажми, чтобы сменить';
+    if (meta) meta.setAttribute('content', META[theme]);
     try { localStorage.setItem(KEY, theme); } catch (e) {}
   }
+
   var saved = null;
   try { saved = localStorage.getItem(KEY); } catch (e) {}
-  apply(saved === 'dark' ? 'dark' : 'light');
+  apply(saved && ORDER.indexOf(saved) >= 0 ? saved : 'classic');
+
   btn.addEventListener('click', function () {
-    apply(document.body.dataset.theme === 'light' ? 'dark' : 'light');
+    var cur = document.body.dataset.theme || 'classic';
+    var i = ORDER.indexOf(cur);
+    apply(ORDER[(i + 1) % ORDER.length]);
   });
 })();
 </script>
 
-<script src="core.js?v=11"></script>
-<script src="profiles.js?v=11"></script>
-<script src="ui.js?v=11"></script>
-<script src="shelf.js?v=11"></script>
+<script src="core.js?v=12"></script>
+<script src="profiles.js?v=12"></script>
+<script src="ui.js?v=12"></script>
+<script src="shelf.js?v=12"></script>
 </body>
 </html>
