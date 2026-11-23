@@ -42,6 +42,7 @@
     min-height: 120px; color: #1d2126;
   }
   pre.mono { white-space: pre; word-break: normal; overflow-x: auto; }
+  pre.tblout { white-space: normal; word-break: normal; overflow-x: auto; padding: 10px; }
   .label { font-size: 13px; color: #5b6570; margin: 0 0 6px; }
   label.file {
     display: inline-block; padding: 9px 14px; border-radius: 8px;
@@ -51,16 +52,43 @@
   .err { color: #b3261e; font-size: 13px; margin-top: 8px; }
   a.back { color: #2f6fd0; font-size: 13px; text-decoration: none; }
 
-  /* подсветка листинга */
+  /* ---- подсветка: работает во всех режимах ---- */
+  .kHead { color: #2f6fd0; font-weight: 700; }
   .kAddr { color: #8a949e; }
   .kHex  { color: #2f6fd0; font-weight: 600; }
   .kCmd  { color: #1d2126; }
   .kTxt  { color: #1d2126; }
+  .kCmt  { color: #6b7681; }
   .kExact{ color: #2e7d32; }
   .kHeur { color: #b26a00; }
   .kUnk  { color: #b3261e; }
   .kConf { font-weight: 600; }
   .kMark { color: #7b3fb3; font-weight: 600; }
+
+  /* ---- легенда ---- */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 6px 14px;
+    margin-top: 12px; padding-top: 10px; border-top: 1px dashed #e2e6eb;
+    font: 12.5px/1.4 ui-monospace, Consolas, monospace;
+  }
+  .legend .sw { font-weight: 700; }
+
+  /* ---- таблица листинга ---- */
+  .tblcap { font: 12.5px/1.5 ui-monospace, Consolas, monospace; color: #5b6570; margin-bottom: 8px; }
+  table.lst {
+    width: 100%; border-collapse: collapse; display: block; overflow-x: auto;
+    font: 12.5px/1.5 ui-monospace, "SF Mono", Consolas, monospace;
+  }
+  table.lst th, table.lst td {
+    padding: 4px 8px; border-bottom: 1px solid #eceff3;
+    text-align: left; vertical-align: top; white-space: nowrap;
+  }
+  table.lst th { color: #5b6570; font-weight: 600; font-size: 12px; border-bottom: 1px solid #dfe3e8; }
+  table.lst tr.ismark td { background: #f7f3fc; }
+  table.lst td:nth-child(4) { white-space: normal; min-width: 180px; }
+  .tblblock { margin-top: 12px; font-size: 12.5px; line-height: 1.5; }
+  .tblh { font-weight: 700; margin-bottom: 4px; }
+
   .viewrow { margin-top: 2px; }
   .viewrow .ttl { font-size: 12.5px; color: #6b7681; align-self: center; margin-right: 4px; }
 </style>
@@ -101,6 +129,16 @@
     <button id="save">Скачать .txt</button>
     <button id="toAlgo">Открыть в Алго</button>
   </div>
+  <div class="legend">
+    <span class="sw kAddr">адрес</span>
+    <span class="sw kHex">код</span>
+    <span class="sw kCmd">команда</span>
+    <span class="sw kExact">точно</span>
+    <span class="sw kHeur">догадка</span>
+    <span class="sw kUnk">не переведено</span>
+    <span class="sw kMark">метка мNN</span>
+    <span class="sw kCmt">пояснение</span>
+  </div>
 </div>
 
 <div class="card">
@@ -129,34 +167,40 @@
 
   function setErr(text) { errBox.textContent = text || ''; }
 
-  /* на узком экране листинг сжимается в три колонки */
   function isCompact() {
     var w = out.clientWidth || window.innerWidth || 400;
     return w < 560;
   }
 
+  /* какой режим рендерить прямо сейчас */
+  function currentMode() {
+    if (mode !== 'listing') return mode;
+    return (view === 'table') ? 'listingTable' : 'listing';
+  }
+
+  /* чистый текст — для буфера обмена и файла */
   function currentText() {
     if (!model) return '';
-    if (mode === 'listing') {
-      return window.B3Decode.render(model, view === 'table' ? 'listingTable' : 'listing',
-        { compact: view === 'text' ? isCompact() : false });
-    }
-    return window.B3Decode.render(model, mode);
+    var m = currentMode();
+    return window.B3Decode.render(model, m, {
+      compact: (m === 'listing') ? isCompact() : false
+    });
   }
 
   function show() {
     if (!model) return;
 
-    var isListing = (mode === 'listing' && view === 'text');
-    var compact = isListing && isCompact();
+    var m = currentMode();
+    var compact = (m === 'listing') && isCompact();
 
-    if (isListing) {
-      out.classList.add('mono');
-      out.innerHTML = window.B3Decode.render(model, 'listing', { html: true, compact: compact });
-    } else {
-      out.classList.remove('mono');
-      out.textContent = currentText();
-    }
+    /* классы контейнера: моноширинный листинг, таблица или обычный текст */
+    out.classList.remove('mono');
+    out.classList.remove('tblout');
+    if (m === 'listing') out.classList.add(compact ? 'tblout' : 'mono');
+    if (m === 'listingTable') out.classList.add('tblout');
+
+    /* v3: разметка есть во ВСЕХ режимах, поэтому всегда innerHTML */
+    out.innerHTML = window.B3Decode.render(model, m, { html: true, compact: compact });
 
     viewRow.style.display = (mode === 'listing') ? 'flex' : 'none';
 
@@ -209,6 +253,7 @@
   document.getElementById('clear').addEventListener('click', function () {
     src.value = '';
     out.classList.remove('mono');
+    out.classList.remove('tblout');
     out.textContent = 'Здесь появится текст. Вставь код и нажми «Разобрать».';
     outLbl.textContent = 'Результат';
     setErr('');
@@ -255,7 +300,6 @@
     reader.onload = function () {
       var text = String(reader.result || '');
       fileName = f.name;
-      src.value = text.length > 200000 ? text.slice(0, 200000) : text;
 
       var obj = null;
       try { obj = JSON.parse(text); } catch (e) { obj = null; }
@@ -263,12 +307,12 @@
       if (obj) {
         var one = window.B3Decode.fromProgramFile(obj);
         if (one) {
+          src.value = text.length > 200000 ? text.slice(0, 200000) : text;
           model = window.B3Decode.decodeProgram(one.prog, {
             name: one.name || f.name.replace(/\.[^.]+$/, ''),
             data: one.data,
             saved: one.saved || ''
           });
-          if (one.saved) setErr('');
           show();
           return;
         }
@@ -311,7 +355,7 @@
     var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = name + '-' + mode + '.txt';
+    a.download = name + '-' + currentMode() + '.txt';
     document.body.appendChild(a);
     a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 1000);
