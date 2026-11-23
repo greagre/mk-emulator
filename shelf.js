@@ -6,8 +6,20 @@
    • сохранение текущей программы в память браузера
    • загрузка в корпус одним нажатием
    • проверка: прогон с данными из описания и сверка с эталоном
-   • выгрузка и загрузка файла .json
-   • мост из языка «МК-Алго» (lang.html → index.html)
+   • выгрузка и загрузка файла .json (единый формат programs[] v2)
+   • мост из языка «МК-Алго» (algo.html → index.html)
+
+   ФОРМАТ ФАЙЛА (один и тот же у корпуса и у Алго):
+     {
+       app: "mk-emulator",
+       format: "programs",
+       version: 2,
+       model: "b3-34",
+       saved: "…",
+       programs: [ { name, prog: [...], data: {0:7}, layout: {n:0},
+                     inputs: ["n"], src: "…", savedAt } ]
+     }
+   Понимается и старый одиночный файл Алго { prog, data, layout, src }.
 
    При загрузке в корпус передаётся метка {num, title}: ui.js
    показывает её чипом под дисплеем и на кнопке библиотеки.
@@ -140,6 +152,36 @@
   ];
 
   var builtinLast = {};  /* id → {ok, text} */
+
+  /* ---------- крупная индикация поверх экрана ----------
+     Раньше результат импорта уходил в мелкую строку подсказки,
+     и понять «загрузилось или нет» было невозможно. Теперь —
+     заметная плашка по центру сверху, сама исчезает. */
+  var toastTimer = null;
+
+  function toast(text, kind, ms) {
+    var old = document.getElementById('mkToast');
+    if (old && old.parentNode) old.parentNode.removeChild(old);
+
+    var bg = '#1a7f47';
+    if (kind === 'bad') bg = '#c0392b';
+    else if (kind === 'warn') bg = '#a86a00';
+
+    var d = document.createElement('div');
+    d.id = 'mkToast';
+    d.textContent = text;
+    d.style.cssText =
+      'position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:99999;' +
+      'max-width:92vw;padding:12px 16px;border-radius:12px;background:' + bg + ';color:#fff;' +
+      'font:600 14px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;' +
+      'box-shadow:0 8px 24px rgba(0,0,0,.28);text-align:center;white-space:pre-line;pointer-events:none';
+
+    document.body.appendChild(d);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      if (d.parentNode) d.parentNode.removeChild(d);
+    }, ms || 5000);
+  }
 
   /* ---------- мои программы ---------- */
   function loadLib() {
@@ -284,15 +326,41 @@
   }
 
   /* ---------- загрузка в корпус ---------- */
-  function applyProgram(prog, data, title, num) {
+  function switchTab(name) {
+    var b = document.querySelector('#tabs button[data-tab="' + name + '"]');
+    if (b) b.click();
+  }
+
+  function regsText(data) {
+    var keys = [];
+    Object.keys(data || {}).forEach(function (k) {
+      var v = data[k];
+      if (v !== '' && v !== null && typeof v !== 'undefined' && isFinite(v)) keys.push(k);
+    });
+    if (!keys.length) return 'регистры пустые';
+    keys.sort(function (a, b) { return (+a) - (+b); });
+    var head = keys.slice(0, 4).map(function (k) {
+      return 'R' + window.MKCore.REG_NAMES[+k] + ' = ' + window.MKUI.fmt(data[k]);
+    }).join(', ');
+    return head + (keys.length > 4 ? ' …' : '');
+  }
+
+  /* silent = true — не показывать подсказку (сам вызову покажет toast) */
+  function applyProgram(prog, data, title, num, silent) {
     if (!window.MKUI) return;
     window.MKUI.loadProgram(prog, data, { num: num || null, title: title });
-    window.MKUI.hint('Загружено «' + (num ? pad2(num) + ' · ' : '') + title +
-      '». Данные в регистрах, нажми Пуск.');
+
+    /* в «Учёбе» сразу открываем листинг: иначе кажется, что ничего не загрузилось */
+    switchTab('code');
+
+    if (!silent) {
+      window.MKUI.hint('Загружено «' + title + '». Данные в регистрах, нажми Пуск.');
+      toast('Загружено «' + title + '»\n' + prog.length + ' ячеек · ' + regsText(data));
+    }
   }
 
   /* ---------- мост из языка МК-Алго ----------
-     lang.html кладёт собранную программу в localStorage и открывает
+     algo.html кладёт собранную программу в localStorage и открывает
      index.html. Здесь она забирается ровно один раз и ставится в память
      корпуса тем же путём, что и программа из библиотеки. */
   function takeBridge() {
@@ -309,8 +377,10 @@
 
     var title = obj.from || 'МК-Алго';
     window.MKUI.loadProgram(obj.prog, obj.data || {}, { num: null, title: title });
+    switchTab('code');
     window.MKUI.hint('Загружено из «' + title + '»: ' + obj.prog.length +
-      ' ячеек. Нажми «Шаг» или «Авто», чтобы пройти по своей программе.');
+      ' ячеек, ' + regsText(obj.data) + '. Нажми «Шаг» или «Авто».');
+    toast('Из «' + title + '»: ' + obj.prog.length + ' ячеек\n' + regsText(obj.data));
   }
 
   /* ---------- проверка ---------- */
@@ -336,6 +406,8 @@
         (typeof exp === 'number' ? ', ожидалось ' + exp : '') +
         ' · ' + (r.result === 'stop' ? 'С/П достигнуто' : r.result === 'error' ? 'ошибка' : 'лимит шагов'));
 
+    toast(ok ? '✓ «' + p.title + '»: ' + window.MKUI.fmt(got) + ', шагов ' + r.steps
+             : '✗ «' + p.title + '»: получено ' + window.MKUI.fmt(got), ok ? 'ok' : 'bad');
     renderShelf();
   }
 
@@ -346,6 +418,7 @@
     var last = core.lastStep();
     if (last < 0) {
       window.MKUI.hint('В памяти нет программы: набери её в режиме ПРГ или загрузи пример.');
+      toast('Нечего сохранять: программы в памяти нет', 'warn');
       return;
     }
     var name = window.prompt('Название программы', 'Моя программа');
@@ -371,16 +444,49 @@
 
     window.MKUI.hint('Сохранено «' + name + '» под номером ' + pad2(num) +
       ': ' + prog.length + ' ячеек, регистров ' + Object.keys(regs).length);
+    toast('Сохранено «' + name + '» · ' + pad2(num) + '\n' +
+      prog.length + ' ячеек · ' + regsText(regs));
     renderShelf();
   }
 
-  /* ---------- файл: выгрузка и загрузка ---------- */
+  /* ---------- единый формат файла ---------- */
+  function guessName(src) {
+    var lines = String(src || '').split(/\r?\n/);
+    for (var i = 0; i < lines.length; i++) {
+      var t = lines[i].trim().replace(/^#+\s*/, '').trim();
+      if (!t) continue;
+      var cut = t.indexOf(':');
+      if (cut > 0) t = t.slice(0, cut).trim();
+      if (t) return t.length > 32 ? t.slice(0, 32) + '…' : t;
+    }
+    return 'Из МК-Алго';
+  }
+
+  /* понимаем три вида: массив, {programs:[…]}, одиночная {prog:[…]} */
+  function progListFrom(obj) {
+    var list = [];
+    if (!obj) return list;
+    if (Array.isArray(obj)) list = obj.slice();
+    else if (Array.isArray(obj.programs)) list = obj.programs.slice();
+    else if (Array.isArray(obj.prog)) list = [obj];
+    return list.filter(function (p) {
+      return p && Array.isArray(p.prog) && p.prog.length;
+    });
+  }
+
   function exportLib() {
+    var list = loadLib();
+    if (!list.length) {
+      toast('В библиотеке нет твоих программ — нечего выгружать', 'warn');
+      return;
+    }
     var data = {
       app: 'mk-emulator',
+      format: 'programs',
+      version: 2,
       model: 'b3-34',
       saved: new Date().toISOString(),
-      programs: loadLib()
+      programs: list
     };
     var text = JSON.stringify(data, null, 2);
     var blob = new Blob([text], { type: 'application/json' });
@@ -393,28 +499,64 @@
       URL.revokeObjectURL(a.href);
       a.remove();
     }, 1000);
+    toast('Выгружено программ: ' + list.length + '\nb3-34-programs.json');
   }
 
   function importLib(file) {
     if (!file) return;
+    toast('Читаю файл: ' + file.name, 'ok', 1800);
+
     var reader = new FileReader();
+    reader.onerror = function () { toast('Не смог прочитать файл', 'bad'); };
     reader.onload = function () {
+      var obj;
       try {
-        var obj = JSON.parse(String(reader.result));
-        var incoming = Array.isArray(obj) ? obj : (obj.programs || []);
-        var arr = loadLib();
-        var added = 0;
-        incoming.forEach(function (p) {
-          if (!p || !p.name || !Array.isArray(p.prog)) return;
-          var exists = arr.some(function (x) { return x.name === p.name; });
-          if (!exists) { arr.push(p); added++; }
-        });
-        saveLib(arr);
-        renderShelf();
-        if (window.MKUI) window.MKUI.hint('Импорт: добавлено ' + added + ' программ');
+        obj = JSON.parse(String(reader.result));
       } catch (e) {
-        if (window.MKUI) window.MKUI.hint('Файл не похож на выгрузку программ: ' + e.message);
+        toast('Это не JSON: ' + e.message, 'bad', 7000);
+        return;
       }
+
+      var incoming = progListFrom(obj);
+      if (!incoming.length) {
+        toast('В файле не нашёл программ (ждал programs[] или prog[])', 'bad', 7000);
+        return;
+      }
+
+      var arr = loadLib();
+      var added = 0, replaced = 0;
+      var normalized = [];
+
+      incoming.forEach(function (p) {
+        var name = String(p.name || p.title || guessName(p.src)).trim() || 'Без названия';
+        var entry = {
+          name: name,
+          prog: p.prog.slice(),
+          data: (p.data && typeof p.data === 'object') ? p.data : {},
+          savedAt: p.savedAt || Date.now()
+        };
+        if (p.layout) entry.layout = p.layout;
+        if (p.inputs) entry.inputs = p.inputs;
+        if (p.src) entry.src = p.src;
+
+        normalized.push(entry);
+
+        var idx = -1;
+        for (var k = 0; k < arr.length; k++) if (arr[k].name === name) { idx = k; break; }
+        if (idx >= 0) { arr[idx] = entry; replaced++; } else { arr.push(entry); added++; }
+      });
+
+      saveLib(arr);
+
+      /* главное: сразу ставим первую программу в корпус, а не только в список */
+      var first = normalized[0];
+      applyProgram(first.prog, first.data, first.name, null, true);
+
+      var inLib = 'в библиотеку: +' + added + (replaced ? ', заменено ' + replaced : '');
+      toast('Загружено в корпус: «' + first.name + '»\n' +
+            first.prog.length + ' ячеек · ' + regsText(first.data) + '\n' + inLib, 'ok', 7000);
+
+      renderShelf();
     };
     reader.readAsText(file);
   }
@@ -454,6 +596,17 @@
     open: openShelf,
     close: closeShelf,
     builtin: BUILTIN,
-    takeBridge: takeBridge
+    takeBridge: takeBridge,
+    toast: toast,
+    formatFile: function (list) {
+      return {
+        app: 'mk-emulator',
+        format: 'programs',
+        version: 2,
+        model: 'b3-34',
+        saved: new Date().toISOString(),
+        programs: list || loadLib()
+      };
+    }
   };
 })();
