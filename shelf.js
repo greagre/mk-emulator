@@ -9,6 +9,8 @@
    • выгрузка и загрузка файла .json (единый формат programs[] v2)
    • мост из языка «МК-Алго» (algo.html → index.html)
    • время: плашка импорта и каждая своя программа показывают дату
+   • одинаковые имена: и при импорте, и при сохранении старый код
+     не затирается — новая запись получает имя с датой
 
    ФОРМАТ ФАЙЛА (один и тот же у корпуса и у Алго):
      {
@@ -218,6 +220,24 @@
 
   function saveLib(arr) {
     try { localStorage.setItem(LIB_KEY, JSON.stringify(arr)); } catch (e) {}
+  }
+
+  /* одинаковый ли код у двух записей */
+  function sameProg(a, b) {
+    if (!Array.isArray(a) || !Array.isArray(b)) return false;
+    if (a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+    return true;
+  }
+
+  /* свободное имя: если занято — добавляем время, потом (2), (3) … */
+  function freeName(arr, base) {
+    var name = base, s = 2;
+    while (arr.some(function (x) { return x.name === name; })) {
+      name = s === 2 ? base + ' (' + s + ')' : base + ' (' + s + ')';
+      s++;
+    }
+    return name;
   }
 
   /* ---------- панель ---------- */
@@ -454,7 +474,13 @@
     renderShelf();
   }
 
-  /* ---------- сохранить текущую ---------- */
+  /* ---------- сохранить текущую ----------
+     Правило то же, что при импорте файла:
+       имени нет            → добавляем запись;
+       имя есть, код тот же → обновляем время, дубля нет;
+       имя есть, код другой → старую НЕ затираем: новая получает
+                              имя с датой («Моя программа · 23.11 16:05»).
+     Окно ввода сразу предлагает свободное имя, чтобы не придумывать вручную. */
   function saveCurrent() {
     if (!window.MKUI) return;
     var core = window.MKUI.getCore();
@@ -464,8 +490,6 @@
       toast('Нечего сохранять: программы в памяти нет', 'warn');
       return;
     }
-    var name = window.prompt('Название программы', 'Моя программа');
-    if (!name) return;
 
     var prog = core.ST.prog.slice(0, Math.min(last + 1, core.ST.prog.length));
     var regs = {};
@@ -474,10 +498,39 @@
     }
 
     var arr = loadLib();
+
+    /* умолчание в окне: «Моя программа», а если это имя занято другим
+       кодом — сразу «Моя программа · 23.11 16:05» */
+    var defName = 'Моя программа';
+    var sameName = null;
+    for (var j = 0; j < arr.length; j++) if (arr[j].name === defName) sameName = arr[j];
+    if (sameName && !sameProg(sameName.prog, prog)) {
+      var stampNow = fmtShort(Date.now());
+      defName = freeName(arr, defName + (stampNow ? ' · ' + stampNow : ''));
+    }
+
+    var name = window.prompt('Название программы', defName);
+    if (!name) return;
+    name = String(name).trim() || 'Моя программа';
+
     var entry = { name: name, prog: prog, data: regs, savedAt: Date.now() };
     var idx = -1;
     for (var k = 0; k < arr.length; k++) if (arr[k].name === name) idx = k;
-    if (idx >= 0) arr[idx] = entry; else arr.push(entry);
+
+    var note = '';
+    if (idx < 0) {
+      arr.push(entry);
+    } else if (sameProg(arr[idx].prog, entry.prog)) {
+      /* тот же самый код — просто обновляем запись и время */
+      arr[idx] = entry;
+    } else {
+      /* имя занято другим кодом — не затираем, добавляем с датой */
+      var alt = freeName(arr, name + ' · ' + fmtShort(entry.savedAt));
+      entry.name = alt;
+      arr.push(entry);
+      note = '\nсохранено как «' + alt + '» — имя было занято';
+      name = alt;
+    }
     saveLib(arr);
 
     /* номер своей программы в общем списке — после встроенных */
@@ -489,7 +542,7 @@
       ': ' + prog.length + ' ячеек, регистров ' + Object.keys(regs).length);
     toast('Сохранено «' + name + '» · ' + pad2(num) + '\n' +
       prog.length + ' ячеек · ' + regsText(regs) + '\n' +
-      'в списке: ' + fmtWhen(entry.savedAt));
+      'в списке: ' + fmtWhen(entry.savedAt) + note, 'ok', 8000);
     renderShelf();
   }
 
