@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mk-emulator — проверка ядра</title>
+<style>
+  :root{
+    --bg:#12140f; --panel:#1b1e17; --line:#2e3327;
+    --text:#e8ecdf; --muted:#9aa38c; --ok:#4cc46a; --bad:#e5534b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:16px 14px 40px;
+    background:var(--bg); color:var(--text);
+    font:16px/1.45 -apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  h1{font-size:20px; margin:0 0 4px;}
+  .sub{color:var(--muted); font-size:14px; margin-bottom:14px;}
+  .score{
+    display:flex; align-items:center; gap:12px;
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:14px; padding:12px 14px; margin-bottom:14px;
+  }
+  .score .big{font-size:26px; font-weight:700;}
+  .score .lbl{color:var(--muted); font-size:13px;}
+  .bar{flex:1; height:8px; background:#2b2f24; border-radius:6px; overflow:hidden;}
+  .bar i{display:block; height:100%; width:0; background:var(--ok); transition:width .3s;}
+  .row{
+    display:grid; grid-template-columns:26px 1fr; gap:10px;
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:12px; padding:11px 12px; margin-bottom:8px;
+  }
+  .row.ok{border-color:#2f5a39;}
+  .row.bad{border-color:#6a2f2c;}
+  .ic{font-size:18px; line-height:1.2;}
+  .nm{font-weight:600; font-size:15px;}
+  .dt{color:var(--muted); font-size:13px; margin-top:3px; font-family:ui-monospace,monospace;}
+  .dt b{color:var(--text); font-weight:600;}
+  button.go{
+    margin-top:14px; width:100%; padding:14px;
+    background:#2f7d43; color:#fff; border:0; border-radius:12px;
+    font-size:16px; font-weight:600;
+  }
+  .note{margin-top:14px; color:var(--muted); font-size:13px;}
+</style>
+</head>
+<body>
+
+<h1>Проверка ядра</h1>
+<div class="sub">Эталонные примеры на <code>core.js</code> — без интерфейса, только вычисления.</div>
+
+<div class="score">
+  <div>
+    <div class="big" id="score">0 / 0</div>
+    <div class="lbl">пройдено</div>
+  </div>
+  <div class="bar"><i id="bar"></i></div>
+</div>
+
+<div id="list"></div>
+<button class="go" id="again">Прогнать ещё раз</button>
+
+<div class="note" id="tail"></div>
+
+<script src="core.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  var listEl = document.getElementById('list');
+  var scoreEl = document.getElementById('score');
+  var barEl = document.getElementById('bar');
+  var tailEl = document.getElementById('tail');
+
+  function newCore(){
+    return window.MKCore.create({ onEvent: function(){} });
+  }
+
+  /* Нажатия по описанию, как в профиле: {a:'digit', d:7} и {a:'code', c:0x10} */
+  function press(core, list){
+    list.forEach(function(k){ core.key(k); });
+  }
+  function D(d){ return { a:'digit', d:d }; }
+  function C(c){ return { a:'code', c:c }; }
+  var UP = C(0x0E);   /* В↑ */
+
+  var TESTS = [
+
+    {
+      name: '2 ↑ 3 + = 5',
+      run: function(core){
+        press(core, [D(2), UP, D(3), C(0x10)]);
+        return core.ST.X;
+      },
+      want: 5
+    },
+
+    {
+      name: '2 ↑ 3 + 4 + = 9',
+      run: function(core){
+        press(core, [D(2), UP, D(3), C(0x10), D(4), C(0x10)]);
+        return core.ST.X;
+      },
+      want: 9
+    },
+
+    {
+      name: '10 ÷ 4 = 2.5',
+      run: function(core){
+        press(core, [D(1), D(0), UP, D(4), C(0x13)]);
+        return core.ST.X;
+      },
+      want: 2.5
+    },
+
+    {
+      name: 'x² от 12 = 144',
+      run: function(core){
+        press(core, [D(1), D(2), C(0x22)]);
+        return core.ST.X;
+      },
+      want: 144
+    },
+
+    {
+      name: '1 ÷ 0 даёт ЕГГОГ',
+      run: function(core){
+        press(core, [D(0), C(0x23)]);
+        return core.ST.err === true ? 'ЕГГОГ' : core.ST.X;
+      },
+      want: 'ЕГГОГ'
+    },
+
+    {
+      name: 'Факториал: 7! = 5040 (программа с L0)',
+      run: function(core){
+        core.setProgram([
+          0x40,       /* 00: X→П0 — n в регистр 0        */
+          0x01,       /* 01: 1                           */
+          0xD0,       /* 02: К П→X0 — R0 в X             */
+          0x12,       /* 03: ×                           */
+          0x5D, 0x00, 0x02, /* 04: F L0 02 — цикл до нуля */
+          0x50        /* 07: С/П                         */
+        ]);
+        core.ST.R[0] = 7;
+        var r = core.run(5000);
+        return { value: core.ST.X, note: r.steps + ' шагов' };
+      },
+      want: 5040
+    },
+
+    {
+      name: 'Условие x=0 истинно: идём дальше (→ 1)',
+      run: function(core){
+        core.setProgram([
+          0x5E, 0x00, 0x04,  /* 00: F x=0 04 — условие */
+          0x01,              /* 03: 1                  */
+          0x50,              /* 04: С/П                */
+          0x02,              /* 05: 2                  */
+          0x50               /* 06: С/П                */
+        ]);
+        core.setX(0);
+        core.run(200);
+        return core.ST.X;
+      },
+      want: 1
+    },
+
+    {
+      name: 'Условие x=0 ложно: переход по адресу (→ 2)',
+      run: function(core){
+        core.setProgram([
+          0x5E, 0x00, 0x04,
+          0x01,
+          0x50,
+          0x02,
+          0x50
+        ]);
+        core.setX(5);
+        core.run(200);
+        return core.ST.X;
+      },
+      want: 5
+    },
+
+    {
+      name: 'Косвенная запись: К X→П6 при R6=5 пишет в R6',
+      run: function(core){
+        core.setProgram([
+          0x04, 0x02,  /* 00: число 42        */
+          0xB6,        /* 02: К X→П 6         */
+          0x50         /* 03: С/П              */
+        ]);
+        core.ST.R[6] = 5;
+        core.run(200);
+        return core.ST.R[6];
+      },
+      want: 42
+    },
+
+    {
+      name: 'Косвенное чтение: К П→X6 возвращает R6 в X',
+      run: function(core){
+        core.setProgram([
+          0xD6,  /* 00: К П→X6 */
+          0x50   /* 01: С/П    */
+        ]);
+        core.ST.R[6] = 321;
+        core.run(200);
+        return core.ST.X;
+      },
+      want: 321
+    },
+
+    {
+      name: 'Снимок состояния восстанавливается',
+      run: function(core){
+        press(core, [D(8), UP, D(9), C(0x10)]);
+        var snap = core.snapshot();
+        core.reset(true);
+        core.restore(snap);
+        return core.ST.X;
+      },
+      want: 17
+    },
+
+    {
+      name: 'Бесконечный цикл останавливается лимитом',
+      run: function(core){
+        core.setProgram([
+          0x51, 0x00, 0x00, /* 00: БП 00 — вечный переход на себя */
+          0x50
+        ]);
+        var r = core.run(500);
+        return r.overflow ? 'остановлен' : 'ушёл';
+      },
+      want: 'остановлен'
+    }
+
+  ];
+
+  function showValue(v){
+    if (v && typeof v === 'object' && 'value' in v) return { text: v.value, note: v.note || '' };
+    return { text: v, note: '' };
+  }
+
+  function render(){
+    listEl.innerHTML = '';
+    var passed = 0;
+
+    TESTS.forEach(function(t){
+      var core = newCore();
+      var ok = false, shown = '', note = '', errText = '';
+
+      try{
+        var out = t.run(core);
+        var s = showValue(out);
+        shown = s.text;
+        note = s.note;
+        ok = (shown === t.want);
+      }catch(e){
+        errText = (e && e.message) ? e.message : 'исключение';
+        ok = false;
+      }
+
+      if (ok) passed++;
+
+      var row = document.createElement('div');
+      row.className = 'row ' + (ok ? 'ok' : 'bad');
+
+      var ic = document.createElement('div');
+      ic.className = 'ic';
+      ic.textContent = ok ? '✅' : '❌';
+
+      var box = document.createElement('div');
+
+      var nm = document.createElement('div');
+      nm.className = 'nm';
+      nm.textContent = t.name;
+
+      var dt = document.createElement('div');
+      dt.className = 'dt';
+      dt.innerHTML = 'получено: <b>' + String(shown) + '</b> · ожидалось: <b>' +
+                     String(t.want) + '</b>' + (note ? ' · ' + note : '') +
+                     (errText ? ' · <b>сбой: ' + errText + '</b>' : '');
+
+      box.appendChild(nm);
+      box.appendChild(dt);
+      row.appendChild(ic);
+      row.appendChild(box);
+      listEl.appendChild(row);
+    });
+
+    scoreEl.textContent = passed + ' / ' + TESTS.length;
+    barEl.style.width = Math.round(passed / TESTS.length * 100) + '%';
+    barEl.style.background = (passed === TESTS.length) ? 'var(--ok)' : 'var(--bad)';
+
+    tailEl.textContent = (passed === TESTS.length)
+      ? 'Все эталонные примеры сошлись. Можно делать интерфейс — вычисления проверены.'
+      : 'Есть расхождения: пока они не исправлены, интерфейс делать рано.';
+  }
+
+  document.getElementById('again').addEventListener('click', render);
+  render();
+})();
+</script>
+</body>
+</html>
