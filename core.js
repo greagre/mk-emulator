@@ -9,6 +9,14 @@
 
    Коды команд и правила переходов перенесены из проверенного
    ядра greagre/calculator/b3-34.js без изменения смысла.
+
+   Угол (переключатель Р-ГРД-Г на корпусе):
+     'deg'  — градусы (по умолчанию, как у оригинала при включении)
+     'grad' — грады (полный оборот 400)
+     'rad'  — радианы
+   Угол меняет только тригонометрию (sin, cos, tg и обратные),
+   на остальные команды не влияет и кнопкой «Сброс» не сбрасывается —
+   это положение переключателя на корпусе, а не содержимое памяти.
    ========================================================= */
 (function (global) {
   'use strict';
@@ -19,6 +27,7 @@
   var REG_COUNT = 14;
   var REG_NAMES = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd'];
   var CODE_CHARS = '0123456789-LCГE ';
+  var ANGLES = ['deg', 'grad', 'rad'];
 
   var CMD_NAMES = {
     0x0A: '·', 0x0B: '/-/', 0x0C: 'ВП', 0x0D: 'Cx', 0x0E: 'В↑', 0x0F: 'Вx',
@@ -129,7 +138,8 @@
       typing: false,
       exp: false,
       err: false,
-      steps: 0
+      steps: 0,
+      angle: (ANGLES.indexOf(opt.angle) >= 0 ? opt.angle : 'deg')
     };
 
     var log = [];
@@ -245,8 +255,35 @@
       ST.typing = false; ST.input = ''; ST.exp = false;
     }
 
-    function toRad(v) { return v * Math.PI / 180; }
-    function fromRad(v) { return v * 180 / Math.PI; }
+    /* ---------- угловые единицы (переключатель Р-ГРД-Г) ---------- */
+    function setAngle(mode) {
+      if (ANGLES.indexOf(mode) < 0) return ST.angle;
+      if (ST.angle === mode) return ST.angle;
+      ST.angle = mode;
+      changed();
+      return ST.angle;
+    }
+
+    function getAngle() { return ST.angle; }
+
+    function angleName(mode) {
+      var m = mode || ST.angle;
+      return m === 'grad' ? 'грады' : (m === 'rad' ? 'радианы' : 'градусы');
+    }
+
+    /* вход тригонометрии: число на индикаторе -> радианы */
+    function toRad(v) {
+      if (ST.angle === 'rad') return v;
+      if (ST.angle === 'grad') return v * Math.PI / 200;
+      return v * Math.PI / 180;
+    }
+
+    /* выход обратной тригонометрии: радианы -> число на индикаторе */
+    function fromRad(v) {
+      if (ST.angle === 'rad') return v;
+      if (ST.angle === 'grad') return v * 200 / Math.PI;
+      return v * 180 / Math.PI;
+    }
 
     /* ---------- выполнение одной команды ---------- */
     function exec(code) {
@@ -480,6 +517,7 @@
       ST.err = false; ST.run = false; ST.ip = 0; ST.sub = [];
       ST.layer = 'main'; ST.await = null; ST.kind = null; ST.addrBuf = '';
       if (!soft) ST.R = new Array(REG_COUNT).fill(0);
+      /* угол не сбрасывается: это переключатель на корпусе */
       log = [];
       changed();
     }
@@ -490,7 +528,8 @@
         X: ST.X, Y: ST.Y, Z: ST.Z, T: ST.T, X1: ST.X1,
         R: ST.R.slice(0),
         prog: ST.prog.slice(0),
-        ip: ST.ip, mode: ST.mode, err: ST.err
+        ip: ST.ip, mode: ST.mode, err: ST.err,
+        angle: ST.angle
       };
     }
 
@@ -507,6 +546,7 @@
       if (Array.isArray(snap.prog)) setProgram(snap.prog, true);
       if (typeof snap.ip === 'number') ST.ip = snap.ip;
       if (typeof snap.mode === 'string') ST.mode = snap.mode;
+      if (typeof snap.angle === 'string' && ANGLES.indexOf(snap.angle) >= 0) ST.angle = snap.angle;
       ST.err = !!snap.err;
       changed();
       return true;
@@ -682,6 +722,9 @@
       writeJump: writeJump,
       setRegister: setRegister,
       setX: setX,
+      setAngle: setAngle,
+      getAngle: getAngle,
+      angleName: angleName,
       snapshot: snapshot,
       restore: restore,
       getLog: getLog,
@@ -706,6 +749,7 @@
     isCondJump: isCondJump,
     isLoopCmd: isLoopCmd,
     REG_NAMES: REG_NAMES,
+    ANGLES: ANGLES,
     NOP: NOP,
     PROG_LEN: PROG_LEN,
     REG_COUNT: REG_COUNT,
