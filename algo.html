@@ -29,6 +29,12 @@ button.mini{padding:4px 8px;font-size:13px;border-radius:8px}
 input.num{width:120px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:14px ui-monospace,Menlo,Consolas,monospace}
 select.reg{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:14px ui-monospace,Menlo,Consolas,monospace;background:#fff}
 .big{font:22px ui-monospace,Menlo,Consolas,monospace;font-weight:700;color:var(--ok)}
+.regs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:10px}
+.rg{border:1px solid var(--line);border-radius:8px;padding:5px 4px;text-align:center;background:#fbfcfe;font:12px/1.3 ui-monospace,Menlo,Consolas,monospace;min-height:46px}
+.rg b{display:block;font-size:11px;color:var(--mut);font-weight:600}
+.rg span{font-size:14px;font-weight:600;word-break:break-all}
+.rg.on{background:#eaf7ef;border-color:#bfe3cd}
+.rg.hot{background:#e8f0ff;border-color:#b9cdfb}
 </style>
 </head>
 <body>
@@ -40,19 +46,19 @@ select.reg{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:1
   <textarea id="src" spellcheck="false"></textarea>
   <div class="row">
     <button class="primary" id="btnCompile">Перевести</button>
-    <button id="exFact">Факториал (n вводишь сам)</button>
-    <button id="exSq">Сумма квадратов</button>
+    <button id="exFact">Пример: факториал</button>
+    <button id="exSq">Пример: сумма квадратов</button>
     <button class="bad" id="btnClear">Очистить</button>
   </div>
   <div class="mut" style="margin-top:8px">
-    <b>вход n</b> — занять регистр под n, значение введёшь сам. <b>вывод</b> — оставить в X. <b>стоп</b> — С/П.
-    <b>пока … кон</b> — цикл. Комментарий — с #.
+    <b>вход n</b> — занять регистр под n, значение вводишь сам в разделе 3.
+    <b>вывод</b> — оставить в X. <b>стоп</b> — С/П. <b>пока … кон</b> — цикл. Комментарий — с #.
   </div>
 </div>
 
 <div class="card">
   <h2>2. Во что превратилось</h2>
-  <div id="out" class="mut">Нажми «Перевести».</div>
+  <div id="out" class="mut">Нажми «Перевести» — расшифровка появится здесь.</div>
 </div>
 
 <div class="card">
@@ -79,15 +85,18 @@ select.reg{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:1
 var $ = function(id){ return document.getElementById(id); };
 var BRIDGE_KEY = 'mk-emulator/bridge';
 var hasCore = !!(window.MKCore && MKCore.create);
-var PROG_LEN = 105;
-try { if (hasCore && MKCore.PROG_LEN) PROG_LEN = MKCore.PROG_LEN; } catch(e){}
+var PROG_LEN = (hasCore && MKCore.PROG_LEN) ? MKCore.PROG_LEN : 98;
+var REG_COUNT = (hasCore && MKCore.REG_COUNT) ? MKCore.REG_COUNT : 14;
+var REG_NAMES = (hasCore && MKCore.REG_NAMES) ? MKCore.REG_NAMES : ['0','1','2','3','4','5','6','7','8','9','a','b','c','d'];
+
 var compiled = null;
-var extraRows = [];
+var inputRegs = {};   /* регистр -> число, введённое пользователем */
 
 /* ---------- имена и ключевые слова ---------- */
 function isNameStart(ch){ return /[A-Za-zА-Яа-яЁё_]/.test(ch); }
 function isNameChar(ch){ return /[A-Za-zА-Яа-яЁё0-9_]/.test(ch); }
 function notLetter(){ return '(?![A-Za-zА-Яа-яЁё0-9_])'; }
+function kwTest(word, line){ return new RegExp('^' + word + notLetter(), 'i').test(line); }
 
 /* ---------- токены выражения ---------- */
 function tokenize(s){
@@ -153,10 +162,6 @@ function toRPN(tokens){
 }
 
 /* ---------- разбор программы ---------- */
-function kwTest(word, line){
-  return new RegExp('^' + word + notLetter(), 'i').test(line);
-}
-
 function splitCond(s){
   var depth = 0, found = null;
   for (var i = 0; i < s.length; i++){
@@ -224,12 +229,12 @@ function compile(src){
 
   function regOf(name){
     if (vars[name] != null) return vars[name];
-    var idx = null, low = name.toLowerCase();
-    var m = /^r([0-9]|[a-e])$/.exec(low);
-    if (m) idx = /[0-9]/.test(m[1]) ? +m[1] : 10 + 'abcde'.indexOf(m[1]);
+    var idx = null, low = String(name).toLowerCase();
+    var m = /^r([0-9]|[a-d])$/.exec(low);
+    if (m) idx = /[0-9]/.test(m[1]) ? +m[1] : 10 + 'abcd'.indexOf(m[1]);
     else { while (owner[auto] != null) auto++; idx = auto; }
-    if (idx > 14) err('не хватило регистров для «' + name + '» (всего 15: R0…Rd)');
-    if (owner[idx] != null && owner[idx] !== name) err('регистр R' + idx.toString(16) + ' уже занят: ' + owner[idx]);
+    if (idx == null || idx >= REG_COUNT) err('не хватило регистров для «' + name + '» (всего ' + REG_COUNT + ': R0…R' + REG_NAMES[REG_COUNT-1] + ')');
+    if (owner[idx] != null && owner[idx] !== name) err('регистр R' + REG_NAMES[idx] + ' уже занят: ' + owner[idx]);
     vars[name] = idx; owner[idx] = name;
     return idx;
   }
@@ -265,17 +270,29 @@ function compile(src){
   }
   function mark(label){ marks[label] = cells.length; }
 
+  /*
+    Ядро core.js: условная команда идёт дальше (ip+3), когда условие ИСТИННО,
+    и переходит по адресу, когда ЛОЖНО.
+    Считаем d = left - right и прыгаем на выход, когда условие цикла нарушено:
+      <   -> 0x5C (x<0):  ложно при d>=0 ... нет: 0x5C истинно при d<0,
+            значит прыжок происходит при d>=0 — то, что нужно для «пока a<b».
+      >=  -> 0x59 (x>=0): прыжок при d<0
+      =   -> 0x5E (x=0):  прыжок при d!=0
+      !=  -> 0x57 (x!=0): прыжок при d=0
+      >   -> 0x57 на выход, затем 0x59 на выход (d=0 и d<0)
+      <=  -> 0x57 на тело, затем 0x5C на выход
+  */
   function genCondJump(cond, outLabel, id){
     genExpr(cond.left);
     genExpr(cond.right);
-    emit(0x11);
+    emit(0x11);                       /* d = left - right */
     var op = cond.op;
-    if (op === '<'){ jump(0x59, outLabel); return; }
-    if (op === '>='){ jump(0x5C, outLabel); return; }
-    if (op === '='){ jump(0x57, outLabel); return; }
-    if (op === '!=' || op === '<>'){ jump(0x5E, outLabel); return; }
-    if (op === '>'){ jump(0x5C, outLabel); jump(0x5E, outLabel); return; }
-    if (op === '<='){ var body = 'le' + id; jump(0x5C, body); jump(0x57, outLabel); mark(body); return; }
+    if (op === '<'){ jump(0x5C, outLabel); return; }
+    if (op === '>='){ jump(0x59, outLabel); return; }
+    if (op === '='){ jump(0x5E, outLabel); return; }
+    if (op === '!=' || op === '<>'){ jump(0x57, outLabel); return; }
+    if (op === '>'){ jump(0x57, outLabel); jump(0x59, outLabel); return; }
+    if (op === '<='){ var body = 'le' + id; jump(0x57, body); jump(0x5C, outLabel); mark(body); return; }
     err('неизвестное сравнение «' + op + '»');
   }
 
@@ -312,6 +329,9 @@ function compile(src){
 
   genNodes(root);
 
+  var autoStop = false;
+  if (cells.length && cells[cells.length - 1] !== 0x50){ emit(0x50); autoStop = true; }
+
   for (var f = 0; f < fix.length; f++){
     var fx = fix[f], a = marks[fx.label];
     if (a == null) err('внутренняя ошибка: метка не найдена');
@@ -320,26 +340,22 @@ function compile(src){
     cells[fx.e] = a % 10;
   }
 
-  return { cells: cells, vars: vars, inputs: inputs, fixCount: fix.length };
+  return { cells: cells, vars: vars, inputs: inputs, fixCount: fix.length, autoStop: autoStop };
 }
 
 /* ---------- подписи команд ---------- */
 var PLAIN = {
   0x0A: '·', 0x0B: '/−/', 0x0C: 'ВП', 0x0D: 'Cx', 0x0E: 'В↑', 0x14: '↔',
   0x50: 'С/П', 0x51: 'БП', 0x52: 'В/О', 0x53: 'ПП', 0x54: 'NOP',
-  0x55: 'К П→X', 0x56: 'К X→П',
   0x57: 'F x≠0', 0x59: 'F x≥0', 0x5C: 'F x<0', 0x5E: 'F x=0',
-  0x15: 'К ∨', 0x16: 'К ∧', 0x17: 'К ⊕', 0x18: 'К ⊕', 0x19: 'К ИНВ',
-  0x1A: 'К ЗН', 0x1B: 'К |x|', 0x1C: 'К ЗН', 0x1D: 'К x²',
   0x10: '+', 0x11: '−', 0x12: '×', 0x13: '÷'
 };
 
 function cmdLabel(code, isAddrPart){
-  if (isAddrPart) return 'адрес';
+  if (isAddrPart) return 'адресная цифра';
   if (code >= 0 && code <= 9) return String(code);
-  if (code >= 0x40 && code <= 0x4E) return 'X→П ' + (code - 0x40).toString(16);
-  if (code >= 0x60 && code <= 0x6E) return 'П→X ' + (code - 0x60).toString(16);
-  if (code >= 0x80 && code <= 0x8E) return 'К ' + (code - 0x80).toString(16);
+  if (code >= 0x40 && code <= 0x4D) return 'X→П ' + REG_NAMES[code - 0x40];
+  if (code >= 0x60 && code <= 0x6D) return 'П→X ' + REG_NAMES[code - 0x60];
   if (PLAIN[code] != null) return PLAIN[code];
   return '0x' + ('0' + code.toString(16)).slice(-2);
 }
@@ -348,16 +364,20 @@ function hex2(code){
   try { if (window.MKCore && MKCore.hex2) return MKCore.hex2(code); } catch(e){}
   return ('0' + code.toString(16).toUpperCase()).slice(-2);
 }
-
 function isJumpCode(code){
   return code === 0x51 || code === 0x53 || code === 0x57 || code === 0x59 || code === 0x5C || code === 0x5E;
 }
+function fmtNum(v){
+  try { if (window.MKCore && MKCore.fmtNum) return MKCore.fmtNum(v); } catch(e){}
+  if (v == null || !isFinite(v)) return '—';
+  return String(v);
+}
 
-/* ---------- отрисовка ---------- */
+/* ---------- вывод: листинг ---------- */
 function render(){
   var out = $('out');
   if (!compiled){
-    out.innerHTML = '<span class="mut">Нажми «Перевести».</span>';
+    out.innerHTML = '<span class="mut">Нажми «Перевести» — расшифровка появится здесь.</span>';
     return;
   }
   var cells = compiled.cells;
@@ -373,26 +393,47 @@ function render(){
   if (cells.length > PROG_LEN){
     html += '<div class="err" style="margin-bottom:8px">Не влезает: ' + cells.length + ' ячеек, а лимит ' + PROG_LEN + '.</div>';
   }
-  var used = cells.length;
-  html += '<div style="margin-bottom:8px"><b>' + used + '</b> из ' + PROG_LEN + ' ячеек · последний адрес <b>' + (used - 1) + '</b> · переходов <b>' + compiled.fixCount + '</b></div>';
+  html += '<div style="margin-bottom:8px"><b>' + cells.length + '</b> из ' + PROG_LEN + ' ячеек · последний адрес <b>'
+        + (cells.length - 1) + '</b> · переходов <b>' + compiled.fixCount + '</b></div>';
   html += '<table class="tbl"><thead><tr><th>адр</th><th>hex</th><th>команда</th></tr></thead><tbody>';
   for (var a = 0; a < cells.length; a++){
     var isAddr = !!addrFlags[a];
-    var label = isAddr ? ('→ ' + (cells[a] === 0 && cells[a+1] === undefined ? '' : '')) : '';
-    html += '<tr' + (isAddr ? ' class="addr"' : '') + '><td>' + a + '</td><td>' + hex2(cells[a]) + '</td><td>'
-          + (isAddr ? 'адресная цифра' : cmdLabel(cells[a], false)) + '</td></tr>';
+    html += '<tr' + (isAddr ? ' class="addr"' : '') + '><td>' + a + '</td><td>' + hex2(cells[a])
+          + '</td><td>' + cmdLabel(cells[a], isAddr) + '</td></tr>';
   }
   html += '</tbody></table>';
 
   var lay = [];
   Object.keys(compiled.vars).sort(function(x, y){ return compiled.vars[x] - compiled.vars[y]; }).forEach(function(k){
-    lay.push(k + ' → R' + compiled.vars[k].toString(16));
+    lay.push(k + ' → R' + REG_NAMES[compiled.vars[k]]);
   });
   html += '<div class="ok" style="margin-top:10px">размещение: ' + (lay.length ? lay.join(', ') : 'переменных нет') + '</div>';
   if (compiled.inputs.length){
     html += '<div class="mut" style="margin-top:6px">входные: ' + compiled.inputs.join(', ') + ' — значения вводишь в разделе 3.</div>';
   }
+  if (compiled.autoStop){
+    html += '<div class="mut" style="margin-top:6px">в конец добавлено С/П, чтобы программа останавливалась.</div>';
+  }
   out.innerHTML = html;
+}
+
+/* ---------- вывод: данные и панель регистров ---------- */
+function drawRegs(){
+  var box = $('regs');
+  if (!box) return;
+  var html = '';
+  for (var r = 0; r < REG_COUNT; r++){
+    var v = inputRegs[r];
+    var has = (v !== undefined && v !== null && isFinite(v));
+    var nm = '';
+    if (compiled){
+      Object.keys(compiled.vars).forEach(function(k){ if (compiled.vars[k] === r) nm = k; });
+    }
+    html += '<div class="rg' + (has ? ' on' : '') + (nm ? ' hot' : '') + '">'
+          + '<b>R' + REG_NAMES[r] + (nm ? ' · ' + nm : '') + '</b>'
+          + '<span>' + (has ? fmtNum(v) : '—') + '</span></div>';
+  }
+  box.innerHTML = html;
 }
 
 function renderData(){
@@ -402,79 +443,81 @@ function renderData(){
     return;
   }
   var keys = Object.keys(compiled.vars).sort(function(x, y){ return compiled.vars[x] - compiled.vars[y]; });
-  if (!keys.length && !extraRows.length){
-    box.innerHTML = '<div class="warn">Переменных нет — программе нечего получать на вход.</div>';
-    return;
+  var h = '';
+  if (keys.length){
+    h += '<table class="tbl"><thead><tr><th>переменная</th><th>регистр</th><th>значение</th></tr></thead><tbody>';
+    keys.forEach(function(k){
+      var r = compiled.vars[k];
+      var isIn = compiled.inputs.indexOf(k) >= 0;
+      var cur = (inputRegs[r] !== undefined) ? fmtNum(inputRegs[r]) : '';
+      h += '<tr><td>' + k + (isIn ? ' <span class="mut">(вход)</span>' : '') + '</td>'
+         + '<td>R' + REG_NAMES[r] + '</td>'
+         + '<td><input class="num" data-reg="' + r + '" id="val' + r + '" value="' + cur + '" placeholder="0" inputmode="decimal"></td></tr>';
+    });
+    h += '</tbody></table>';
+  } else {
+    h += '<div class="warn">Переменных нет — программе нечего получать на вход.</div>';
   }
-  var h = '<table class="tbl"><thead><tr><th>переменная</th><th>регистр</th><th>значение</th></tr></thead><tbody>';
-  keys.forEach(function(k){
-    var r = compiled.vars[k];
-    var isIn = compiled.inputs.indexOf(k) >= 0;
-    h += '<tr><td>' + k + (isIn ? ' <span class="mut">(вход)</span>' : '') + '</td>'
-       + '<td>R' + r.toString(16) + '</td>'
-       + '<td><input class="num" data-reg="' + r + '" id="val' + r + '" placeholder="0" inputmode="decimal"></td></tr>';
-  });
-  h += '</tbody></table>';
   h += '<div class="row"><select class="reg" id="extraReg">';
-  for (var r = 0; r < 15; r++) h += '<option value="' + r + '">R' + r.toString(16) + '</option>';
+  for (var r = 0; r < REG_COUNT; r++) h += '<option value="' + r + '">R' + REG_NAMES[r] + '</option>';
   h += '</select><input class="num" id="extraVal" placeholder="значение" inputmode="decimal">'
      + '<button class="mini" id="btnExtra">Положить в регистр</button></div>';
-  h += '<div id="extraList" class="mut" style="margin-top:6px"></div>';
+  h += '<div class="regs" id="regs"></div>';
   box.innerHTML = h;
+
+  Array.prototype.forEach.call(box.querySelectorAll('input.num[data-reg]'), function(el){
+    el.oninput = function(){
+      var r = +el.getAttribute('data-reg');
+      var v = parseFloat(String(el.value).replace(',', '.'));
+      if (String(el.value).trim() === '' || !isFinite(v)) delete inputRegs[r];
+      else inputRegs[r] = v;
+      drawRegs();
+    };
+  });
+
   $('btnExtra').onclick = function(){
     var r = +$('extraReg').value;
     var v = parseFloat(String($('extraVal').value).replace(',', '.'));
     if (!isFinite(v)) return;
-    extraRows.push({ reg: r, val: v });
+    inputRegs[r] = v;
     $('extraVal').value = '';
-    drawExtras();
+    drawRegs();
+    renderData();
+    var box2 = $('dataBox');
+    if (box2) box2.scrollIntoView({ block: 'nearest' });
   };
-  drawExtras();
-}
 
-function drawExtras(){
-  var box = $('extraList');
-  if (!box) return;
-  if (!extraRows.length){ box.innerHTML = ''; return; }
-  box.innerHTML = extraRows.map(function(e, i){
-    return '<div>R' + e.reg.toString(16) + ' = ' + e.val + ' <button class="mini bad" data-del="' + i + '">×</button></div>';
-  }).join('');
-  Array.prototype.forEach.call(box.querySelectorAll('[data-del]'), function(b){
-    b.onclick = function(){ extraRows.splice(+b.getAttribute('data-del'), 1); drawExtras(); };
-  });
-}
-
-function collectData(){
-  var data = {}, layout = {};
-  if (!compiled) return { data: data, layout: layout };
-  Object.keys(compiled.vars).forEach(function(k){
-    var r = compiled.vars[k];
-    layout[k] = r;
-    var el = $('val' + r);
-    if (el && String(el.value).trim() !== ''){
-      var v = parseFloat(String(el.value).replace(',', '.'));
-      if (isFinite(v)) data[r] = v;
-    }
-  });
-  extraRows.forEach(function(e){ data[e.reg] = e.val; });
-  return { data: data, layout: layout };
+  drawRegs();
 }
 
 function dataText(data){
   var keys = Object.keys(data);
   if (!keys.length) return 'пусто';
-  return keys.sort(function(a, b){ return a - b; }).map(function(k){ return 'R' + k + '=' + data[k]; }).join(', ');
+  return keys.sort(function(a, b){ return a - b; }).map(function(k){
+    return 'R' + REG_NAMES[+k] + '=' + fmtNum(data[k]);
+  }).join(', ');
+}
+
+function collectData(){
+  var data = {}, layout = {};
+  if (compiled){
+    Object.keys(compiled.vars).forEach(function(k){ layout[k] = compiled.vars[k]; });
+  }
+  Object.keys(inputRegs).forEach(function(k){
+    var v = inputRegs[k];
+    if (typeof v === 'number' && isFinite(v)) data[k] = v;
+  });
+  return { data: data, layout: layout };
 }
 
 /* ---------- прогон ---------- */
 function readRegs(core){
   var res = {};
-  for (var r = 0; r < 15; r++){
+  for (var r = 0; r < REG_COUNT; r++){
     var v = null;
     try {
-      if (typeof core.getRegister === 'function') v = core.getRegister(r);
-      else if (core.ST && core.ST.R) v = core.ST.R[r];
-      else if (core.regs) v = core.regs[r];
+      if (core.ST && core.ST.R) v = core.ST.R[r];
+      else if (typeof core.getRegister === 'function') v = core.getRegister(r);
     } catch(e){ v = null; }
     if (typeof v === 'number' && isFinite(v)) res[r] = v;
   }
@@ -489,23 +532,30 @@ function doRun(){
   try {
     var core = MKCore.create({});
     core.setProgram(compiled.cells.slice());
-    if (typeof core.reset === 'function') core.reset(true);
+    core.reset(true);
     Object.keys(got.data).forEach(function(k){ core.setRegister(+k, got.data[k]); });
-    if (typeof core.setX === 'function') core.setX(0);
+    core.setX(0);
     var res = core.run(20000) || {};
     var after = readRegs(core);
     var h = '';
     h += '<div>вход: <b>' + dataText(got.data) + '</b></div>';
-    h += '<div style="margin-top:6px">результат X: <span class="big">' + (res.x != null ? res.x : '—') + '</span></div>';
+    h += '<div style="margin-top:6px">результат X: <span class="big">'
+       + (res.result === 'error' ? 'ЕГГОГ' : (res.x != null ? fmtNum(res.x) : '—')) + '</span></div>';
     h += '<div class="mut" style="margin-top:4px">шагов: ' + (res.steps != null ? res.steps : '—')
        + ' · остановка: ' + (res.result || '—') + '</div>';
     var keys = Object.keys(after);
     if (keys.length){
-      h += '<div style="margin-top:8px">регистры после:</div><div class="mut">' + keys.map(function(k){
+      h += '<div style="margin-top:10px">регистры после прогона:</div>';
+      h += '<div class="regs">';
+      for (var r = 0; r < REG_COUNT; r++){
         var nm = '';
-        Object.keys(compiled.vars).forEach(function(v){ if (compiled.vars[v] === +k) nm = v; });
-        return 'R' + k + (nm ? '(' + nm + ')' : '') + ' = ' + after[k];
-      }).join(' · ') + '</div>';
+        Object.keys(compiled.vars).forEach(function(v){ if (compiled.vars[v] === r) nm = v; });
+        var val = after[r];
+        h += '<div class="rg' + (val ? ' on' : '') + (nm ? ' hot' : '') + '">'
+           + '<b>R' + REG_NAMES[r] + (nm ? ' · ' + nm : '') + '</b>'
+           + '<span>' + (val != null ? fmtNum(val) : '—') + '</span></div>';
+      }
+      h += '</div>';
     }
     box.innerHTML = h;
   } catch (e){
@@ -522,6 +572,7 @@ function openInBody(){
     data: got.data,
     layout: got.layout,
     inputs: compiled.inputs,
+    src: $('src').value,
     from: 'Язык Алго'
   };
   try {
@@ -535,7 +586,7 @@ function openInBody(){
 
 /* ---------- примеры ---------- */
 var EX_FACT = [
-  '# факториал: n вводишь сам в разделе «Данные»',
+  '# факториал: n вводишь сам в разделе 3 (R0)',
   'вход n',
   's = 1',
   'i = 0',
@@ -561,13 +612,20 @@ var EX_SQ = [
 ].join('\n');
 
 /* ---------- запуск ---------- */
+function clearPanels(){
+  $('out').innerHTML = '<span class="mut">Нажми «Перевести» — расшифровка появится здесь.</span>';
+  $('dataBox').innerHTML = '<span class="mut">Появятся после перевода: переменная → регистр → значение.</span>';
+  $('runOut').innerHTML = '<span class="mut">—</span>';
+}
+
 function doCompile(){
   var out = $('out');
   try {
     compiled = compile($('src').value);
-    extraRows = [];
+    inputRegs = {};
     render();
     renderData();
+    $('runOut').innerHTML = '<span class="mut">Введи значения в разделе 3 и нажми «Пуск».</span>';
   } catch (e){
     compiled = null;
     var msg = 'Ошибка';
@@ -576,18 +634,20 @@ function doCompile(){
     if (e.whole) msg += '<div class="mut" style="margin-top:6px">' + e.whole.replace(/</g, '&lt;') + '</div>';
     out.innerHTML = '<div class="err">' + msg + '</div>';
     $('dataBox').innerHTML = '<span class="mut">Появятся после перевода.</span>';
+    $('runOut').innerHTML = '<span class="mut">—</span>';
   }
 }
 
 $('btnCompile').onclick = doCompile;
+
 $('btnRun').onclick = doRun;
+
 $('btnReset').onclick = function(){
-  $('runOut').innerHTML = '<span class="mut">Сброс. Введи значение и снова «Пуск».</span>';
-  document.querySelectorAll('input.num[data-reg]').forEach(function(el){
-    if (el.getAttribute('data-keep') !== '1') el.value = '';
-  });
+  $('runOut').innerHTML = '<span class="mut">Сброс: программа снова с адреса 00, введённые значения сохранены. Нажми «Пуск».</span>';
 };
+
 $('btnBody').onclick = openInBody;
+
 $('btnJson').onclick = function(){
   if (!compiled){ alert('Сначала «Перевести».'); return; }
   var got = collectData();
@@ -605,17 +665,18 @@ $('btnJson').onclick = function(){
   a.download = 'algo-program.json';
   a.click();
 };
-$('exFact').onclick = function(){ $('src').value = EX_FACT; doCompile(); };
-$('exSq').onclick = function(){ $('src').value = EX_SQ; doCompile(); };
+
+$('exFact').onclick = function(){ $('src').value = EX_FACT; compiled = null; inputRegs = {}; clearPanels(); };
+$('exSq').onclick = function(){ $('src').value = EX_SQ; compiled = null; inputRegs = {}; clearPanels(); };
 $('btnClear').onclick = function(){
   $('src').value = '';
-  compiled = null; extraRows = [];
-  render(); renderData();
-  $('runOut').innerHTML = '<span class="mut">—</span>';
+  compiled = null; inputRegs = {};
+  clearPanels();
 };
 
+/* при открытии: текст примера есть, но расшифровки нет — только по кнопке */
 $('src').value = EX_FACT;
-doCompile();
+clearPanels();
 })();
 </script>
 </body>
