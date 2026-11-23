@@ -35,6 +35,12 @@
     border: 1px solid var(--line); border-radius: 10px;
     padding: 9px 10px; font-size: 14px;
   }
+  .topbtn {
+    background: var(--case-2); color: var(--text); border: 1px solid var(--line);
+    border-radius: 10px; padding: 9px 12px; font: inherit; font-size: 15px;
+    cursor: pointer; line-height: 1;
+  }
+  .topbtn:active { background: #2b3641; border-color: var(--accent); }
 
   .calc {
     background: linear-gradient(180deg, var(--case), var(--case-2));
@@ -175,8 +181,6 @@
   .prow:active { background: #1b2530; }
   .prow.cur { background: #24405a; box-shadow: inset 3px 0 0 var(--accent); }
   .prow.empty { opacity: .45; }
-  /* маркер текущей строки: место под него есть в каждой строке,
-     поэтому адреса не прыгают при перескоке указателя */
   .paddr { color: var(--muted); }
   .paddr::before {
     content: "\25B8"; display: inline-block; width: 11px;
@@ -237,6 +241,73 @@
 
   body[data-mode="work"] .study-only { display: none !important; }
 
+  /* --- библиотека программ --- */
+  .shelf {
+    position: fixed; inset: 0; z-index: 60;
+    background: rgba(8, 10, 12, .72);
+    display: flex; align-items: flex-end; justify-content: center;
+    padding: 10px; backdrop-filter: blur(3px);
+  }
+  .shelf[hidden] { display: none; }
+  .shelf-card {
+    width: 100%; max-width: 520px; max-height: 86vh;
+    background: #1b1f23; border: 1px solid var(--line);
+    border-radius: 18px 18px 14px 14px;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 -8px 40px rgba(0,0,0,.6);
+  }
+  .shelf-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; border-bottom: 1px solid #262c33;
+    font-size: 14px; font-weight: 700;
+  }
+  .shelf-head button {
+    background: #262c33; color: var(--text); border: 1px solid var(--line);
+    border-radius: 9px; width: 32px; height: 32px; font-size: 15px; cursor: pointer;
+  }
+  .shelf-tools {
+    display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 12px;
+    border-bottom: 1px solid #262c33;
+  }
+  .shelf-tools button {
+    flex: 1 1 auto; background: #232a31; color: var(--text);
+    border: 1px solid var(--line); border-radius: 9px;
+    padding: 8px 10px; font: inherit; font-size: 12px; cursor: pointer;
+  }
+  .shelf-tools button:active { background: #2f3942; border-color: var(--accent); }
+  .shelf-list { overflow: auto; padding: 8px 10px 14px; }
+  .shelf-cat {
+    font-size: 11px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 1px; padding: 10px 4px 6px;
+  }
+  .srow {
+    display: flex; gap: 10px; padding: 9px 8px;
+    border: 1px solid #262c33; border-radius: 12px; margin-bottom: 7px;
+    background: #171b1f;
+  }
+  .snum {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 13px; color: var(--accent); font-weight: 700;
+    min-width: 24px; padding-top: 1px;
+  }
+  .sbody { flex: 1; min-width: 0; }
+  .stitle { font-size: 13px; font-weight: 600; }
+  .ssub { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+  .sres { font-size: 11px; margin-top: 4px; font-family: ui-monospace, Menlo, monospace; }
+  .sres.ok { color: #6fce8e; }
+  .sres.bad { color: #ef8f8f; }
+  .sbtns { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .sb {
+    background: #232a31; color: var(--text); border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 11px; cursor: pointer;
+  }
+  .sb:active { background: #2f3942; border-color: var(--accent); }
+  .sb.danger { color: #e39a9a; }
+  .shelf-empty {
+    font-size: 11px; color: var(--muted); line-height: 1.45;
+    padding: 10px 6px 4px;
+  }
+
   .foot { text-align: center; margin-top: 12px; font-size: 11px; color: var(--muted); }
   .foot a { color: var(--accent); text-decoration: none; }
 </style>
@@ -246,6 +317,7 @@
   <div class="top">
     <label for="model">Модель</label>
     <select id="model" aria-label="Модель калькулятора"></select>
+    <button type="button" class="topbtn" id="shelfOpen" title="Библиотека программ">☰</button>
   </div>
 
   <div class="calc">
@@ -315,8 +387,25 @@
   <div class="foot"><a href="tests.html">Проверка ядра — 12 эталонов</a></div>
 </div>
 
+<div class="shelf" id="shelf" hidden>
+  <div class="shelf-card">
+    <div class="shelf-head">
+      <span>Программы</span>
+      <button type="button" id="shelfClose" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="shelf-tools">
+      <button type="button" id="shelfSave">＋ Сохранить текущую</button>
+      <button type="button" id="shelfExport">⇩ В файл</button>
+      <button type="button" id="shelfImport">⇧ Из файла</button>
+      <input type="file" id="shelfFile" accept=".json,application/json" hidden>
+    </div>
+    <div class="shelf-list" id="shelfList"></div>
+  </div>
+</div>
+
 <script src="core.js"></script>
 <script src="profiles.js"></script>
 <script src="ui.js"></script>
+<script src="shelf.js"></script>
 </body>
 </html>
