@@ -44,6 +44,7 @@
   }
   button:active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+  button.small { padding: 7px 10px; font-size: 12px; }
   button:disabled { opacity: .5; }
   .params { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
   .pfield { background: var(--chip); border: 1px solid var(--line); border-radius: 10px; padding: 6px 8px; }
@@ -68,6 +69,7 @@
   .out .lbl { color: var(--muted); font-size: 11px; margin-right: 6px; }
   .out .val { color: var(--accent); font-weight: 700; font-size: 18px; }
   .meta { color: var(--muted); font-size: 12px; margin-top: 6px; font-family: ui-monospace, Menlo, monospace; }
+  .paramsfoot { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
   a.back { color: var(--accent); font-size: 13px; text-decoration: none; }
 </style>
 </head>
@@ -98,7 +100,10 @@ print f
   <div class="card">
     <h2>Параметры</h2>
     <div class="params" id="params"><span class="meta">появятся после сборки</span></div>
-    <div class="meta">значения, введённые руками, сохраняются при пересборке</div>
+    <div class="paramsfoot">
+      <button class="small" id="btnReset">Значения из текста</button>
+      <span class="meta">введённое запоминается: и при пересборке, и между загрузками страницы</span>
+    </div>
   </div>
 
   <div class="card">
@@ -140,8 +145,20 @@ print f
   /* Что человек ввёл в поля параметров: имя -> строка.
      Нужно потому, что сборка перерисовывает поля, а значение по
      умолчанию берётся из текста программы (param n = 7) и затирало
-     бы ручной ввод при каждом нажатии «Собрать». */
+     бы ручной ввод при каждом нажатии «Собрать».
+     Дополнительно набор кладётся в localStorage, чтобы пережить
+     перезагрузку страницы — иначе при открытии снова стоит семёрка
+     из примера. */
+  var LS_KEY = 'mk-algo/params';
   var paramValues = {};
+  try {
+    var savedVals = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+    if (savedVals && typeof savedVals === 'object') paramValues = savedVals;
+  } catch (e) { paramValues = {}; }
+
+  function saveParamValues() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(paramValues)); } catch (e) {}
+  }
 
   var DEMOS = [
     'reg n f\nparam n = 7\nf = 1\nwhile n != 0\n  f = f * n\n  n = n - 1\nend\nprint f\n',
@@ -172,7 +189,10 @@ print f
     var t = e.target;
     if (t && t.getAttribute) {
       var nm = t.getAttribute('data-name');
-      if (nm !== null) paramValues[nm] = t.value;
+      if (nm !== null) {
+        paramValues[nm] = t.value;
+        saveParamValues();
+      }
     }
   });
 
@@ -211,6 +231,7 @@ print f
       var nmIn = inputs[i].getAttribute('data-name');
       if (nmIn !== null) paramValues[nmIn] = inputs[i].value;
     }
+    saveParamValues();
     return values;
   }
 
@@ -324,9 +345,18 @@ print f
   $('btnBuild').addEventListener('click', build);
   $('btnRun').addEventListener('click', run);
   $('btnEmu').addEventListener('click', toEmulator);
+
+  /* Вернуть значения, написанные в тексте программы (param n = 7 и т. п.). */
+  $('btnReset').addEventListener('click', function () {
+    paramValues = {};
+    saveParamValues();
+    build();
+  });
+
   $('btnDemo').addEventListener('click', function () {
     demoIdx = (demoIdx + 1) % DEMOS.length;
     paramValues = {};               /* у нового примера свои значения */
+    saveParamValues();
     srcEl.value = DEMOS[demoIdx];
     build();
   });
