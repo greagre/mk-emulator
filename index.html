@@ -160,6 +160,7 @@
   .prog {
     background: #12161a; border: 1px solid var(--line);
     border-radius: 10px; padding: 6px; max-height: 260px; overflow: auto;
+    scroll-behavior: smooth;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
   .prog-head { display: flex; justify-content: space-between; gap: 8px;
@@ -169,11 +170,20 @@
     display: grid; grid-template-columns: 30px 1fr auto; gap: 8px;
     align-items: center; padding: 4px 6px; border-radius: 6px;
     font-size: 12px; cursor: pointer;
+    transition: background .12s ease, box-shadow .12s ease;
   }
   .prow:active { background: #1b2530; }
-  .prow.cur { background: #24405a; }
+  .prow.cur { background: #24405a; box-shadow: inset 3px 0 0 var(--accent); }
   .prow.empty { opacity: .45; }
+  /* маркер текущей строки: место под него есть в каждой строке,
+     поэтому адреса не прыгают при перескоке указателя */
   .paddr { color: var(--muted); }
+  .paddr::before {
+    content: "\25B8"; display: inline-block; width: 11px;
+    margin-right: 3px; color: var(--accent); opacity: 0;
+    transition: opacity .1s ease;
+  }
+  .prow.cur .paddr::before { opacity: 1; }
   .plabel { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .pcode { color: var(--muted); font-size: 11px; }
   .prow.cur .pcode { color: #a9cbe8; }
