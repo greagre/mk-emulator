@@ -71,7 +71,7 @@
     font-size: 11px; color: var(--muted); font-family: ui-monospace, Menlo, Consolas, monospace; }
   .lcd-sub b { color: var(--text); font-weight: 600; }
 
-  .stack { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 10px 0 8px; }
+  .stack { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 0; }
   .cell {
     background: #1b1f23; border: 1px solid var(--line); border-radius: 8px;
     padding: 5px 4px; text-align: center; min-width: 0;
@@ -82,7 +82,7 @@
   .cell.cur { border-color: var(--accent); }
   .cell.cur span { color: var(--accent); }
 
-  .regs { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 10px; }
+  .regs { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
   .reg {
     background: #1b1f23; border: 1px solid var(--line); border-radius: 7px;
     color: var(--muted); padding: 4px 2px; font: inherit; cursor: default;
@@ -94,7 +94,7 @@
   .reg.pick { cursor: pointer; border-color: var(--accent); color: var(--text); }
   .reg.pick:active { background: #24405a; }
 
-  .keys { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+  .keys { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-top: 10px; }
   .key {
     aspect-ratio: 1 / 1;
     border: 1px solid #191c20;
@@ -136,8 +136,29 @@
   }
   .status b { color: var(--accent); font-weight: 600; }
 
+  /* --- вкладки режима «Учёба» --- */
+  .tabs {
+    display: flex; gap: 4px; margin: 10px 0 8px;
+    background: #12161a; border: 1px solid var(--line);
+    border-radius: 12px; padding: 4px;
+  }
+  .tabs button {
+    flex: 1; background: transparent; color: var(--muted); border: 0;
+    border-radius: 9px; padding: 8px 4px; font: inherit; font-size: 12px;
+    font-weight: 600; cursor: pointer;
+  }
+  .tabs button.on { background: #24405a; color: var(--text); }
+  .tabs button:active { background: #1b2a38; }
+
+  .tabpane { display: none; }
+  body[data-tab="num"] #tabNum { display: block; }
+  body[data-tab="regs"] #tabRegs { display: grid; }
+  body[data-tab="code"] #tabCode { display: block; }
+  body[data-tab="log"] #tabLog { display: block; }
+  body.picking #tabRegs { display: grid !important; }
+
   .prog {
-    margin-top: 10px; background: #12161a; border: 1px solid var(--line);
+    background: #12161a; border: 1px solid var(--line);
     border-radius: 10px; padding: 6px; max-height: 260px; overflow: auto;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
@@ -156,6 +177,32 @@
   .plabel { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .pcode { color: var(--muted); font-size: 11px; }
   .prow.cur .pcode { color: #a9cbe8; }
+
+  .logbox {
+    background: #12161a; border: 1px solid var(--line); border-radius: 10px;
+    overflow: hidden;
+  }
+  .loghead { display: flex; justify-content: space-between; align-items: center;
+    gap: 8px; padding: 6px 8px; font-size: 11px; color: var(--muted);
+    border-bottom: 1px solid #1c2228; }
+  .loghead b { color: var(--accent); font-weight: 600; }
+  .loghead button {
+    background: #1f242a; color: var(--muted); border: 1px solid var(--line);
+    border-radius: 8px; padding: 4px 8px; font: inherit; font-size: 11px; cursor: pointer;
+  }
+  .loghead button:active { background: #2b3641; color: var(--text); }
+  .log { max-height: 240px; overflow: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .logrow { display: flex; flex-wrap: wrap; gap: 2px 8px;
+    padding: 5px 8px; font-size: 11px; border-bottom: 1px solid #171c21; }
+  .logrow:last-child { border-bottom: 0; }
+  .logrow.err { background: #2a1a1a; }
+  .lnum { color: #6b757e; min-width: 30px; }
+  .laddr { color: var(--muted); min-width: 22px; }
+  .llab { flex: 1; min-width: 110px; color: var(--text); }
+  .ldiff { width: 100%; color: var(--accent); font-size: 10px; }
+  .ldiff.dim { color: #6b757e; }
+  .logempty { padding: 14px 8px; font-size: 11px; color: var(--muted); text-align: center; }
 
   .hint {
     margin-top: 10px; min-height: 34px;
@@ -179,13 +226,12 @@
   .modeseg button.on { background: var(--accent); color: #0d1418; }
 
   body[data-mode="work"] .study-only { display: none !important; }
-  body.picking .study-only.regs { display: grid !important; }
 
   .foot { text-align: center; margin-top: 12px; font-size: 11px; color: var(--muted); }
   .foot a { color: var(--accent); text-decoration: none; }
 </style>
 </head>
-<body data-mode="study">
+<body data-mode="study" data-tab="num">
 <div class="app">
   <div class="top">
     <label for="model">Модель</label>
@@ -204,8 +250,6 @@
       </div>
     </div>
 
-    <div class="stack study-only" id="stack"></div>
-    <div class="regs study-only" id="regs"></div>
     <div class="keys" id="keys"></div>
 
     <div class="service" id="service"></div>
@@ -223,7 +267,32 @@
 
     <div class="status study-only" id="status"></div>
 
-    <div class="prog study-only" id="prog"></div>
+    <div class="tabs study-only" id="tabs">
+      <button type="button" data-tab="num">Числа</button>
+      <button type="button" data-tab="regs">Регистры</button>
+      <button type="button" data-tab="code">Код</button>
+      <button type="button" data-tab="log">Журнал</button>
+    </div>
+
+    <div class="tabpane study-only" id="tabNum">
+      <div class="stack" id="stack"></div>
+    </div>
+
+    <div class="tabpane regs study-only" id="tabRegs"></div>
+
+    <div class="tabpane study-only" id="tabCode">
+      <div class="prog" id="prog"></div>
+    </div>
+
+    <div class="tabpane study-only" id="tabLog">
+      <div class="logbox">
+        <div class="loghead">
+          <span>Журнал шагов · <b id="logCount">0</b></span>
+          <button type="button" id="logClear">Очистить</button>
+        </div>
+        <div class="log" id="log"></div>
+      </div>
+    </div>
 
     <div class="hint" id="hint">Готово. Клавиша f открывает второй слой, k — слой косвенных команд.</div>
   </div>
