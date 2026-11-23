@@ -60,6 +60,7 @@
 <p class="foot" id="foot"></p>
 
 <script src="core.js"></script>
+<script src="core-fix.js"></script>
 <script>
 (function () {
   'use strict';
@@ -223,7 +224,8 @@
 
     document.getElementById('foot').textContent =
       'память программ: ' + MKCore.PROG_LEN + ' шагов · регистров: ' + MKCore.REG_COUNT +
-      ' · значащих цифр: ' + MKCore.MAXDIG;
+      ' · значащих цифр: ' + MKCore.MAXDIG +
+      ' · надстройка набора числа: ' + (MKCore.__fixTyping ? 'включена' : 'нет');
   }
 
   document.getElementById('rerun').addEventListener('click', render);
