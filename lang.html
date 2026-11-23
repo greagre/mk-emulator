@@ -97,6 +97,7 @@ print f
   <div class="card">
     <h2>Параметры</h2>
     <div class="params" id="params"><span class="meta">появятся после сборки</span></div>
+    <div class="meta">значения, введённые руками, сохраняются при пересборке</div>
   </div>
 
   <div class="card">
@@ -135,6 +136,12 @@ print f
   var core = window.MKCore.create({ onEvent: function () {} });
   var built = null;
 
+  /* Что человек ввёл в поля параметров: имя -> строка.
+     Нужно потому, что сборка перерисовывает поля, а значение по
+     умолчанию берётся из текста программы (param n = 7) и затирало
+     бы ручной ввод при каждом нажатии «Собрать». */
+  var paramValues = {};
+
   var DEMOS = [
     'reg n f\nparam n = 7\nf = 1\nwhile n != 0\n  f = f * n\n  n = n - 1\nend\nprint f\n',
     'reg a b s\nparam a = 3\nparam b = 4\ns = a + b\nprint s\n',
@@ -144,6 +151,29 @@ print f
   var demoIdx = 0;
 
   function fmt(x) { return window.MKCore.fmtNum(x); }
+
+  /* Поля параметров: ручной ввод главнее значения из текста программы. */
+  function renderParams(list) {
+    if (!list || !list.length) {
+      paramsEl.innerHTML = '<span class="meta">параметров нет</span>';
+      return;
+    }
+    paramsEl.innerHTML = list.map(function (p, i) {
+      var v = Object.prototype.hasOwnProperty.call(paramValues, p.name)
+        ? paramValues[p.name]
+        : String(p.value);
+      return '<label class="pfield"><span>' + esc(p.name) + '</span>' +
+        '<input data-i="' + i + '" data-name="' + esc(p.name) + '" value="' + esc(v) + '"></label>';
+    }).join('');
+  }
+
+  paramsEl.addEventListener('input', function (e) {
+    var t = e.target;
+    if (t && t.getAttribute) {
+      var nm = t.getAttribute('data-name');
+      if (nm !== null) paramValues[nm] = t.value;
+    }
+  });
 
   function build() {
     var res = window.MKLang.assemble(srcEl.value);
@@ -159,14 +189,7 @@ print f
     buildEl.innerHTML = '<div class="ok">собрано: ' + res.size + ' шагов из ' +
       window.MKCore.PROG_LEN + '</div>';
 
-    if (res.params.length) {
-      paramsEl.innerHTML = res.params.map(function (p, i) {
-        return '<label class="pfield"><span>' + esc(p.name) + '</span>' +
-          '<input data-i="' + i + '" value="' + esc(String(p.value)) + '"></label>';
-      }).join('');
-    } else {
-      paramsEl.innerHTML = '<span class="meta">параметров нет</span>';
-    }
+    renderParams(res.params);
 
     listEl.innerHTML = res.listing.map(function (it) {
       var isStop = it.code === 0x50;
@@ -188,6 +211,8 @@ print f
     for (var i = 0; i < inputs.length; i++) {
       var v = parseFloat(String(inputs[i].value).replace(',', '.'));
       values.push(isNaN(v) ? 0 : v);
+      var nmIn = inputs[i].getAttribute('data-name');
+      if (nmIn !== null) paramValues[nmIn] = inputs[i].value;
     }
 
     core.reset(false);
@@ -231,7 +256,19 @@ print f
         }).join('')
       : '<span class="meta">вывода нет</span>';
 
-    metaEl.textContent = (problem ? problem + ' · ' : '') + 'шагов ' + steps;
+    /* Регистры после останова — видно, что реально осталось в машине. */
+    var regLine = '';
+    if (built.order && built.order.length) {
+      var parts = [];
+      for (var q = 0; q < built.order.length; q++) {
+        var name = built.order[q];
+        parts.push(name + '=' + fmt(core.ST.R[built.regs[name]]));
+      }
+      regLine = parts.join('  ');
+    }
+
+    metaEl.textContent = (problem ? problem + ' · ' : '') + 'шагов ' + steps +
+      (regLine ? ' · ' + regLine : '');
     if (problem) metaEl.style.color = 'var(--bad)'; else metaEl.style.color = '';
   }
 
@@ -250,6 +287,7 @@ print f
   $('btnRun').addEventListener('click', run);
   $('btnDemo').addEventListener('click', function () {
     demoIdx = (demoIdx + 1) % DEMOS.length;
+    paramValues = {};               /* у нового примера свои значения */
     srcEl.value = DEMOS[demoIdx];
     build();
   });
