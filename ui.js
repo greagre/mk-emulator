@@ -5,7 +5,9 @@
 
    Два режима:
      work  — «Работа»: корпус, дисплей, клавиатура, Пуск/Сброс.
-     study — «Учёба»: плюс стек, регистры, листинг, Шаг/Авто/00.
+     study — «Учёба»: плюс четыре вкладки
+                      Числа · Регистры · Код · Журнал,
+                      Шаг/Авто/00 и темп.
    ========================================================= */
 (function () {
   'use strict';
@@ -13,8 +15,10 @@
   var MODELS = window.MKProfiles || {};
   var STORE_KEY = 'mk-emulator/state/';
   var MODE_KEY = 'mk-emulator/mode';
+  var TAB_KEY = 'mk-emulator/tab';
   var TEMPO_KEY = 'mk-emulator/tempo';
-  var RUN_LIMIT = 200000;
+  var RUN_LIMIT = 20000;
+  var LOG_MAX = 100;
 
   /* Демонстрационная программа: 7! — 5040.
      R0 — счётчик цикла, R1 — накопитель. */
@@ -39,7 +43,7 @@
     layer: document.getElementById('stLayer'),
     step: document.getElementById('stStep'),
     stack: document.getElementById('stack'),
-    regs: document.getElementById('regs'),
+    regs: document.getElementById('tabRegs'),
     keys: document.getElementById('keys'),
     prog: document.getElementById('prog'),
     hint: document.getElementById('hint'),
@@ -47,7 +51,11 @@
     tempo: document.getElementById('tempo'),
     tempoRow: document.getElementById('tempoRow'),
     status: document.getElementById('status'),
-    modeseg: document.getElementById('modeseg')
+    modeseg: document.getElementById('modeseg'),
+    tabs: document.getElementById('tabs'),
+    log: document.getElementById('log'),
+    logClear: document.getElementById('logClear'),
+    logCount: document.getElementById('logCount')
   };
 
   var profile = null;
@@ -56,8 +64,10 @@
   var storeKey = '';
 
   var uiMode = 'study';
+  var uiTab = 'num';
   var autoTimer = null;
   var stepCount = 0;
+  var journal = [];
 
   /* ---------- модели ---------- */
   function buildModelList() {
@@ -80,6 +90,7 @@
     core = window.MKCore.create({ onEvent: onEvent });
     pick = null;
     stepCount = 0;
+    journal = [];
     stopAuto();
     loadState();
     render();
@@ -99,7 +110,7 @@
     if (!silent) {
       setHint(uiMode === 'work'
         ? 'Режим «Работа»: клавиатура и Пуск. Переключись в «Учёбу», чтобы видеть листинг и шаги.'
-        : 'Режим «Учёба»: стек, регистры, листинг, шаг с любого адреса и авто-прогон с темпом.');
+        : 'Режим «Учёба»: вкладки Числа · Регистры · Код · Журнал, шаг с любого адреса и авто с темпом.');
     }
   }
 
@@ -109,12 +120,47 @@
     setMode(m === 'work' ? 'work' : 'study', true);
   }
 
+  /* ---------- вкладки Учёбы ---------- */
+  var TABS = ['num', 'regs', 'code', 'log'];
+
+  function setTab(tab, silent) {
+    uiTab = (TABS.indexOf(tab) >= 0) ? tab : 'num';
+    document.body.dataset.tab = uiTab;
+    try { localStorage.setItem(TAB_KEY, uiTab); } catch (e) {}
+    Array.prototype.forEach.call(el.tabs.querySelectorAll('button'), function (b) {
+      b.classList.toggle('on', b.dataset.tab === uiTab);
+    });
+    renderPanes();
+    if (!silent) {
+      setHint(uiTab === 'num' ? 'Числа: стек X Y Z T X1.'
+        : uiTab === 'regs' ? 'Регистры: R0…Rd. Меняются командами x→П и П→X, П→X, x→П.'
+        : uiTab === 'code' ? 'Код: листинг программы. Нажми строку — шаг пойдёт с этого адреса.'
+        : 'Журнал: что выполнилось и какие регистры изменились.');
+    }
+  }
+
+  function loadTab() {
+    var t = null;
+    try { t = localStorage.getItem(TAB_KEY); } catch (e) {}
+    setTab(t || 'num', true);
+  }
+
+  function renderPanes() {
+    if (uiTab === 'num') renderStack();
+    else if (uiTab === 'regs') renderRegs();
+    else if (uiTab === 'code') renderProgram();
+    else renderLog();
+  }
+
   /* ---------- события ядра ---------- */
   function onEvent(type, data) {
     if (type === 'pick-register') {
       pick = { mode: (data && data.mode) || 'stox' };
       document.body.classList.toggle('picking', !!pick);
+      /* выбрать регистр можно только на вкладке «Регистры» */
+      if (uiMode === 'study' && uiTab !== 'regs') setTab('regs', true);
       render();
+      setHint('Выбери регистр: ' + window.MKCore.REG_NAMES[0] + ' … ' + window.MKCore.REG_NAMES[window.MKCore.REG_COUNT - 1]);
       return;
     }
     if (type === 'hint' && typeof data === 'string') {
@@ -164,12 +210,10 @@
     el.layer.textContent = st.layer === 'f' ? 'F' : (st.layer === 'k' ? 'K' : '—');
     el.step.textContent = pad2(st.ip);
 
-    renderStack();
-    renderRegs();
+    renderPanes();
     renderKeys();
     renderService();
     renderStatus();
-    renderProgram();
     saveState();
   }
 
@@ -216,6 +260,7 @@
             pick = null;
             document.body.classList.remove('picking');
             core.key({ a: 'reg', r: idx, mode: mode });
+            setHint('Регистр ' + window.MKCore.REG_NAMES[idx] + ' = ' + core.fmt(st.R[idx]));
             render();
           });
         }
@@ -367,32 +412,146 @@
     }
   }
 
+  /* ---------- журнал шагов ---------- */
+  function snap() {
+    var st = core.ST;
+    var R = [];
+    for (var i = 0; i < window.MKCore.REG_COUNT; i++) R.push(st.R[i] & 255);
+    return { R: R, X: st.X, ip: st.ip };
+  }
+
+  function collectDiff(before) {
+    var st = core.ST;
+    var out = [];
+    for (var i = 0; i < window.MKCore.REG_COUNT; i++) {
+      var now = st.R[i] & 255;
+      if (now !== before.R[i]) {
+        out.push(window.MKCore.REG_NAMES[i] + ' ' + core.fmt(before.R[i]) + '→' + core.fmt(now));
+      }
+    }
+    if ((st.X & 255) !== (before.X & 255) || Math.abs(st.X - before.X) > 1e-12) {
+      out.push('X ' + core.fmt(before.X) + '→' + core.fmt(st.X));
+    }
+    return out;
+  }
+
+  function journalAdd(before, label, result) {
+    var st = core.ST;
+    var diff = collectDiff(before);
+    if (st.ip !== before.ip) diff.push('→ ' + pad2(st.ip));
+    var note = '';
+    if (result === 'stop') note = 'С/П';
+    else if (result === 'error') note = 'ошибка';
+
+    journal.push({
+      n: stepCount,
+      addr: before.ip,
+      label: label,
+      diff: diff,
+      note: note,
+      err: result === 'error'
+    });
+    if (journal.length > LOG_MAX) journal.shift();
+  }
+
+  function renderLog() {
+    if (!el.log) return;
+    if (el.logCount) el.logCount.textContent = String(journal.length);
+    el.log.innerHTML = '';
+
+    if (!journal.length) {
+      var e = document.createElement('div');
+      e.className = 'logempty';
+      e.textContent = 'Пусто. Загрузи пример и жми «Шаг ▶» или «▷ Авто» — здесь появятся выполненные команды.';
+      el.log.appendChild(e);
+      return;
+    }
+
+    journal.forEach(function (rec) {
+      var row = document.createElement('div');
+      row.className = 'logrow' + (rec.err ? ' err' : '');
+
+      var n = document.createElement('span');
+      n.className = 'lnum';
+      n.textContent = '#' + rec.n;
+
+      var a = document.createElement('span');
+      a.className = 'laddr';
+      a.textContent = pad2(rec.addr);
+
+      var l = document.createElement('span');
+      l.className = 'llab';
+      l.textContent = rec.label + (rec.note ? ' · ' + rec.note : '');
+
+      var d = document.createElement('span');
+      d.className = 'ldiff' + (rec.diff.length ? '' : ' dim');
+      d.textContent = rec.diff.length ? rec.diff.join(' · ') : 'без изменений';
+
+      row.appendChild(n);
+      row.appendChild(a);
+      row.appendChild(l);
+      row.appendChild(d);
+      el.log.appendChild(row);
+    });
+
+    el.log.scrollTop = el.log.scrollHeight;
+  }
+
+  function clearJournal(silent) {
+    journal = [];
+    renderLog();
+    if (!silent) setHint('Журнал шагов очищен');
+  }
+
   /* ---------- нажатия ---------- */
   function press(k) {
+    var isSp = (k.a === 'sp');
+    var before = core.ST.run ? null : null;
     core.key(k);
 
-    /* С/П и ПП в автоматическом режиме запускают прогон программы */
-    if ((k.a === 'sp' && core.ST.run) || k.a === 'pp') {
-      if (core.ST.run) runProgram();
+    /* С/П в автоматическом режиме запускает прогон программы */
+    if (isSp && core.ST.run) {
+      runProgram();
     }
     render();
   }
 
+  function stepOnce() {
+    var before = snap();
+    var code = core.ST.prog[core.ST.ip] & 255;
+    var info = rowText(code, core.ST.ip);
+    var r = core.step();
+    stepCount++;
+    journalAdd(before, info.empty ? 'пустая ячейка' : info.label, r);
+    return r;
+  }
+
   function runProgram() {
-    var res = core.run(RUN_LIMIT);
-    stepCount += (res && res.steps) || 0;
-    if (res.overflow) {
-      setHint('Остановлено по лимиту шагов (' + RUN_LIMIT + ') — похоже на вечный цикл');
-    } else if (res.err) {
-      setHint('Ошибка на шаге ' + res.steps);
-    } else {
-      setHint('Остановка на адресе ' + pad2(core.ST.ip) + ' · шагов: ' + res.steps + ' · X = ' + core.fmt(core.ST.X));
+    stopAuto();
+    var steps = 0;
+    var overflow = false;
+    var err = false;
+
+    while (steps < RUN_LIMIT) {
+      var r = stepOnce();
+      steps++;
+      if (r === 'stop') break;
+      if (r === 'error') { err = true; break; }
     }
+    if (steps >= RUN_LIMIT) overflow = true;
+
+    if (overflow) {
+      setHint('Остановлено по лимиту шагов (' + RUN_LIMIT + ') — похоже на вечный цикл');
+    } else if (err) {
+      setHint('Ошибка выполнения на шаге ' + steps + ' · адрес ' + pad2(core.ST.ip));
+    } else {
+      setHint('Остановка на адресе ' + pad2(core.ST.ip) + ' · шагов: ' + steps + ' · X = ' + core.fmt(core.ST.X));
+    }
+    render();
   }
 
   function doStep() {
-    var r = core.step();
-    stepCount++;
+    var r = stepOnce();
     if (r === 'stop') setHint('С/П на адресе ' + pad2(core.ST.ip));
     else if (r === 'error') setHint('Ошибка выполнения на адресе ' + pad2(core.ST.ip));
     else setHint('Шаг выполнен · адрес ' + pad2(core.ST.ip));
@@ -405,7 +564,8 @@
     pick = null;
     document.body.classList.remove('picking');
     stepCount = 0;
-    setHint('Сброшено: стек, регистры и адрес 00');
+    journal = [];
+    setHint('Сброшено: стек, регистры, адрес 00 и журнал шагов');
     render();
   }
 
@@ -421,6 +581,7 @@
     core.clearProgram();
     core.ST.ip = 0;
     stepCount = 0;
+    journal = [];
     setHint('Программная память очищена, адрес 00');
     render();
   }
@@ -432,6 +593,7 @@
     pick = null;
     document.body.classList.remove('picking');
     stepCount = 0;
+    journal = [];
     setHint('Пример 7! в памяти: R0 = 7. Нажми «Пуск» — должно получиться 5040.');
     render();
   }
@@ -442,12 +604,19 @@
   }
 
   function toggleAuto() {
-    if (autoTimer) { stopAuto(); setHint('Авто остановлено на адресе ' + pad2(core.ST.ip)); render(); return; }
+    if (autoTimer) {
+      stopAuto();
+      setHint('Авто остановлено на адресе ' + pad2(core.ST.ip));
+      render();
+      return;
+    }
     var sec = tempoSec();
-    if (!sec) { setHint('Темп «вручную»: жми «Шаг ▶» по одной команде.'); return; }
+    if (!sec) {
+      setHint('Темп «вручную»: жми «Шаг ▶» по одной команде.');
+      return;
+    }
     autoTimer = setInterval(function () {
-      var r = core.step();
-      stepCount++;
+      var r = stepOnce();
       render();
       if (r === 'stop' || r === 'error') {
         stopAuto();
@@ -457,7 +626,7 @@
         render();
       }
     }, sec * 1000);
-    setHint('Авто: шаг каждые ' + sec + ' с');
+    setHint('Авто: шаг каждые ' + sec + ' с · журнал пополняется');
     render();
   }
 
@@ -476,15 +645,20 @@
     if (b) setMode(b.dataset.mode);
   });
 
+  el.tabs.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-tab]');
+    if (b) setTab(b.dataset.tab);
+  });
+
+  if (el.logClear) {
+    el.logClear.addEventListener('click', function () { clearJournal(); });
+  }
+
   if (el.tempo) {
     el.tempo.addEventListener('change', function () {
       try { localStorage.setItem(TEMPO_KEY, el.tempo.value); } catch (e) {}
-      if (autoTimer) { stopAuto(); toggleAuto(); } else renderTitleOnly();
+      if (autoTimer) { stopAuto(); toggleAuto(); } else renderStatus();
     });
-  }
-
-  function renderTitleOnly() {
-    renderStatus();
   }
 
   /* ---------- старт ---------- */
@@ -495,4 +669,5 @@
     if (savedTempo && el.tempo) el.tempo.value = savedTempo;
   } catch (e) {}
   loadMode();
+  loadTab();
 })();
