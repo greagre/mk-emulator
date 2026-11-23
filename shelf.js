@@ -8,6 +8,9 @@
    • проверка: прогон с данными из описания и сверка с эталоном
    • выгрузка и загрузка файла .json
 
+   При загрузке в корпус передаётся метка {num, title}: ui.js
+   показывает её чипом под дисплеем и на кнопке библиотеки.
+
    Ничего не считает само: вычисления по-прежнему в core.js,
    а запуск идёт через мост window.MKUI из ui.js.
    ========================================================= */
@@ -84,7 +87,7 @@
     }
   ];
 
-  var builtinLast = {};  /* id → {ok, got, steps} */
+  var builtinLast = {};  /* id → {ok, text} */
 
   /* ---------- мои программы ---------- */
   function loadLib() {
@@ -156,9 +159,10 @@
 
     BUILTIN.forEach(function (p) {
       num++;
-      ui.list.appendChild(row(num, p.title, p.check, p.input, {
-        onLoad: function () { applyProgram(p.prog, p.data, p.title); },
-        onCheck: function () { checkProgram(p, 'b:' + p.id); },
+      var n = num;
+      ui.list.appendChild(row(n, p.title, p.check, p.input, {
+        onLoad: function () { applyProgram(p.prog, p.data, p.title, n); },
+        onCheck: function () { checkProgram(p, 'b:' + p.id, n); },
         last: builtinLast['b:' + p.id]
       }));
     });
@@ -172,9 +176,10 @@
 
     mine.forEach(function (p) {
       num++;
-      ui.list.appendChild(row(num, p.name, p.check || '', p.input || '', {
-        onLoad: function () { applyProgram(p.prog, p.data || {}, p.name); },
-        onCheck: function () { checkProgram(p, 'm:' + p.name); },
+      var n = num;
+      ui.list.appendChild(row(n, p.name, p.check || '', p.input || '', {
+        onLoad: function () { applyProgram(p.prog, p.data || {}, p.name, n); },
+        onCheck: function () { checkProgram(p, 'm:' + p.name, n); },
         onDelete: function () {
           var arr = loadLib().filter(function (x) { return x.name !== p.name; });
           saveLib(arr);
@@ -227,16 +232,17 @@
   }
 
   /* ---------- загрузка в корпус ---------- */
-  function applyProgram(prog, data, title) {
+  function applyProgram(prog, data, title, num) {
     if (!window.MKUI) return;
-    window.MKUI.loadProgram(prog, data);
-    window.MKUI.hint('Загружено «' + title + '». Данные в регистрах, нажми Пуск.');
+    window.MKUI.loadProgram(prog, data, { num: num || null, title: title });
+    window.MKUI.hint('Загружено «' + (num ? pad2(num) + ' · ' : '') + title +
+      '». Данные в регистрах, нажми Пуск.');
   }
 
   /* ---------- проверка ---------- */
-  function checkProgram(p, key) {
+  function checkProgram(p, key, num) {
     if (!window.MKUI) return;
-    window.MKUI.loadProgram(p.prog, p.data || {});
+    window.MKUI.loadProgram(p.prog, p.data || {}, { num: num || null, title: p.title });
     var r = window.MKUI.runForCheck(20000);
     var got = r.X;
     var exp = p.expect;
@@ -284,7 +290,13 @@
     if (idx >= 0) arr[idx] = entry; else arr.push(entry);
     saveLib(arr);
 
-    window.MKUI.hint('Сохранено «' + name + '»: ' + prog.length + ' ячеек, регистров ' + Object.keys(regs).length);
+    /* номер своей программы в общем списке — после встроенных */
+    var pos = arr.map(function (x) { return x.name; }).indexOf(name);
+    var num = BUILTIN.length + pos + 1;
+    window.MKUI.setProgMeta({ num: num, title: name });
+
+    window.MKUI.hint('Сохранено «' + name + '» под номером ' + pad2(num) +
+      ': ' + prog.length + ' ячеек, регистров ' + Object.keys(regs).length);
     renderShelf();
   }
 
