@@ -111,7 +111,7 @@
 <div class="card">
   <p class="label">Код программы</p>
   <div class="srcbar" id="srcbar"></div>
-  <textarea id="src" spellcheck="false" placeholder="Поле пустое — программы пока нет.&#10;&#10;Вставь hex-коды: 01 41 61 60 12 41 5D 00 02 61 50&#10;или загрузи .json / .txt из корпуса.&#10;Или нажми «Пример», чтобы посмотреть, как работает."></textarea>
+  <textarea id="src" spellcheck="false" placeholder="Поле пустое — программы пока нет.&#10;&#10;Вставь hex-коды: 60 09 12 05 13 03 02 10 41 61 50&#10;или загрузи .json / .txt из корпуса.&#10;Или нажми «Пример» — там перевод °C → °F (11 ячеек)."></textarea>
   <div class="row">
     <label class="file">⇧ Загрузить .json / .txt
       <input type="file" id="file" accept=".json,.txt,application/json,text/plain">
@@ -120,7 +120,7 @@
     <button id="example">Пример</button>
     <button id="clear">Очистить</button>
   </div>
-  <div class="hint">Можно вставлять и подряд без пробелов: <code>0141616012415D00026150</code>. Строки вида «07 ⇥ X→П 1» декодер тоже поймёт — возьмёт коды из hex.</div>
+  <div class="hint">Можно вставлять и подряд без пробелов: <code>6009120513030210416150</code>. Строки вида «07 ⇥ X→П 1» декодер тоже поймёт — возьмёт коды из hex.</div>
   <div class="err" id="err"></div>
 </div>
 
@@ -173,7 +173,13 @@
   var viewRow = document.getElementById('viewRow');
   var srcBar = document.getElementById('srcbar');
 
-  var DEMO_HEX = '01 41 61 60 12 41 5D 00 02 61 50';
+  /* Демонстрационный пример — только по кнопке «Пример».
+     Это та же программа, что «°C → °F» в редакторе Алго:
+       вход c (R0), f = c * 9 / 5 + 32, вывод f, стоп.
+     При R0 = 100 в корпусе даёт 212. */
+  var DEMO_HEX = '60 09 12 05 13 03 02 10 41 61 50';
+  var DEMO_NOTE = 'Пример: перевод <b>°C → °F</b>, 11 ячеек. Положи в R0 число 100 — программа даст 212. '
+                + 'Это не твоя программа: нажми «Разобрать», чтобы увидеть листинг, или «Очистить», чтобы начать со своего кода.';
   var BRIDGE_KEY = 'mk-emulator/decode-bridge';
 
   var model  = null;
@@ -260,7 +266,7 @@
     }
 
     if (!prog || !prog.length) {
-      setErr('Не нашёл ни одного кода. Нужны пары hex-цифр: 01 41 61 …');
+      setErr('Не нашёл ни одного кода. Нужны пары hex-цифр: 60 09 12 05 …');
       model = null;
       return;
     }
@@ -276,7 +282,7 @@
   document.getElementById('example').addEventListener('click', function () {
     src.value = DEMO_HEX;
     fileName = 'пример';
-    setSrcBar('<b>Пример.</b> Это демонстрационная программа (11 ячеек) — не твоя. Нажми «Разобрать», чтобы увидеть листинг, или «Очистить», чтобы начать со своего кода.');
+    setSrcBar(DEMO_NOTE);
     setErr('');
     model = null;
     out.classList.remove('mono');
