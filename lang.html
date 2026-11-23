@@ -90,6 +90,7 @@ print f
     <div class="row">
       <button class="primary" id="btnBuild">Собрать</button>
       <button id="btnRun">Пуск</button>
+      <button id="btnEmu">В эмулятор</button>
       <button id="btnDemo">Ещё пример</button>
     </div>
   </div>
@@ -119,8 +120,8 @@ print f
   <a class="back" href="index.html">← к эмулятору</a>
 </div>
 
-<script src="core.js"></script>
-<script src="lang.js"></script>
+<script src="core.js?v=15"></script>
+<script src="lang.js?v=15"></script>
 <script>
 (function () {
   'use strict';
@@ -201,6 +202,18 @@ print f
     return true;
   }
 
+  function readParamValues() {
+    var inputs = paramsEl.querySelectorAll('input');
+    var values = [];
+    for (var i = 0; i < inputs.length; i++) {
+      var v = parseFloat(String(inputs[i].value).replace(',', '.'));
+      values.push(isNaN(v) ? 0 : v);
+      var nmIn = inputs[i].getAttribute('data-name');
+      if (nmIn !== null) paramValues[nmIn] = inputs[i].value;
+    }
+    return values;
+  }
+
   function run() {
     if (!built || !built.ok) { if (!build()) return; }
     if (!built || !built.ok) return;
@@ -208,12 +221,7 @@ print f
     var values = [];
     var inputs = paramsEl.querySelectorAll('input');
     if (inputs.length !== built.params.length) { build(); inputs = paramsEl.querySelectorAll('input'); }
-    for (var i = 0; i < inputs.length; i++) {
-      var v = parseFloat(String(inputs[i].value).replace(',', '.'));
-      values.push(isNaN(v) ? 0 : v);
-      var nmIn = inputs[i].getAttribute('data-name');
-      if (nmIn !== null) paramValues[nmIn] = inputs[i].value;
-    }
+    values = readParamValues();
 
     core.reset(false);
     core.setProgram(built.codes, true);
@@ -272,6 +280,36 @@ print f
     if (problem) metaEl.style.color = 'var(--bad)'; else metaEl.style.color = '';
   }
 
+  /* Мост в эмулятор: программа и входные регистры уходят в localStorage,
+     index.html забирает их при открытии (см. shelf.js, takeBridge). */
+  function toEmulator() {
+    if (!built || !built.ok) { if (!build()) return; }
+    if (!built || !built.ok) return;
+
+    var values = readParamValues();
+    var data = {};
+    for (var i = 0; i < built.params.length; i++) {
+      if (typeof values[i] === 'number' && values[i] !== 0) {
+        data[built.params[i].reg] = values[i];
+      }
+    }
+
+    var payload = {
+      from: 'МК-Алго',
+      prog: built.codes.slice(),
+      data: data,
+      ts: Date.now()
+    };
+
+    try {
+      localStorage.setItem('mk-emulator/bridge', JSON.stringify(payload));
+    } catch (e) {
+      buildEl.innerHTML = '<div class="err">не удалось сохранить программу: ' + esc(e.message) + '</div>';
+      return;
+    }
+    location.href = 'index.html';
+  }
+
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
   function hex(c) {
     var s = (c & 255).toString(16).toUpperCase();
@@ -285,6 +323,7 @@ print f
 
   $('btnBuild').addEventListener('click', build);
   $('btnRun').addEventListener('click', run);
+  $('btnEmu').addEventListener('click', toEmulator);
   $('btnDemo').addEventListener('click', function () {
     demoIdx = (demoIdx + 1) % DEMOS.length;
     paramValues = {};               /* у нового примера свои значения */
