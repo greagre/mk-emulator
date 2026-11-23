@@ -7,6 +7,7 @@
    • загрузка в корпус одним нажатием
    • проверка: прогон с данными из описания и сверка с эталоном
    • выгрузка и загрузка файла .json
+   • мост из языка «МК-Алго» (lang.html → index.html)
 
    При загрузке в корпус передаётся метка {num, title}: ui.js
    показывает её чипом под дисплеем и на кнопке библиотеки.
@@ -18,6 +19,7 @@
   'use strict';
 
   var LIB_KEY = 'mk-emulator/library';
+  var BRIDGE_KEY = 'mk-emulator/bridge';
 
   var NOP = 0x54;
 
@@ -283,6 +285,28 @@
       '». Данные в регистрах, нажми Пуск.');
   }
 
+  /* ---------- мост из языка МК-Алго ----------
+     lang.html кладёт собранную программу в localStorage и открывает
+     index.html. Здесь она забирается ровно один раз и ставится в память
+     корпуса тем же путём, что и программа из библиотеки. */
+  function takeBridge() {
+    var raw = null;
+    try { raw = localStorage.getItem(BRIDGE_KEY); } catch (e) { return; }
+    if (!raw) return;
+
+    var obj = null;
+    try { obj = JSON.parse(raw); } catch (e) { obj = null; }
+    try { localStorage.removeItem(BRIDGE_KEY); } catch (e) {}
+
+    if (!obj || !Array.isArray(obj.prog) || !obj.prog.length) return;
+    if (!window.MKUI || !window.MKUI.loadProgram) return;
+
+    var title = obj.from || 'МК-Алго';
+    window.MKUI.loadProgram(obj.prog, obj.data || {}, { num: null, title: title });
+    window.MKUI.hint('Загружено из «' + title + '»: ' + obj.prog.length +
+      ' ячеек. Нажми «Шаг» или «Авто», чтобы пройти по своей программе.');
+  }
+
   /* ---------- проверка ---------- */
   function checkProgram(p, key, num) {
     if (!window.MKUI) return;
@@ -408,6 +432,9 @@
         if (e.target === ui.shelf) closeShelf();
       });
     }
+
+    /* мост забираем после того, как ui.js создал ядро и корпус */
+    setTimeout(takeBridge, 80);
   }
 
   if (document.readyState === 'loading') {
@@ -420,6 +447,7 @@
     init: init,
     open: openShelf,
     close: closeShelf,
-    builtin: BUILTIN
+    builtin: BUILTIN,
+    takeBridge: takeBridge
   };
 })();
