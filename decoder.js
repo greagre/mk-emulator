@@ -1,5 +1,5 @@
 /* =========================================================
-   mk-emulator / decoder.js  (v1)
+   mk-emulator / decoder.js  (v2)
    Читает программу Б3-34 (массив кодов) и переводит её в текст.
 
    Ничего не исполняет, ядро и файлы программ не меняет.
@@ -15,6 +15,10 @@
      — условный переход: условие ИСТИННО -> следующая ячейка,
        ЛОЖНО -> переход по адресу (три ячейки: i+3);
      — F L0..L3: из регистра вычитается 1; не ноль -> переход по адресу.
+
+   v2: листинг выводится моноширинным текстом (одна строка — одна ячейка),
+   с подсветкой (listingHtml), компактной раскладкой для узкого экрана
+   и отдельным табличным вариантом (режим 'listingTable').
    ========================================================= */
 (function (global) {
   'use strict';
@@ -55,6 +59,17 @@
   }
 
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  function padTo(s, n) {
+    s = String(s == null ? '' : s);
+    if (s.length >= n) return s.slice(0, n);
+    return s + new Array(n - s.length + 1).join(' ');
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
 
   function isDigitCode(v) { return typeof v === 'number' && v >= 0 && v <= 9; }
 
@@ -140,6 +155,7 @@
 
     var model = {
       len: last + 1,
+      prog: prog,
       steps: [],
       warnings: [],
       marks: {},
@@ -375,7 +391,7 @@
     return d;
   }
 
-  /* ---------- рендеры ---------- */
+  /* ---------- общие помощники рендера ---------- */
 
   function headLines(model) {
     var out = [];
@@ -394,6 +410,16 @@
     if (model.meta.saved) out.push('# файл от ' + model.meta.saved);
     return out;
   }
+
+  function confLabel(conf) {
+    return conf === 'exact' ? 'точно' : (conf === 'heuristic' ? 'догадка' : 'не переведено');
+  }
+
+  function confMark(conf) {
+    return conf === 'heuristic' ? '~' : (conf === 'unknown' ? '?' : '');
+  }
+
+  /* ---------- кратко и подробно ---------- */
 
   function briefText(model) {
     if (model.empty) return '# программа пуста';
@@ -439,8 +465,7 @@
 
       if (s.text) out.push(ind + s.text);
 
-      var conf = s.conf === 'exact' ? 'точно' : (s.conf === 'heuristic' ? 'догадка' : 'не переведено');
-      out.push(ind + '  # ' + pad2(s.addr) + ' · ' + s.cmd + ' · 0x' + s.hex + ' · ' + conf);
+      out.push(ind + '  # ' + pad2(s.addr) + ' · ' + s.cmd + ' · 0x' + s.hex + ' · ' + confLabel(s.conf));
       (s.notes || []).forEach(function (n) { out.push(ind + '  #   ' + n); });
       out.push('');
     });
@@ -452,7 +477,194 @@
     return out.join('\n');
   }
 
-  function listingText(model) {
+  /* ---------- листинг: строки по ячейкам ---------- */
+
+  function addrWidth(len) {
+    var w = String(Math.max(len - 1, 0)).length;
+    return w < 2 ? 2 : w;
+  }
+
+  function padA(a, w) {
+    var s = String(a);
+    while (s.length < w) s = '0' + s;
+    return s;
+  }
+
+  /* Собирает строки листинга: одна строка — одна ячейка памяти. */
+  function buildListing(model) {
+    var prog = model.prog || [];
+    var len = model.len;
+    var aw = addrWidth(len);
+
+    var stepAt = {}, addrCell = {}, inNum = {};
+
+    model.steps.forEach(function (s) {
+      if (s.kind === 'addr') { addrCell[s.addr] = s; return; }
+      if (s.kind === 'num' && s.parts && s.parts.length) {
+        var val = s.text ? String(s.text).replace(/^X = /, '') : '?';
+        s.parts.forEach(function (p, idx) {
+          inNum[p.addr] = { value: val, first: idx === 0, count: s.parts.length };
+        });
+        return;
+      }
+      stepAt[s.addr] = s;
+    });
+
+    var rows = [];
+    for (var a = 0; a < len; a++) {
+      var row = {
+        addr: padA(a, aw),
+        isMark: !!model.marks[a],
+        hex: hex2(prog[a]),
+        cmd: '',
+        text: '',
+        conf: 'exact',
+        notes: []
+      };
+
+      if (inNum[a]) {
+        var n = inNum[a];
+        row.cmd = n.first ? 'ввод числа' : 'цифра числа';
+        row.text = n.first ? ('X = ' + n.value) : ('в числе ' + n.value);
+      } else if (addrCell[a]) {
+        var which = (a === addrCell[a].partOf + 1) ? 'десятки' : 'единицы';
+        row.cmd = 'адрес перехода';
+        row.text = which + ': ' + (isDigitCode(prog[a]) ? prog[a] : 'не цифра');
+      } else if (stepAt[a]) {
+        var s = stepAt[a];
+        row.cmd = s.cmd || '?';
+        row.text = s.kind === 'nop' ? 'пустой шаг' : (s.text || 'НЕ ПЕРЕВЕДЕНО');
+        row.conf = s.kind === 'nop' ? 'exact' : s.conf;
+        row.notes = s.notes || [];
+      } else {
+        row.cmd = '?';
+        row.text = 'нет данных';
+        row.conf = 'unknown';
+      }
+
+      rows.push(row);
+    }
+    return { rows: rows, aw: aw };
+  }
+
+  function rowSegments(row, aw, compact) {
+    var segs = [];
+    if (row.isMark) {
+      segs.push({ t: 'м' + row.addr + ':', cls: 'kMark' });
+      segs.push({ t: '\n' });
+    }
+    segs.push({ t: row.addr, cls: 'kAddr' });
+    segs.push({ t: compact ? ' ' : '  ' });
+    segs.push({ t: row.hex, cls: 'kHex' });
+    segs.push({ t: compact ? ' ' : '  ' });
+
+    if (compact) {
+      var body = row.cmd + (row.text && row.text !== row.cmd ? ' · ' + row.text : '');
+      segs.push({ t: body, cls: row.conf === 'unknown' ? 'kUnk' : (row.conf === 'heuristic' ? 'kHeur' : 'kTxt') });
+      var mk = confMark(row.conf);
+      if (mk) { segs.push({ t: ' ' + mk, cls: 'kMark' }); }
+    } else {
+      segs.push({ t: padTo(row.cmd, 17), cls: 'kCmd' });
+      segs.push({ t: '  ' });
+      segs.push({ t: padTo(row.text, 40), cls: row.conf === 'unknown' ? 'kUnk' : 'kTxt' });
+      segs.push({ t: '  ' });
+      segs.push({ t: confLabel(row.conf), cls: 'kConf k' + (row.conf === 'exact' ? 'Exact' : (row.conf === 'heuristic' ? 'Heur' : 'Unk')) });
+    }
+    return segs;
+  }
+
+  function segmentsToText(segs) {
+    return segs.map(function (s) { return s.t; }).join('');
+  }
+
+  function segmentsToHtml(segs) {
+    return segs.map(function (s) {
+      if (!s.cls) return esc(s.t);
+      return '<span class="' + s.cls + '">' + esc(s.t) + '</span>';
+    }).join('');
+  }
+
+  function listingHeader(model, opts) {
+    var compact = !!(opts && opts.compact);
+    var name = model.meta.name ? model.meta.name : 'Программа';
+    var lines = [];
+    lines.push('ЛИСТИНГ · ' + name + ' · ячеек ' + model.len);
+    if (model.meta.saved) lines.push('файл от ' + model.meta.saved);
+    if (!compact) {
+      lines.push('');
+      lines.push(padTo('адр', 3) + '  ' + 'код' + '   ' + padTo('команда', 17) + '  ' + padTo('текст', 40) + '  ' + 'достоверность');
+      lines.push(new Array(3 + 2 + 3 + 3 + 17 + 2 + 40 + 2 + 13 + 1).join('-'));
+    } else {
+      lines.push('пометки: ~ догадка, ? не переведено');
+      lines.push('');
+    }
+    return lines;
+  }
+
+  /* моноширинный ТЕКСТ листинга — то, что копируется и скачивается */
+  function listingText(model, opts) {
+    if (model.empty) return 'Программа пуста: в памяти нет ни одной значащей ячейки.';
+    opts = opts || {};
+    var compact = !!opts.compact;
+    var built = buildListing(model);
+    var out = listingHeader(model, opts);
+
+    built.rows.forEach(function (row) {
+      out.push(segmentsToText(rowSegments(row, built.aw, compact)));
+    });
+
+    var unknown = built.rows.filter(function (r) { return r.conf === 'unknown'; });
+    if (unknown.length) {
+      out.push('');
+      out.push('ЧТО НЕ ПЕРЕВЕДЕНО И ПОЧЕМУ:');
+      unknown.forEach(function (r) {
+        out.push('ячейка ' + r.addr + ' · код 0x' + r.hex + ' · ' + r.cmd);
+        (r.notes || []).forEach(function (n) { out.push('   ' + n); });
+      });
+    }
+
+    if (model.warnings.length) {
+      out.push('');
+      out.push('ВНИМАНИЕ:');
+      model.warnings.forEach(function (w) { out.push('- ' + w); });
+    }
+
+    return out.join('\n');
+  }
+
+  /* тот же листинг, но с подсветкой — вставлять через innerHTML */
+  function listingHtml(model, opts) {
+    if (model.empty) return 'Программа пуста: в памяти нет ни одной значащей ячейки.';
+    opts = opts || {};
+    var compact = !!opts.compact;
+    var built = buildListing(model);
+    var header = listingHeader(model, opts);
+
+    var html = header.map(function (l) { return esc(l); }).join('\n');
+
+    built.rows.forEach(function (row) {
+      html += '\n' + segmentsToHtml(rowSegments(row, built.aw, compact));
+    });
+
+    var unknown = built.rows.filter(function (r) { return r.conf === 'unknown'; });
+    if (unknown.length) {
+      html += '\n\n' + esc('ЧТО НЕ ПЕРЕВЕДЕНО И ПОЧЕМУ:');
+      unknown.forEach(function (r) {
+        html += '\n' + esc('ячейка ' + r.addr + ' · код 0x' + r.hex + ' · ' + r.cmd);
+        (r.notes || []).forEach(function (n) { html += '\n' + esc('   ' + n); });
+      });
+    }
+
+    if (model.warnings.length) {
+      html += '\n\n' + esc('ВНИМАНИЕ:');
+      model.warnings.forEach(function (w) { html += '\n' + esc('- ' + w); });
+    }
+
+    return html;
+  }
+
+  /* ---------- прежний табличный вариант (по желанию) ---------- */
+  function listingTable(model) {
     if (model.empty) return 'Программа пуста: в памяти нет ни одной значащей ячейки.';
 
     var lines = [];
@@ -486,10 +698,10 @@
         if (s.parts) s.parts.forEach(function (p) { printed[p.addr] = true; });
         cmd = s.cmd;
         text = s.text ? s.text : 'НЕ ПЕРЕВЕДЕНО';
-        conf = s.conf === 'exact' ? 'точно' : (s.conf === 'heuristic' ? 'догадка' : 'не переведено');
+        conf = confLabel(s.conf);
       }
 
-      lines.push(pad2(s.addr) + ' | 0x' + hex2(s.code) + ' | ' + pad(cmd, 15) + ' | ' + pad(text, 39) + ' | ' + conf);
+      lines.push(pad2(s.addr) + ' | 0x' + hex2(s.code) + ' | ' + padTo(cmd, 15) + ' | ' + padTo(text, 39) + ' | ' + conf);
     });
 
     if (model.warnings.length) {
@@ -498,7 +710,6 @@
       model.warnings.forEach(function (w) { lines.push('- ' + w); });
     }
 
-    /* пояснения к непереведённым ячейкам: отдельным блоком, чтобы не терялись */
     var unknown = model.steps.filter(function (s) { return s.conf === 'unknown'; });
     if (unknown.length) {
       lines.push('');
@@ -512,16 +723,12 @@
     return lines.join('\n');
   }
 
-  function pad(str, n) {
-    var s = String(str == null ? '' : str);
-    if (s.length >= n) return s.slice(0, n);
-    return s + new Array(n - s.length + 1).join(' ');
-  }
-
-  function render(model, mode) {
+  function render(model, mode, opts) {
     if (!model) return '';
+    opts = opts || {};
+    if (mode === 'listing') return opts.html ? listingHtml(model, opts) : listingText(model, opts);
+    if (mode === 'listingTable') return listingTable(model);
     if (mode === 'brief') return briefText(model);
-    if (mode === 'listing') return listingText(model);
     return detailedText(model);
   }
 
