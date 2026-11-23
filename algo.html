@@ -13,6 +13,7 @@ h1{font-size:19px;margin:6px 0 10px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
 .card h2{font-size:13px;margin:0 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
 textarea{width:100%;min-height:240px;border:1px solid var(--line);border-radius:10px;padding:10px;font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;resize:vertical;background:#fbfcfe}
+textarea::placeholder{color:#98a2ad}
 button{font:inherit;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;color:var(--ink)}
 button.primary{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
 button.bad{color:var(--bad)}
@@ -44,9 +45,12 @@ select.reg{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:1
 
 <div class="card">
   <h2>1. Программа</h2>
-  <textarea id="src" spellcheck="false"></textarea>
+  <textarea id="src" spellcheck="false" placeholder="Страница открывается пустой — программы в поле пока нет.&#10;&#10;Впиши программу сам или нажми «Пример: …» ниже.&#10;Примеры вставляются только по нажатию, сами по себе не появляются."></textarea>
   <div class="row">
     <button class="primary" id="btnCompile">Перевести</button>
+    <button id="exPct">Пример: сложный процент</button>
+    <button id="exCF">Пример: °C → °F</button>
+    <button id="exFC">Пример: °F → °C</button>
     <button id="exFact">Пример: факториал</button>
     <button id="exSq">Пример: сумма квадратов</button>
     <button class="bad" id="btnClear">Очистить</button>
@@ -584,6 +588,10 @@ function doRun(){
 
 /* ---------- мост в корпус ---------- */
 function openInBody(){
+  if (!$('src').value.trim()){
+    alert('Редактор пуст — впиши программу или нажми «Пример: …», затем «Перевести».');
+    return;
+  }
   if (!compiled){ alert('Сначала «Перевести».'); return; }
   var got = collectData();
   var payload = {
@@ -686,7 +694,41 @@ function loadJsonFile(file){
   fr.readAsText(file);
 }
 
-/* ---------- примеры ---------- */
+/* ---------- примеры ----------
+   ВАЖНО: ни один пример не вставляется при открытии страницы.
+   Поле стартует пустым, пример появляется только по нажатию кнопки. */
+
+var EX_PCT = [
+  '# сложный процент: p — сумма, r — ставка в %, n — периодов',
+  'вход p',
+  'вход r',
+  'вход n',
+  's = p',
+  'i = 0',
+  'пока i < n',
+  '  s = s * (1 + r / 100)',
+  '  i = i + 1',
+  'кон',
+  'вывод s',
+  'стоп'
+].join('\n');
+
+var EX_CF = [
+  '# °C → °F: c — градусы Цельсия',
+  'вход c',
+  'f = c * 9 / 5 + 32',
+  'вывод f',
+  'стоп'
+].join('\n');
+
+var EX_FC = [
+  '# °F → °C: f — градусы Фаренгейта',
+  'вход f',
+  'c = (f - 32) * 5 / 9',
+  'вывод c',
+  'стоп'
+].join('\n');
+
 var EX_FACT = [
   '# факториал: n вводишь сам в разделе 3 (R0)',
   'вход n',
@@ -724,6 +766,16 @@ function clearPanels(){
    «Перевести». Раньше inputRegs = {} обнулял их, и в файл уходило пустое
    data — именно поэтому в algo-program.json было "data": {}. */
 function doCompile(){
+  var text = $('src').value.trim();
+  if (!text){
+    compiled = null;
+    inputRegs = {};
+    $('out').innerHTML = '<div class="warn">Редактор пуст — программы пока нет. '
+      + 'Впиши её сам или нажми «Пример: …» (пример вставится в поле), затем «Перевести».</div>';
+    $('dataBox').innerHTML = '<span class="mut">Появятся после перевода: переменная → регистр → значение.</span>';
+    $('runOut').innerHTML = '<span class="mut">—</span>';
+    return false;
+  }
   try {
     compiled = compile($('src').value);
     render();
@@ -800,12 +852,22 @@ $('jsonFile').addEventListener('change', function(){
   this.value = '';
 });
 
-$('exFact').onclick = function(){ $('src').value = EX_FACT; compiled = null; inputRegs = {}; clearPanels(); };
-$('exSq').onclick = function(){ $('src').value = EX_SQ; compiled = null; inputRegs = {}; clearPanels(); };
+function useExample(text){
+  $('src').value = text;
+  compiled = null;
+  inputRegs = {};
+  clearPanels();
+  $('src').focus();
+}
+$('exPct').onclick  = function(){ useExample(EX_PCT); };
+$('exCF').onclick   = function(){ useExample(EX_CF); };
+$('exFC').onclick   = function(){ useExample(EX_FC); };
+$('exFact').onclick = function(){ useExample(EX_FACT); };
+$('exSq').onclick   = function(){ useExample(EX_SQ); };
 $('btnClear').onclick = function(){ $('src').value = ''; compiled = null; inputRegs = {}; clearPanels(); };
 
-/* при открытии: текст примера есть, расшифровки нет — только по кнопке «Перевести» */
-$('src').value = EX_FACT;
+/* при открытии: поле ПУСТОЕ. Примеры — только по кнопке. */
+$('src').value = '';
 clearPanels();
 })();
 </script>
