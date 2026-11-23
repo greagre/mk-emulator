@@ -8,6 +8,9 @@
      study — «Учёба»: плюс четыре вкладки
                       Числа · Регистры · Код · Журнал,
                       Шаг/Авто/00 и темп.
+
+   Наружу отдаёт мост window.MKUI — им пользуется shelf.js
+   (библиотека программ): загрузка, прогон для проверки, подсказка.
    ========================================================= */
 (function () {
   'use strict';
@@ -133,7 +136,7 @@
     renderPanes();
     if (!silent) {
       setHint(uiTab === 'num' ? 'Числа: стек X Y Z T X1.'
-        : uiTab === 'regs' ? 'Регистры: R0…Rd. Меняются командами x→П и П→X, П→X, x→П.'
+        : uiTab === 'regs' ? 'Регистры: R0…Rd. Меняются командами x→П и П→X.'
         : uiTab === 'code' ? 'Код: листинг программы. Нажми строку — шаг пойдёт с этого адреса.'
         : 'Журнал: что выполнилось и какие регистры изменились.');
     }
@@ -506,7 +509,6 @@
   /* ---------- нажатия ---------- */
   function press(k) {
     var isSp = (k.a === 'sp');
-    var before = core.ST.run ? null : null;
     core.key(k);
 
     /* С/П в автоматическом режиме запускает прогон программы */
@@ -660,6 +662,55 @@
       if (autoTimer) { stopAuto(); toggleAuto(); } else renderStatus();
     });
   }
+
+  /* ---------- мост для библиотеки программ (shelf.js) ---------- */
+  window.MKUI = {
+    /* загрузка программы с данными в регистрах */
+    loadProgram: function (prog, regs) {
+      if (!core) return;
+      stopAuto();
+      core.reset(false);
+      core.setProgram(prog, false);
+      if (regs) {
+        Object.keys(regs).forEach(function (k) {
+          var i = parseInt(k, 10);
+          if (i >= 0 && i < window.MKCore.REG_COUNT) core.ST.R[i] = regs[k];
+        });
+      }
+      core.ST.X = 0;
+      core.ST.Y = 0;
+      core.ST.Z = 0;
+      core.ST.T = 0;
+      core.ST.X1 = 0;
+      core.ST.ip = 0;
+      core.ST.err = null;
+      pick = null;
+      document.body.classList.remove('picking');
+      stepCount = 0;
+      journal = [];
+      render();
+    },
+
+    /* прогон ради проверки: возвращает результат, шаги и X */
+    runForCheck: function (limit) {
+      var max = limit || RUN_LIMIT;
+      var steps = 0;
+      var res = 'limit';
+      while (steps < max) {
+        var r = stepOnce();
+        steps++;
+        if (r === 'stop') { res = 'stop'; break; }
+        if (r === 'error') { res = 'error'; break; }
+      }
+      render();
+      return { result: res, steps: steps, X: core.ST.X };
+    },
+
+    hint: function (t) { setHint(t); },
+    fmt: function (v) { return core.fmt(v); },
+    getCore: function () { return core; },
+    openShelf: function () { if (window.MKSHELF) window.MKSHELF.open(); }
+  };
 
   /* ---------- старт ---------- */
   buildModelList();
