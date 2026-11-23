@@ -9,6 +9,9 @@
                       Числа · Регистры · Код · Журнал,
                       Шаг/Авто/00 и темп.
 
+   Название загруженной программы (номер + имя) показывается
+   в двух местах: чипом под дисплеем и на кнопке библиотеки.
+
    Наружу отдаёт мост window.MKUI — им пользуется shelf.js
    (библиотека программ): загрузка, прогон для проверки, подсказка.
    ========================================================= */
@@ -20,6 +23,7 @@
   var MODE_KEY = 'mk-emulator/mode';
   var TAB_KEY = 'mk-emulator/tab';
   var TEMPO_KEY = 'mk-emulator/tempo';
+  var NAME_KEY = 'mk-emulator/progmeta/';
   var RUN_LIMIT = 20000;
   var LOG_MAX = 100;
 
@@ -58,19 +62,24 @@
     tabs: document.getElementById('tabs'),
     log: document.getElementById('log'),
     logClear: document.getElementById('logClear'),
-    logCount: document.getElementById('logCount')
+    logCount: document.getElementById('logCount'),
+    progTag: document.getElementById('progTag'),
+    progTagNum: document.getElementById('progTagNum'),
+    progTagName: document.getElementById('progTagName')
   };
 
   var profile = null;
   var core = null;
   var pick = null;
   var storeKey = '';
+  var nameKey = '';
 
   var uiMode = 'study';
   var uiTab = 'num';
   var autoTimer = null;
   var stepCount = 0;
   var journal = [];
+  var progMeta = null;   /* { num: 1, title: 'n! — факториал' } или null */
 
   /* ---------- модели ---------- */
   function buildModelList() {
@@ -89,15 +98,59 @@
     profile = MODELS[id];
     if (!profile) return;
     storeKey = STORE_KEY + id;
+    nameKey = NAME_KEY + id;
     el.modelName.textContent = profile.model;
     core = window.MKCore.create({ onEvent: onEvent });
     pick = null;
     stepCount = 0;
     journal = [];
+    progMeta = null;
     stopAuto();
+    loadProgMeta();
     loadState();
     render();
-    setHint('Модель ' + profile.model + '. Клавиша f — второй слой, k — косвенные команды.');
+    setHint('Модель ' + profile.model + '. Клавиша f — второй слой, k — слоёные косвенные команды.');
+  }
+
+  /* ---------- метка программы ---------- */
+  function setProgMeta(meta) {
+    progMeta = (meta && meta.title) ? { num: meta.num || null, title: String(meta.title) } : null;
+    try {
+      if (progMeta) localStorage.setItem(nameKey, JSON.stringify(progMeta));
+      else localStorage.removeItem(nameKey);
+    } catch (e) {}
+    renderProgTag();
+    renderService();
+  }
+
+  function loadProgMeta() {
+    progMeta = null;
+    try {
+      var raw = localStorage.getItem(nameKey);
+      if (raw) {
+        var o = JSON.parse(raw);
+        if (o && o.title) progMeta = { num: o.num || null, title: String(o.title) };
+      }
+    } catch (e) {}
+    renderProgTag();
+  }
+
+  function progLabel(short) {
+    if (!progMeta) return '';
+    var num = progMeta.num ? pad2(progMeta.num) + ' · ' : '';
+    return num + progMeta.title;
+  }
+
+  function renderProgTag() {
+    if (!el.progTag) return;
+    if (!progMeta) {
+      el.progTag.hidden = true;
+      return;
+    }
+    el.progTag.hidden = false;
+    if (el.progTagNum) el.progTagNum.textContent = progMeta.num ? pad2(progMeta.num) : '—';
+    if (el.progTagName) el.progTagName.textContent = progMeta.title;
+    el.progTag.title = 'Загружена программа: ' + progLabel() + '. Нажми, чтобы открыть библиотеку';
   }
 
   /* ---------- режим Работа / Учёба ---------- */
@@ -217,6 +270,7 @@
     renderKeys();
     renderService();
     renderStatus();
+    renderProgTag();
     saveState();
   }
 
@@ -299,6 +353,18 @@
     return b;
   }
 
+  function openLibrary() {
+    if (window.MKSHELF) window.MKSHELF.open();
+    else setHint('Библиотека программ не подключена');
+  }
+
+  function libraryBtn() {
+    var text = progMeta
+      ? '📂 ' + progLabel()
+      : '📂 Программа';
+    return mkBtn(text, openLibrary);
+  }
+
   function renderService() {
     el.service.innerHTML = '';
     el.service.classList.toggle('wide', uiMode === 'work');
@@ -306,7 +372,7 @@
     if (uiMode === 'work') {
       el.service.appendChild(mkBtn('▶ Пуск', function () { runProgram(); render(); }));
       el.service.appendChild(mkBtn('⟲ Сброс', function () { doReset(); }));
-      el.service.appendChild(mkBtn('Пример: 7!', function () { loadDemo(); }));
+      el.service.appendChild(libraryBtn());
       el.service.appendChild(mkBtn('Очистить память', function () { clearProg(); }));
       return;
     }
@@ -315,7 +381,7 @@
     el.service.appendChild(mkBtn(autoTimer ? '⏸ Стоп' : '▷ Авто', function () { toggleAuto(); }, !!autoTimer));
     el.service.appendChild(mkBtn('00', function () { setAddressZero(); }));
     el.service.appendChild(mkBtn('⟲ Сброс', function () { doReset(); }));
-    el.service.appendChild(mkBtn('Пример: 7!', function () { loadDemo(); }));
+    el.service.appendChild(libraryBtn());
     el.service.appendChild(mkBtn('Очистить память', function () { clearProg(); }));
   }
 
@@ -364,7 +430,7 @@
     var head = document.createElement('div');
     head.className = 'prog-head';
     var left = document.createElement('span');
-    left.textContent = 'Программа';
+    left.textContent = progMeta ? ('Программа · ' + progLabel()) : 'Программа';
     var right = document.createElement('span');
     right.innerHTML = 'адрес <b>' + pad2(st.ip) + '</b> · занято <b>' + Math.max(last + 1, 0) + '</b> из ' + MK.PROG_LEN;
     head.appendChild(left);
@@ -508,8 +574,15 @@
 
   /* ---------- нажатия ---------- */
   function press(k) {
+    var wasPrg = core.ST.mode === 'PRG';
     var isSp = (k.a === 'sp');
     core.key(k);
+
+    /* своя команда в ПРГ — значит программа больше не та, что загружена */
+    if (wasPrg && progMeta) {
+      setProgMeta(null);
+      setHint('Программа изменена вручную — метка «' + progMeta.title + '» снята');
+    }
 
     /* С/П в автоматическом режиме запускает прогон программы */
     if (isSp && core.ST.run) {
@@ -542,12 +615,13 @@
     }
     if (steps >= RUN_LIMIT) overflow = true;
 
+    var name = progMeta ? ' «' + progLabel() + '»' : '';
     if (overflow) {
       setHint('Остановлено по лимиту шагов (' + RUN_LIMIT + ') — похоже на вечный цикл');
     } else if (err) {
       setHint('Ошибка выполнения на шаге ' + steps + ' · адрес ' + pad2(core.ST.ip));
     } else {
-      setHint('Остановка на адресе ' + pad2(core.ST.ip) + ' · шагов: ' + steps + ' · X = ' + core.fmt(core.ST.X));
+      setHint('Программа' + name + ': остановка на адресе ' + pad2(core.ST.ip) + ' · шагов: ' + steps + ' · X = ' + core.fmt(core.ST.X));
     }
     render();
   }
@@ -584,6 +658,7 @@
     core.ST.ip = 0;
     stepCount = 0;
     journal = [];
+    setProgMeta(null);
     setHint('Программная память очищена, адрес 00');
     render();
   }
@@ -596,6 +671,7 @@
     document.body.classList.remove('picking');
     stepCount = 0;
     journal = [];
+    setProgMeta({ num: 1, title: 'n! — факториал (демо)' });
     setHint('Пример 7! в памяти: R0 = 7. Нажми «Пуск» — должно получиться 5040.');
     render();
   }
@@ -656,6 +732,10 @@
     el.logClear.addEventListener('click', function () { clearJournal(); });
   }
 
+  if (el.progTag) {
+    el.progTag.addEventListener('click', openLibrary);
+  }
+
   if (el.tempo) {
     el.tempo.addEventListener('change', function () {
       try { localStorage.setItem(TEMPO_KEY, el.tempo.value); } catch (e) {}
@@ -665,8 +745,8 @@
 
   /* ---------- мост для библиотеки программ (shelf.js) ---------- */
   window.MKUI = {
-    /* загрузка программы с данными в регистрах */
-    loadProgram: function (prog, regs) {
+    /* загрузка программы с данными в регистрах и меткой (номер + имя) */
+    loadProgram: function (prog, regs, meta) {
       if (!core) return;
       stopAuto();
       core.reset(false);
@@ -688,6 +768,7 @@
       document.body.classList.remove('picking');
       stepCount = 0;
       journal = [];
+      if (meta !== undefined) setProgMeta(meta);
       render();
     },
 
@@ -706,10 +787,12 @@
       return { result: res, steps: steps, X: core.ST.X };
     },
 
+    setProgMeta: function (meta) { setProgMeta(meta); },
+    progMeta: function () { return progMeta; },
     hint: function (t) { setHint(t); },
     fmt: function (v) { return core.fmt(v); },
     getCore: function () { return core; },
-    openShelf: function () { if (window.MKSHELF) window.MKSHELF.open(); }
+    openShelf: function () { openLibrary(); }
   };
 
   /* ---------- старт ---------- */
