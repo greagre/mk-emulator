@@ -44,8 +44,6 @@ a{color:var(--accent)}
 code{font-family:var(--mono);font-size:12px}
 .hint{font-size:13px;color:var(--muted);margin:0 0 10px}
 .hint b{color:var(--ink)}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.chip{font:12px/1 var(--mono);background:#f1f5fb;border:1px solid var(--line);border-radius:999px;padding:5px 9px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -56,7 +54,8 @@ code{font-family:var(--mono);font-size:12px}
   <h2>1. Программа</h2>
   <p class="hint">
     <b>переменная = выражение</b> · <b>пока условие</b> … <b>кон</b> · <b>вывод выражение</b> · <b>стоп</b><br>
-    условия: <code>&lt; &gt; &lt;= &gt;= = !=</code> · операции: <code>+ − * / ( )</code> · комментарий — <code>#</code>
+    условия: <code>&lt; &gt; &lt;= &gt;= = !=</code> · операции: <code>+ − * / ( )</code> · комментарий — <code>#</code><br>
+    ключевые слова можно писать заглавными: <code>ПОКА / КОН / СТОП / ВЫВОД</code>
   </p>
   <textarea id="src" spellcheck="false"></textarea>
   <div class="row">
@@ -140,6 +139,16 @@ code{font-family:var(--mono);font-size:12px}
   var BRIDGE_KEY = 'mk-emulator/bridge';
   var MAXREG = 15;
   var REGCH = '0123456789abcd';
+
+  /* кириллическая «граница слова»: \b в JS с русскими буквами не работает,
+     поэтому проверяем, что сразу после слова не идёт буква/цифра/_ */
+  function kwRe(word) {
+    return new RegExp('^' + word + '(?![A-Za-zА-Яа-яЁё0-9_])', 'i');
+  }
+  var RE_WHILE = kwRe('пока');
+  var RE_END = /^кон(?:ец)?(?![A-Za-zА-Яа-яЁё0-9_])/i;
+  var RE_STOP = kwRe('стоп');
+  var RE_PRINT = kwRe('вывод');
 
   var $ = function (id) { return document.getElementById(id); };
   var compiled = null;
@@ -420,22 +429,22 @@ code{font-family:var(--mono);font-size:12px}
       if (!line) return;
       var cur = stack[stack.length - 1];
 
-      if (/^пока\b/i.test(line)) {
-        var condText = line.replace(/^пока\b/i, '').trim();
+      if (RE_WHILE.test(line)) {
+        var condText = line.replace(RE_WHILE, '').trim();
         if (!condText) throw new Error('Строка ' + lineNo + ': у «пока» нет условия');
         var node = { type: 'while', cond: parseCond(condText, lineNo), body: [], line: lineNo };
         cur.body.push(node);
         stack.push(node);
         return;
       }
-      if (/^кон(ец)?\b/i.test(line)) {
+      if (RE_END.test(line)) {
         if (stack.length === 1) throw new Error('Строка ' + lineNo + ': «кон» без «пока»');
         stack.pop();
         return;
       }
-      if (/^стоп\b/i.test(line)) { cur.body.push({ type: 'stop', line: lineNo }); return; }
-      if (/^вывод\b/i.test(line)) {
-        var expr = line.replace(/^вывод\b/i, '').trim();
+      if (RE_STOP.test(line)) { cur.body.push({ type: 'stop', line: lineNo }); return; }
+      if (RE_PRINT.test(line)) {
+        var expr = line.replace(RE_PRINT, '').trim();
         if (!expr) throw new Error('Строка ' + lineNo + ': «вывод» без выражения');
         cur.body.push({ type: 'print', expr: expr, line: lineNo });
         return;
