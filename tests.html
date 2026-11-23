@@ -1,313 +1,301 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>mk-emulator — проверка ядра</title>
+<title>mk-emulator · тесты ядра</title>
 <style>
-  :root{
-    --bg:#12140f; --panel:#1b1e17; --line:#2e3327;
-    --text:#e8ecdf; --muted:#9aa38c; --ok:#4cc46a; --bad:#e5534b;
+  :root {
+    --bg: #eef1f6;
+    --card: #ffffff;
+    --ink: #16202a;
+    --dim: #66727f;
+    --line: #d9e0e8;
+    --ok: #1f9d55;
+    --ok-bg: #e6f5ec;
+    --bad: #d64545;
+    --bad-bg: #fdeaea;
+    --accent: #2f6feb;
   }
-  *{box-sizing:border-box;}
-  body{
-    margin:0; padding:16px 14px 40px;
-    background:var(--bg); color:var(--text);
-    font:16px/1.45 -apple-system,"Segoe UI",Roboto,sans-serif;
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 18px 14px 40px;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.5 -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   }
-  h1{font-size:20px; margin:0 0 4px;}
-  .sub{color:var(--muted); font-size:14px; margin-bottom:14px;}
-  .score{
-    display:flex; align-items:center; gap:12px;
-    background:var(--panel); border:1px solid var(--line);
-    border-radius:14px; padding:12px 14px; margin-bottom:14px;
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .lead { color: var(--dim); font-size: 13px; margin: 0 0 16px; }
+  .tally {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 14px 16px; margin-bottom: 14px;
+    box-shadow: 0 2px 10px rgba(20, 40, 70, .06);
   }
-  .score .big{font-size:26px; font-weight:700;}
-  .score .lbl{color:var(--muted); font-size:13px;}
-  .bar{flex:1; height:8px; background:#2b2f24; border-radius:6px; overflow:hidden;}
-  .bar i{display:block; height:100%; width:0; background:var(--ok); transition:width .3s;}
-  .row{
-    display:grid; grid-template-columns:26px 1fr; gap:10px;
-    background:var(--panel); border:1px solid var(--line);
-    border-radius:12px; padding:11px 12px; margin-bottom:8px;
+  .tally .num { font-size: 26px; font-weight: 700; letter-spacing: -.5px; }
+  .tally .num.ok { color: var(--ok); }
+  .tally .num.bad { color: var(--bad); }
+  .tally .cap { color: var(--dim); font-size: 13px; }
+  .list { display: flex; flex-direction: column; gap: 8px; }
+  .row {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 11px 13px; display: grid; grid-template-columns: 18px 1fr; gap: 10px;
   }
-  .row.ok{border-color:#2f5a39;}
-  .row.bad{border-color:#6a2f2c;}
-  .ic{font-size:18px; line-height:1.2;}
-  .nm{font-weight:600; font-size:15px;}
-  .dt{color:var(--muted); font-size:13px; margin-top:3px; font-family:ui-monospace,monospace; word-break:break-word;}
-  .dt b{color:var(--text); font-weight:600;}
-  button.go{
-    margin-top:14px; width:100%; padding:14px;
-    background:#2f7d43; color:#fff; border:0; border-radius:12px;
-    font-size:16px; font-weight:600;
+  .mark { font-weight: 700; }
+  .row.good .mark { color: var(--ok); }
+  .row.fail .mark { color: var(--bad); }
+  .row.fail { border-color: #f0bcbc; background: var(--bad-bg); }
+  .name { font-weight: 600; }
+  .meta { color: var(--dim); font-size: 12.5px; margin-top: 2px; }
+  .meta b { color: var(--ink); font-weight: 600; }
+  .group {
+    margin: 16px 0 4px; color: var(--dim); font-size: 12px;
+    text-transform: uppercase; letter-spacing: .06em;
   }
-  .note{margin-top:14px; color:var(--muted); font-size:13px;}
+  .acts { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+  button, a.btn {
+    appearance: none; border: 1px solid var(--line); background: var(--card);
+    color: var(--ink); border-radius: 11px; padding: 11px 16px;
+    font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
+  }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .foot { margin-top: 18px; color: var(--dim); font-size: 12px; }
 </style>
 </head>
 <body>
 
-<h1>Проверка ядра</h1>
-<div class="sub">Эталонные примеры на <code>core.js</code> — без интерфейса, только вычисления.</div>
+<h1>Тесты ядра</h1>
+<p class="lead">Каждый кейс прогоняется на чистом ядре без интерфейса. Это те же числа, что показывает «Проверить» в библиотеке.</p>
 
-<div class="score">
-  <div>
-    <div class="big" id="score">0 / 0</div>
-    <div class="lbl">пройдено</div>
-  </div>
-  <div class="bar"><i id="bar"></i></div>
+<div class="tally">
+  <div class="num" id="tallyNum">—</div>
+  <div class="cap" id="tallyCap">считаю…</div>
 </div>
 
-<div id="list"></div>
-<button class="go" id="again">Прогнать ещё раз</button>
+<div class="list" id="list"></div>
 
-<div class="note" id="tail"></div>
+<div class="acts">
+  <button type="button" class="primary" id="rerun">Прогнать заново</button>
+  <a class="btn" href="./index.html">Открыть эмулятор</a>
+</div>
+
+<p class="foot" id="foot"></p>
 
 <script src="core.js"></script>
 <script>
-(function(){
+(function () {
   'use strict';
 
-  var listEl = document.getElementById('list');
-  var scoreEl = document.getElementById('score');
-  var barEl = document.getElementById('bar');
-  var tailEl = document.getElementById('tail');
+  var NOP = 0x54;
 
-  function newCore(){
-    return window.MKCore.create({ onEvent: function(){} });
-  }
-
-  /* Нажатия по описанию, как в профиле: {a:'digit', d:7} и {a:'code', c:0x10} */
-  function press(core, list){
-    list.forEach(function(k){ core.key(k); });
-  }
-  function D(d){ return { a:'digit', d:d }; }
-  function C(c){ return { a:'code', c:c }; }
-  var UP = C(0x0E);   /* В↑ */
-
-  var TESTS = [
-
+  /* Кейсы. prog — коды ячеек по адресам (индекс массива = адрес).
+     data — что положить в регистры до прогона.
+     x — что положить в X после сброса стека.
+     Точность сравнения: 1e-6 относительная — как у индикатора на 8 знаков. */
+  var CASES = [
     {
-      name: '2 ↑ 3 + = 5',
-      run: function(core){
-        press(core, [D(2), UP, D(3), C(0x10)]);
-        return core.ST.X;
-      },
-      want: 5
+      group: 'Программы из библиотеки',
+      name: 'n! — факториал',
+      prog: [0x01, 0x41, 0x61, 0x60, 0x12, 0x41, 0x5D, 0x00, 0x02, 0x61, 0x50],
+      data: { 0: 7 },
+      expect: 5040
+    },
+    {
+      name: 'Сумма 1…N',
+      prog: [0x60, 0x60, 0x01, 0x10, 0x12, 0x02, 0x13, 0x50],
+      data: { 0: 10 },
+      expect: 55
+    },
+    {
+      name: 'Длина отрезка',
+      prog: [0x61, 0x62, 0x11, 0x22, 0x63, 0x64, 0x11, 0x22, 0x10, 0x21, 0x50],
+      data: { 1: 8, 2: 1, 3: 4, 4: 2 },
+      expect: 7.2801099
+    },
+    {
+      name: 'Площадь круга',
+      prog: [0x61, 0x22, 0x20, 0x12, 0x50],
+      data: { 1: 2 },
+      expect: 12.566371
+    },
+    {
+      name: 'Формула Герона',
+      prog: [0x61, 0x62, 0x10, 0x63, 0x10, 0x02, 0x13, 0x44,
+             0x64, 0x61, 0x11, 0x12, 0x64, 0x62, 0x11, 0x12,
+             0x64, 0x63, 0x11, 0x12, 0x21, 0x50],
+      data: { 1: 3, 2: 4, 3: 5 },
+      expect: 6
+    },
+    {
+      name: 'НОД четырёх чисел (32, 124, 206, 1086)',
+      prog: [
+        0x53, 0x02, 0x00,
+        0x63, 0x42,
+        0x53, 0x02, 0x00,
+        0x64, 0x42,
+        0x53, 0x02, 0x00,
+        0x61, 0x50,
+        NOP, NOP, NOP, NOP, NOP,
+        0x61, 0x62, 0x11,
+        0x57, 0x04, 0x03,
+        0x59, 0x03, 0x06,
+        0x61, 0x62, 0x11, 0x41,
+        0x51, 0x02, 0x00,
+        0x62, 0x61, 0x11, 0x42,
+        0x51, 0x02, 0x00,
+        0x52
+      ],
+      data: { 1: 32, 2: 124, 3: 206, 4: 1086 },
+      expect: 2
     },
 
     {
-      name: '2 ↑ 3 + 4 + = 9',
-      run: function(core){
-        press(core, [D(2), UP, D(3), C(0x10), D(4), C(0x10)]);
-        return core.ST.X;
-      },
-      want: 9
+      group: 'Подпрограммы',
+      name: 'ПП → 5+1 → В/О → возврат на 04',
+      /* 00 5 · 01 ПП 06 · 04 С/П · 06 1 · 07 + · 08 В/О */
+      prog: [0x05, 0x53, 0x00, 0x06, 0x50, NOP, 0x01, 0x10, 0x52],
+      expect: 6
+    },
+    {
+      name: 'Вложенный вызов: два уровня',
+      /* 00 2 · 01 ПП 08 → 08 ПП 12 → 12 1 · 13 + · 14 В/О → 09 × · 10 В/О · 11 С/П
+         Итог: (1 + 2) = 3, дальше × : 2 × 3 = 6 */
+      prog: [0x02, 0x53, 0x00, 0x08, 0x50, NOP, NOP, NOP,
+             0x53, 0x01, 0x02, NOP,
+             0x01, 0x10, 0x52],
+      expect: 6
     },
 
     {
-      name: '10 ÷ 4 = 2.5',
-      run: function(core){
-        press(core, [D(1), D(0), UP, D(4), C(0x13)]);
-        return core.ST.X;
-      },
-      want: 2.5
+      group: 'Угловые единицы',
+      name: 'sin 30 в градусах',
+      prog: [0x1C, 0x50], x: 30, angle: 'deg', expect: 0.5
+    },
+    {
+      name: 'sin 100 в градах',
+      prog: [0x1C, 0x50], x: 100, angle: 'grad', expect: 1
+    },
+    {
+      name: 'sin π/2 в радианах',
+      prog: [0x1C, 0x50], x: Math.PI / 2, angle: 'rad', expect: 1
+    },
+    {
+      name: 'arcsin 0.5 в градусах',
+      prog: [0x19, 0x50], x: 0.5, angle: 'deg', expect: 30
+    },
+    {
+      name: 'arcsin 0.5 в градах',
+      prog: [0x19, 0x50], x: 0.5, angle: 'grad', expect: 100 / 3
     },
 
     {
-      name: 'x² от 12 = 144',
-      run: function(core){
-        press(core, [D(1), D(2), C(0x22)]);
-        return core.ST.X;
-      },
-      want: 144
+      group: 'Отказы и защита',
+      name: 'Код 26 (не существует) — аварийный останов',
+      prog: [0x26, 0x50], expectError: true
     },
-
     {
-      name: '1 ÷ 0 даёт ЕГГОГ',
-      run: function(core){
-        press(core, [D(0), C(0x23)]);
-        return core.ST.err === true ? 'ЕГГОГ' : core.ST.X;
-      },
-      want: 'ЕГГОГ'
-    },
-
-    {
-      name: 'Факториал: 7! = 5040 (n → R0, накопитель R1, цикл L0)',
-      run: function(core){
-        core.setProgram([
-          0x40,             /* 00: X→П0 — счётчик цикла                  */
-          0x01,             /* 01: 1                                     */
-          0x41,             /* 02: X→П1 — накопитель R1 = 1              */
-          0x61,             /* 03: П→X1 — сюда возвращает L0             */
-          0x60,             /* 04: П→X0 — счётчик прямо, без косвенности */
-          0x12,             /* 05: ×                                     */
-          0x41,             /* 06: X→П1 — произведение назад в R1        */
-          0x5D, 0x00, 0x03, /* 07: F L0 03 — R0−1, пока не ноль          */
-          0x61,             /* 10: П→X1 — результат в X                  */
-          0x50              /* 11: С/П                                   */
-        ]);
-        core.setX(7);
-        var r = core.run(5000);
-        return { value: core.ST.X, note: r.steps + ' шагов' };
-      },
-      want: 5040
-    },
-
-    {
-      name: 'Условие x=0 истинно: идём следующей командой (→ 1)',
-      run: function(core){
-        core.setProgram([
-          0x5E, 0x00, 0x04,  /* 00: F x=0 04 — если X=0, переход на 04 */
-          0x01,              /* 03: 1                                  */
-          0x50,              /* 04: С/П                                */
-          0x02,              /* 05: 2                                  */
-          0x50               /* 06: С/П                                */
-        ]);
-        core.setX(0);
-        core.run(200);
-        return core.ST.X;
-      },
-      want: 1
-    },
-
-    {
-      name: 'Условие x=0 ложно: значения не меняется (остаётся 5)',
-      run: function(core){
-        core.setProgram([
-          0x5E, 0x00, 0x04,
-          0x01,
-          0x50,
-          0x02,
-          0x50
-        ]);
-        core.setX(5);
-        core.run(200);
-        return core.ST.X;
-      },
-      want: 5
-    },
-
-    {
-      name: 'Косвенная запись: К X→П6 при R6=5 пишет в R6',
-      run: function(core){
-        core.setProgram([
-          0x04, 0x02,  /* 00: число 42 */
-          0xB6,        /* 02: К X→П 6  */
-          0x50         /* 03: С/П      */
-        ]);
-        core.ST.R[6] = 5;
-        core.run(200);
-        return core.ST.R[6];
-      },
-      want: 42
-    },
-
-    {
-      name: 'Косвенное чтение: К П→X6 при R6=6 читает R7',
-      run: function(core){
-        core.setProgram([
-          0xD6,  /* 00: К П→X6 */
-          0x50   /* 01: С/П    */
-        ]);
-        core.ST.R[6] = 6;
-        core.ST.R[7] = 321;
-        core.run(200);
-        return core.ST.X;
-      },
-      want: 321
-    },
-
-    {
-      name: 'Снимок состояния восстанавливается (8 ↑ 9 + = 17)',
-      run: function(core){
-        press(core, [D(8), UP, D(9), C(0x10)]);
-        var snap = core.snapshot();
-        core.reset(true);
-        core.restore(snap);
-        return core.ST.X;
-      },
-      want: 17
-    },
-
-    {
-      name: 'Бесконечный цикл останавливается лимитом',
-      run: function(core){
-        core.setProgram([
-          0x51, 0x00, 0x00, /* 00: БП 00 — переход на себя */
-          0x50
-        ]);
-        var r = core.run(500);
-        return r.overflow ? 'остановлен' : 'ушёл';
-      },
-      want: 'остановлен'
+      name: 'Переход на адрес вне памяти — ошибка, а не тишина',
+      /* 00 БП 99 — адреса 99 в памяти нет */
+      prog: [0x51, 0x09, 0x09, 0x50], expectError: true
     }
-
   ];
 
-  function showValue(v){
-    if (v && typeof v === 'object' && 'value' in v) return { text: v.value, note: v.note || '' };
-    return { text: v, note: '' };
+  function near(a, b) {
+    return Math.abs(a - b) <= Math.abs(b) * 1e-6 + 1e-9;
   }
 
-  function render(){
-    listEl.innerHTML = '';
-    var passed = 0;
+  function runCase(c) {
+    var core = MKCore.create({});
+    core.setProgram(c.prog);
 
-    TESTS.forEach(function(t){
-      var core = newCore();
-      var ok = false, shown = '', note = '', errText = '';
+    if (c.data) {
+      Object.keys(c.data).forEach(function (k) {
+        core.setRegister(parseInt(k, 10), c.data[k]);
+      });
+    }
 
-      try{
-        var out = t.run(core);
-        var s = showValue(out);
-        shown = s.text;
-        note = s.note;
-        ok = (shown === t.want);
-      }catch(e){
-        errText = (e && e.message) ? e.message : 'исключение';
-        ok = false;
-      }
+    core.reset(true);                  /* чистит стек, регистры не трогает */
+    if (c.angle) core.setAngle(c.angle);
+    if (typeof c.x === 'number') core.setX(c.x);
 
-      if (ok) passed++;
+    var r = core.run(20000);
 
-      var row = document.createElement('div');
-      row.className = 'row ' + (ok ? 'ok' : 'bad');
+    if (c.expectError) {
+      return {
+        ok: r.result === 'error',
+        got: r.result === 'error' ? 'ошибка' : 'прошло молча',
+        want: 'ошибка',
+        steps: r.steps
+      };
+    }
 
-      var ic = document.createElement('div');
-      ic.className = 'ic';
-      ic.textContent = ok ? '✅' : '❌';
+    var ok = (r.result === 'stop') && near(r.X, c.expect);
+    return {
+      ok: ok,
+      got: MKCore.fmtNum(r.X),
+      want: MKCore.fmtNum(c.expect),
+      steps: r.steps,
+      result: r.result
+    };
+  }
 
-      var box = document.createElement('div');
+  function el(tag, cls, text) {
+    var d = document.createElement(tag);
+    if (cls) d.className = cls;
+    if (text !== undefined) d.textContent = text;
+    return d;
+  }
 
-      var nm = document.createElement('div');
-      nm.className = 'nm';
-      nm.textContent = t.name;
+  function render() {
+    var list = document.getElementById('list');
+    list.innerHTML = '';
 
-      var dt = document.createElement('div');
-      dt.className = 'dt';
-      dt.innerHTML = 'получено: <b>' + String(shown) + '</b> · ожидалось: <b>' +
-                     String(t.want) + '</b>' + (note ? ' · ' + note : '') +
-                     (errText ? ' · <b>сбой: ' + errText + '</b>' : '');
+    var total = CASES.length, passed = 0;
 
-      box.appendChild(nm);
-      box.appendChild(dt);
-      row.appendChild(ic);
-      row.appendChild(box);
-      listEl.appendChild(row);
+    CASES.forEach(function (c) {
+      if (c.group) list.appendChild(el('div', 'group', c.group));
+
+      var res = runCase(c);
+      if (res.ok) passed++;
+
+      var row = el('div', 'row ' + (res.ok ? 'good' : 'fail'));
+      row.appendChild(el('div', 'mark', res.ok ? '✓' : '✗'));
+
+      var body = el('div');
+      body.appendChild(el('div', 'name', c.name));
+
+      var meta = el('div', 'meta');
+      meta.innerHTML = 'получено <b>' + res.got + '</b>' +
+        ' · ждали <b>' + res.want + '</b>' +
+        ' · шагов <b>' + res.steps + '</b>';
+      body.appendChild(meta);
+
+      row.appendChild(body);
+      list.appendChild(row);
     });
 
-    scoreEl.textContent = passed + ' / ' + TESTS.length;
-    barEl.style.width = Math.round(passed / TESTS.length * 100) + '%';
-    barEl.style.background = (passed === TESTS.length) ? 'var(--ok)' : 'var(--bad)';
+    var num = document.getElementById('tallyNum');
+    num.textContent = passed + ' / ' + total;
+    num.className = 'num ' + (passed === total ? 'ok' : 'bad');
 
-    tailEl.textContent = (passed === TESTS.length)
-      ? 'Все эталонные примеры сошлись. Можно делать интерфейс — вычисления проверены.'
-      : 'Есть расхождения: пока они не исправлены, интерфейс делать рано.';
+    document.getElementById('tallyCap').textContent =
+      passed === total
+        ? 'все проверки прошли — ядро считает как ожидалось'
+        : 'есть расхождения: они отмечены красным, разбор — в строке';
+
+    document.getElementById('foot').textContent =
+      'память программ: ' + MKCore.PROG_LEN + ' шагов · регистров: ' + MKCore.REG_COUNT +
+      ' · значащих цифр: ' + MKCore.MAXDIG;
   }
 
-  document.getElementById('again').addEventListener('click', render);
-  render();
+  document.getElementById('rerun').addEventListener('click', render);
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', render);
+  } else {
+    render();
+  }
 })();
 </script>
 </body>
