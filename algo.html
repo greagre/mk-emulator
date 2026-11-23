@@ -70,6 +70,7 @@ code{font-family:var(--mono);font-size:12px}
   <h2>2. Во что превратилось</h2>
   <div id="summary" class="res"></div>
   <div id="varsOut" class="res hide"></div>
+  <div id="dataOut" class="res hide"></div>
   <ul class="warn" id="warns"></ul>
   <div style="margin-top:10px;max-height:430px;overflow:auto;border:1px solid var(--line);border-radius:10px">
     <table>
@@ -83,7 +84,7 @@ code{font-family:var(--mono);font-size:12px}
   <h2>3. Прогон</h2>
   <div class="grid3">
     <div>
-      <label for="regs">Регистры (необязательно)</label>
+      <label for="regs">Регистры на входе</label>
       <input id="regs" placeholder="R0=7, R1=1">
     </div>
     <div>
@@ -152,6 +153,7 @@ code{font-family:var(--mono);font-size:12px}
 
   var $ = function (id) { return document.getElementById(id); };
   var compiled = null;
+  var lastAuto = '';
 
   /* ---------- мелочи ---------- */
   function hex2(c) {
@@ -168,6 +170,11 @@ code{font-family:var(--mono);font-size:12px}
     var n = parseFloat(t);
     return isNaN(n) ? NaN : n;
   }
+  function plain(v) {
+    if (v == null || isNaN(v)) return '?';
+    return String(+v);
+  }
+  function sortIdx(a, b) { return a - b; }
 
   var LABELS = {
     0x0A: '·', 0x0B: '/-/', 0x0C: 'ВП', 0x0D: 'Cx', 0x0E: 'В↑', 0x0F: 'Вx',
@@ -250,6 +257,16 @@ code{font-family:var(--mono);font-size:12px}
       out.push(s);
     }
     return out;
+  }
+
+  /* значение, если выражение — просто число (для начальных данных) */
+  function literalValue(expr) {
+    var t = String(expr).replace(/\s/g, '').replace(/,/g, '.');
+    var m = t.match(/^([+-]?)(\d+(?:\.\d+)?)$/);
+    if (!m) return null;
+    var v = parseFloat(m[2]);
+    if (isNaN(v)) return null;
+    return m[1] === '-' ? -v : v;
   }
 
   /* ---------- компилятор ---------- */
@@ -467,6 +484,45 @@ code{font-family:var(--mono);font-size:12px}
     return root.body;
   }
 
+  /* ---------- начальные данные и раскладка ---------- */
+  /* Размещение: как переменные легли по регистрам.
+     Начальные данные: простые присваивания в начале программы (до первого цикла/вывода). */
+  function buildLayout(nodes, c) {
+    var init = {};
+    var order = [];
+
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      if (n.type !== 'assign') break;
+      var idx = c.regOf(n.name);
+      if (order.indexOf(idx) < 0) order.push(idx);
+      var lit = literalValue(n.expr);
+      if (lit != null) init[idx] = lit;
+    }
+
+    var layout = {};
+    Object.keys(c.vars).forEach(function (k) { layout[k] = c.vars[k]; });
+
+    return { init: init, layout: layout, order: order };
+  }
+
+  function initToText(init) {
+    var keys = Object.keys(init).map(Number).sort(sortIdx);
+    return keys.map(function (k) {
+      return 'R' + regName(k) + '=' + plain(init[k]);
+    }).join(', ');
+  }
+
+  function layoutText(layout, init) {
+    var keys = Object.keys(layout);
+    keys.sort(function (a, b) { return layout[a] - layout[b]; });
+    return keys.map(function (name) {
+      var idx = layout[name];
+      var has = init && Object.prototype.hasOwnProperty.call(init, idx);
+      return name + ' → R' + regName(idx) + (has ? ' = ' + plain(init[idx]) : '');
+    }).join(', ');
+  }
+
   /* ---------- компиляция целиком ---------- */
   function compile(source) {
     var c = new Compiler();
@@ -487,8 +543,12 @@ code{font-family:var(--mono);font-size:12px}
       c.warns.push('Программа занимает ' + c.cells.length + ' ячеек, а памяти ' + PROG_LEN + ' — не влезает.');
     }
 
+    var meta = buildLayout(nodes, c);
     var prog = c.resolve();
-    return { prog: prog, cells: c.cells, vars: c.vars, warns: c.warns };
+    return {
+      prog: prog, cells: c.cells, vars: c.vars, warns: c.warns,
+      init: meta.init, layout: meta.layout
+    };
   }
 
   /* ---------- вывод ---------- */
@@ -512,17 +572,34 @@ code{font-family:var(--mono);font-size:12px}
       '\nпереходов: ' + jumps +
       (used > PROG_LEN ? '\nПЕРЕПОЛНЕНИЕ: ' + (used - PROG_LEN) + ' ячеек за пределами памяти' : '');
 
-    /* таблица переменных */
+    /* размещение: переменная → регистр */
     var vars = res.vars, keys = Object.keys(vars);
     var box = $('varsOut');
     if (keys.length) {
       box.classList.remove('hide');
       box.className = 'res';
-      box.textContent = 'переменные → регистры: ' + keys.map(function (k) {
-        return k + ' → R' + regName(vars[k]);
-      }).join(', ');
+      box.textContent = 'размещение (переменная → регистр): ' + layoutText(res.layout, res.init);
     } else {
       box.classList.add('hide');
+    }
+
+    /* начальные данные, которые уедут в корпус */
+    var dataBox = $('dataOut');
+    var dataKeys = Object.keys(res.init).map(Number).sort(sortIdx);
+    if (dataKeys.length) {
+      dataBox.classList.remove('hide');
+      dataBox.className = 'res';
+      dataBox.textContent = 'начальные данные (уйдут в корпус): ' + initToText(res.init);
+    } else {
+      dataBox.classList.add('hide');
+    }
+
+    /* автозаполнение поля регистров, если пользователь его не правил */
+    var field = $('regs');
+    var auto = initToText(res.init);
+    if (auto && (!field.value.trim() || field.value === lastAuto)) {
+      field.value = auto;
+      lastAuto = auto;
     }
 
     res.cells.forEach(function (c, i) {
@@ -576,7 +653,31 @@ code{font-family:var(--mono);font-size:12px}
     return out;
   }
 
+  function entryData() {
+    var regs = parseRegs($('regs').value);
+    if (!Object.keys(regs).length && compiled && compiled.init) regs = compiled.init;
+    return regs;
+  }
+
   /* ---------- прогон ---------- */
+  function regsAfterText(core) {
+    if (!compiled) return '';
+    var st = core.ST || {};
+    var R = st.R;
+    if (!R || typeof R.length !== 'number') return '';
+    var layout = compiled.layout || {};
+    var names = Object.keys(layout);
+    names.sort(function (a, b) { return layout[a] - layout[b]; });
+    var parts = [];
+    names.forEach(function (name) {
+      var idx = layout[name];
+      var v = R[idx];
+      if (v == null || isNaN(v)) return;
+      parts.push(name + ' = ' + core.fmt(v));
+    });
+    return parts.join(', ');
+  }
+
   function doRun() {
     var out = $('runOut');
     out.classList.remove('hide');
@@ -592,7 +693,7 @@ code{font-family:var(--mono);font-size:12px}
       return;
     }
 
-    var regs = parseRegs($('regs').value);
+    var regs = entryData();
     var x0 = num($('x0').value);
     if (isNaN(x0)) x0 = 0;
     var limit = parseInt($('limit').value, 10);
@@ -614,15 +715,18 @@ code{font-family:var(--mono);font-size:12px}
       out.className = 'res ' + (r.result === 'stop' ? 'ok'
         : (r.result === 'error' ? 'bad' : ''));
 
-      var regsText = Object.keys(regs).map(function (k) {
+      var inText = Object.keys(regs).map(function (k) {
         return 'R' + (C.REG_NAMES ? C.REG_NAMES[k] : regName(+k)) + ' = ' + core.fmt(regs[k]);
       }).join(', ');
 
+      var after = regsAfterText(core);
+
       out.textContent =
-        'вход: ' + (regsText || 'регистры по умолчанию') + ', X = ' + core.fmt(x0) + '\n' +
+        'на входе: ' + (inText || 'регистры по умолчанию') + ', X = ' + core.fmt(x0) + '\n' +
         'X = ' + core.fmt(r.x) + '\n' +
         'шагов: ' + r.steps + '\n' +
-        'итог: ' + verdict;
+        'итог: ' + verdict +
+        (after ? '\nрегистры после: ' + after : '');
 
       if (r.result === 'cont') {
         out.textContent += '\n\nПрограмма не дошла до С/П — скорее всего зациклилась. Проверь условие «пока» и шаг изменения счётчика.';
@@ -648,10 +752,10 @@ code{font-family:var(--mono);font-size:12px}
       return;
     }
     var name = programName();
-    var data = parseRegs($('regs').value);
+    var data = entryData();
     var exp = num($('pexp').value);
 
-    var entry = { name: name, prog: compiled.prog, data: data };
+    var entry = { name: name, prog: compiled.prog, data: data, layout: compiled.layout };
     if (!isNaN(exp)) { entry.expect = exp; entry.check = 'алго → X = ' + exp; }
 
     var payload = {
@@ -671,6 +775,8 @@ code{font-family:var(--mono);font-size:12px}
 
     out.className = 'res ok';
     out.textContent = 'Файл собран: «' + name + '»\n' +
+      'Данные: ' + (initToText(data) || 'без регистров') + '\n' +
+      'Размещение: ' + (layoutText(compiled.layout, compiled.init) || '—') + '\n' +
       'В корпусе: ☰ → «Импорт» → выбрать этот файл.';
   }
 
@@ -682,10 +788,12 @@ code{font-family:var(--mono);font-size:12px}
       out.textContent = 'Сначала нажми «Перевести».';
       return;
     }
+    var data = entryData();
     try {
       localStorage.setItem(BRIDGE_KEY, JSON.stringify({
         prog: compiled.prog,
-        data: parseRegs($('regs').value),
+        data: data,
+        layout: compiled.layout,
         from: 'Язык Алго'
       }));
     } catch (e) {
@@ -694,7 +802,10 @@ code{font-family:var(--mono);font-size:12px}
       return;
     }
     out.className = 'res ok';
-    out.textContent = 'Передаю в корпус… если не открылось само — нажми «корпус» внизу.';
+    out.textContent = 'Передаю в корпус: программа + данные (' +
+      (initToText(data) || 'пусто') + ')\nРазмещение: ' +
+      (layoutText(compiled.layout, compiled.init) || '—') +
+      '\nЕсли не открылось само — нажми «корпус» внизу.';
     setTimeout(function () { location.href = 'index.html'; }, 350);
   }
 
@@ -751,6 +862,7 @@ code{font-family:var(--mono);font-size:12px}
         $('summary').className = 'res bad';
         $('summary').textContent = e.message;
         $('varsOut').classList.add('hide');
+        $('dataOut').classList.add('hide');
         $('warns').innerHTML = '';
         $('listing').innerHTML = '';
         compiled = null;
@@ -760,6 +872,7 @@ code{font-family:var(--mono);font-size:12px}
     $('btnExFact').addEventListener('click', function () {
       $('src').value = EX_FACT;
       $('regs').value = '';
+      lastAuto = '';
       $('pexp').value = '5040';
       $('btnCompile').click();
     });
@@ -767,6 +880,7 @@ code{font-family:var(--mono);font-size:12px}
     $('btnExSq').addEventListener('click', function () {
       $('src').value = EX_SQ;
       $('regs').value = '';
+      lastAuto = '';
       $('pexp').value = '55';
       $('btnCompile').click();
     });
@@ -777,6 +891,7 @@ code{font-family:var(--mono);font-size:12px}
       $('runOut').classList.add('hide');
       $('saveOut').classList.add('hide');
       compiled = null;
+      lastAuto = '';
     });
 
     $('btnRun').addEventListener('click', doRun);
