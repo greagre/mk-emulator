@@ -23,6 +23,7 @@
     padding: 10px; border: 1px solid #cfd5dc; border-radius: 8px;
     background: #fbfcfd; color: #1d2126;
   }
+  textarea::placeholder { color: #98a2ad; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   button {
     font: inherit; padding: 9px 14px; border-radius: 8px; cursor: pointer;
@@ -51,6 +52,15 @@
   label.file input { display: none; }
   .err { color: #b3261e; font-size: 13px; margin-top: 8px; }
   a.back { color: #2f6fd0; font-size: 13px; text-decoration: none; }
+
+  /* ---- плашка «откуда пришла программа» ---- */
+  .srcbar {
+    display: none; margin-bottom: 10px; padding: 8px 10px;
+    border-radius: 8px; font-size: 12.5px; line-height: 1.4;
+    background: #eef4fd; border: 1px solid #c3d7f5; color: #1b4d96;
+  }
+  .srcbar.show { display: block; }
+  .srcbar b { font-weight: 700; }
 
   /* ---- подсветка: работает во всех режимах ---- */
   .kHead { color: #2f6fd0; font-weight: 700; }
@@ -100,12 +110,14 @@
 
 <div class="card">
   <p class="label">Код программы</p>
-  <textarea id="src" spellcheck="false" placeholder="01 41 61 60 12 41 5D 00 02 61 50"></textarea>
+  <div class="srcbar" id="srcbar"></div>
+  <textarea id="src" spellcheck="false" placeholder="Поле пустое — программы пока нет.&#10;&#10;Вставь hex-коды: 01 41 61 60 12 41 5D 00 02 61 50&#10;или загрузи .json / .txt из корпуса.&#10;Или нажми «Пример», чтобы посмотреть, как работает."></textarea>
   <div class="row">
     <label class="file">⇧ Загрузить .json / .txt
       <input type="file" id="file" accept=".json,.txt,application/json,text/plain">
     </label>
     <button class="main" id="parse">Разобрать</button>
+    <button id="example">Пример</button>
     <button id="clear">Очистить</button>
   </div>
   <div class="hint">Можно вставлять и подряд без пробелов: <code>0141616012415D00026150</code>. Строки вида «07 ⇥ X→П 1» декодер тоже поймёт — возьмёт коды из hex.</div>
@@ -159,6 +171,10 @@
   var outLbl = document.getElementById('outLabel');
   var fileIn = document.getElementById('file');
   var viewRow = document.getElementById('viewRow');
+  var srcBar = document.getElementById('srcbar');
+
+  var DEMO_HEX = '01 41 61 60 12 41 5D 00 02 61 50';
+  var BRIDGE_KEY = 'mk-emulator/decode-bridge';
 
   var model  = null;
   var mode   = 'detailed';
@@ -166,6 +182,12 @@
   var fileName = '';
 
   function setErr(text) { errBox.textContent = text || ''; }
+
+  function setSrcBar(text) {
+    if (!text) { srcBar.className = 'srcbar'; srcBar.innerHTML = ''; return; }
+    srcBar.className = 'srcbar show';
+    srcBar.innerHTML = text;
+  }
 
   function isCompact() {
     var w = out.clientWidth || window.innerWidth || 400;
@@ -199,7 +221,7 @@
     if (m === 'listing') out.classList.add(compact ? 'tblout' : 'mono');
     if (m === 'listingTable') out.classList.add('tblout');
 
-    /* v3: разметка есть во ВСЕХ режимах, поэтому всегда innerHTML */
+    /* разметка есть во ВСЕХ режимах, поэтому всегда innerHTML */
     out.innerHTML = window.B3Decode.render(model, m, { html: true, compact: compact });
 
     viewRow.style.display = (mode === 'listing') ? 'flex' : 'none';
@@ -213,7 +235,7 @@
   function parseNow() {
     setErr('');
     var raw = src.value.trim();
-    if (!raw) { setErr('Пусто: вставь hex-коды программы.'); return; }
+    if (!raw) { setErr('Пусто: вставь hex-коды программы или нажми «Пример».'); return; }
 
     var prog = null, meta = { name: '', data: null, saved: '' };
 
@@ -250,6 +272,19 @@
 
   document.getElementById('parse').addEventListener('click', parseNow);
 
+  /* пример — только по кнопке, в поле ничего само не подставляется */
+  document.getElementById('example').addEventListener('click', function () {
+    src.value = DEMO_HEX;
+    fileName = 'пример';
+    setSrcBar('<b>Пример.</b> Это демонстрационная программа (11 ячеек) — не твоя. Нажми «Разобрать», чтобы увидеть листинг, или «Очистить», чтобы начать со своего кода.');
+    setErr('');
+    model = null;
+    out.classList.remove('mono');
+    out.classList.remove('tblout');
+    out.textContent = 'Здесь появится текст. Нажми «Разобрать».';
+    outLbl.textContent = 'Результат';
+  });
+
   document.getElementById('clear').addEventListener('click', function () {
     src.value = '';
     out.classList.remove('mono');
@@ -257,6 +292,7 @@
     out.textContent = 'Здесь появится текст. Вставь код и нажми «Разобрать».';
     outLbl.textContent = 'Результат';
     setErr('');
+    setSrcBar('');
     model = null;
     fileName = '';
   });
@@ -313,6 +349,7 @@
             data: one.data,
             saved: one.saved || ''
           });
+          setSrcBar('Загружен файл <b>' + f.name + '</b>' + (one.name ? ' · программа «' + one.name + '»' : ''));
           show();
           return;
         }
@@ -320,6 +357,7 @@
 
       /* не JSON — считаем hex-текстом */
       src.value = text;
+      setSrcBar('Загружен файл <b>' + f.name + '</b> как текст — разбираю hex.');
       parseNow();
     };
 
@@ -376,9 +414,42 @@
     }
   });
 
-  /* пример в один клик, чтобы страница не была пустой */
-  if (!src.value) {
-    src.value = '01 41 61 60 12 41 5D 00 02 61 50';
+  /* ---- приём программы из корпуса (мост) ---- */
+  /* Корпус при нажатии «Дек» кладёт в localStorage {prog, data, name, saved},
+     декодер забирает и сразу разбирает. Ключ одноразовый: прочитали — удалили,
+     чтобы при следующем открытии поле снова было пустым. */
+  function takeFromBridge() {
+    var raw = null;
+    try { raw = localStorage.getItem(BRIDGE_KEY); } catch (e) { return false; }
+    if (!raw) return false;
+    try { localStorage.removeItem(BRIDGE_KEY); } catch (e) {}
+
+    var obj = null;
+    try { obj = JSON.parse(raw); } catch (e) { return false; }
+    if (!obj) return false;
+
+    var prog = obj.prog || obj.cells;
+    if (!Array.isArray(prog) || !prog.length) return false;
+
+    src.value = prog.map(function (c) {
+      return ('0' + (c & 0xFF).toString(16).toUpperCase()).slice(-2);
+    }).join(' ');
+
+    fileName = obj.name || 'из корпуса';
+    setSrcBar('Программа получена <b>из корпуса</b>'
+      + (obj.name ? ': «' + obj.name + '»' : '')
+      + ' · ' + prog.length + ' ячеек. Её можно править и разбирать заново.');
+    parseNow();
+    return true;
+  }
+
+  /* пустой старт: ничего не подставляем, кроме случая, когда пришли из корпуса */
+  setSrcBar('');
+  if (!takeFromBridge()) {
+    out.classList.remove('mono');
+    out.classList.remove('tblout');
+    out.textContent = 'Пока пусто.\n\nВставь hex-коды программы, загрузи .json из корпуса или нажми «Пример».';
+    outLbl.textContent = 'Результат';
   }
 })();
 </script>
