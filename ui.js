@@ -10,6 +10,21 @@
   var STORE_KEY = 'mk-emulator/state/';
   var RUN_LIMIT = 200000;
 
+  /* Демонстрационная программа: 7! — 5040.
+     R0 — счётчик цикла, R1 — накопитель. */
+  var DEMO_FACT = [
+    0x40,       /* 00  X→П 0 : n в счётчик   */
+    0x01,       /* 01  1                      */
+    0x41,       /* 02  X→П 1 : накопитель = 1 */
+    0x61,       /* 03  П→X 1 : начало цикла   */
+    0x60,       /* 04  П→X 0                  */
+    0x12,       /* 05  ×                      */
+    0x41,       /* 06  X→П 1                  */
+    0x5D, 0x00, 0x03, /* 07  F L0 03          */
+    0x61,       /* 10  П→X 1 : результат      */
+    0x50        /* 11  С/П                    */
+  ];
+
   var el = {
     model: document.getElementById('model'),
     modelName: document.getElementById('modelName'),
@@ -20,6 +35,7 @@
     stack: document.getElementById('stack'),
     regs: document.getElementById('regs'),
     keys: document.getElementById('keys'),
+    prog: document.getElementById('prog'),
     hint: document.getElementById('hint')
   };
 
@@ -110,6 +126,7 @@
     renderStack();
     renderRegs();
     renderKeys();
+    renderProgram();
     saveState();
   }
 
@@ -180,6 +197,84 @@
     });
   }
 
+  /* ---------- листинг программы ---------- */
+  function rowText(code, i) {
+    var st = core.ST;
+    var MK = window.MKCore;
+    if (code === MK.NOP) return { label: '—', code: '', empty: true };
+
+    if (MK.isJumpCmd(code)) {
+      var a = st.prog[(i + 1) % MK.PROG_LEN];
+      var b = st.prog[(i + 2) % MK.PROG_LEN];
+      var ad = (a <= 9 && b <= 9) ? (a * 10 + b) : -1;
+      return {
+        label: MK.cmdName(code) + (ad >= 0 ? ' → ' + pad2(ad) : ' → ??'),
+        code: MK.codeStr(code) + ' ' + a + b,
+        empty: false
+      };
+    }
+    return { label: MK.cmdName(code), code: MK.codeStr(code), empty: false };
+  }
+
+  function renderProgram() {
+    if (!el.prog) return;
+    var st = core.ST;
+    var MK = window.MKCore;
+    var last = core.lastStep();
+
+    var end = Math.max(last + 1, st.ip + 1, 12);
+    if (end > MK.PROG_LEN) end = MK.PROG_LEN;
+
+    el.prog.innerHTML = '';
+
+    var head = document.createElement('div');
+    head.className = 'prog-head';
+    var left = document.createElement('span');
+    left.textContent = 'Программа';
+    var right = document.createElement('span');
+    right.innerHTML = 'адрес <b>' + pad2(st.ip) + '</b> · занято <b>' + Math.max(last + 1, 0) + '</b> из ' + MK.PROG_LEN;
+    head.appendChild(left);
+    head.appendChild(right);
+    el.prog.appendChild(head);
+
+    var i = 0;
+    while (i < end) {
+      var code = st.prog[i] & 255;
+      var info = rowText(code, i);
+      var wide = (code !== MK.NOP && MK.isJumpCmd(code)) ? 3 : 1;
+
+      var row = document.createElement('div');
+      row.className = 'prow' + (info.empty ? ' empty' : '') + (i === st.ip ? ' cur' : '');
+
+      var a = document.createElement('span');
+      a.className = 'paddr';
+      a.textContent = pad2(i);
+
+      var t = document.createElement('span');
+      t.className = 'plabel';
+      t.textContent = info.label;
+
+      var c = document.createElement('span');
+      c.className = 'pcode';
+      c.textContent = info.code;
+
+      row.appendChild(a);
+      row.appendChild(t);
+      row.appendChild(c);
+
+      (function (addr) {
+        row.addEventListener('click', function () {
+          core.ST.ip = addr;
+          setHint('Адрес ' + pad2(addr) + (info.empty ? ' — пустая ячейка' : ': ' + info.label));
+          render();
+        });
+      })(i);
+
+      el.prog.appendChild(row);
+      i += wide;
+    }
+  }
+
   /* ---------- нажатия ---------- */
   function press(k) {
     core.key(k);
@@ -198,7 +293,7 @@
     } else if (res.err) {
       setHint('Ошибка на шаге ' + res.steps);
     } else {
-      setHint('Остановка на адресе ' + pad2(core.ST.ip) + ' · шагов: ' + res.steps);
+      setHint('Остановка на адресе ' + pad2(core.ST.ip) + ' · шагов: ' + res.steps + ' · X = ' + core.fmt(core.ST.X));
     }
   }
 
@@ -207,6 +302,7 @@
     var r = core.step();
     if (r === 'stop') setHint('С/П на адресе ' + pad2(core.ST.ip));
     else if (r === 'error') setHint('Ошибка выполнения на адресе ' + pad2(core.ST.ip));
+    else setHint('Шаг выполнен · адрес ' + pad2(core.ST.ip));
     render();
   });
 
@@ -219,6 +315,23 @@
     core.reset(false);
     pick = null;
     setHint('Сброшено: стек, регистры и адрес 00');
+    render();
+  });
+
+  var btnProgClear = document.getElementById('btnProgClear');
+  if (btnProgClear) btnProgClear.addEventListener('click', function () {
+    core.clearProgram();
+    core.ST.ip = 0;
+    setHint('Программная память очищена, адрес 00');
+    render();
+  });
+
+  var btnDemo = document.getElementById('btnDemo');
+  if (btnDemo) btnDemo.addEventListener('click', function () {
+    core.setProgram(DEMO_FACT, false);
+    core.setX(7);
+    pick = null;
+    setHint('Пример 7! в памяти: R0 = 7. Нажми «Пуск ⏩» — должно получиться 5040.');
     render();
   });
 
