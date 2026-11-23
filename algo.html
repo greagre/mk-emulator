@@ -218,14 +218,14 @@ function parseProgram(src){
 }
 
 /* ---------- генерация кодов ---------- */
-var OPS = { '+': 0x10, '-': 0x11, '*': 0x12, '/': 0x13, 'neg': 0x0B };
+var OPS = { '+': 0x10, '-': 0x11, '*': 0x12, '/': 0x13 };
 
 function compile(src){
   var root = parseProgram(src);
-  var cells = [], vars = {}, owner = {}, auto = 0, fix = [], marks = {}, inputs = [], lid = 0;
+  var cells = [], vars = {}, owner = {}, auto = 0, fix = [], marks = {}, inputs = [], lid = 0, last = -1;
 
   function err(msg){ throw { line: 0, msg: msg }; }
-  function emit(c){ cells.push(c); }
+  function emit(c){ cells.push(c); last = c; }
 
   function regOf(name){
     if (vars[name] != null) return vars[name];
@@ -241,6 +241,9 @@ function compile(src){
 
   function emitNum(v){
     var s = String(v).replace(',', '.');
+    /* Ядро не закрывает ввод числа после X→П: «1», затем «0» склеятся в «10».
+       Поэтому перед новой константой ставим Cx (0x0D) — он начинает ввод заново. */
+    if (last >= 0x40 && last <= 0x4D) emit(0x0D);
     for (var i = 0; i < s.length; i++){
       var ch = s[i];
       if (ch >= '0' && ch <= '9') emit(+ch);
@@ -273,14 +276,7 @@ function compile(src){
   /*
     Ядро core.js: условная команда идёт дальше (ip+3), когда условие ИСТИННО,
     и переходит по адресу, когда ЛОЖНО.
-    Считаем d = left - right и прыгаем на выход, когда условие цикла нарушено:
-      <   -> 0x5C (x<0):  ложно при d>=0 ... нет: 0x5C истинно при d<0,
-            значит прыжок происходит при d>=0 — то, что нужно для «пока a<b».
-      >=  -> 0x59 (x>=0): прыжок при d<0
-      =   -> 0x5E (x=0):  прыжок при d!=0
-      !=  -> 0x57 (x!=0): прыжок при d=0
-      >   -> 0x57 на выход, затем 0x59 на выход (d=0 и d<0)
-      <=  -> 0x57 на тело, затем 0x5C на выход
+    Поэтому для «пока a < b» нужен переход на выход при ложном условии.
   */
   function genCondJump(cond, outLabel, id){
     genExpr(cond.left);
@@ -335,7 +331,7 @@ function compile(src){
   for (var f = 0; f < fix.length; f++){
     var fx = fix[f], a = marks[fx.label];
     if (a == null) err('внутренняя ошибка: метка не найдена');
-    if (a > 99) err('адрес ' + a + ' больше 99 — программа не влезает в лимит');
+    if (a > PROG_LEN - 1) err('адрес ' + a + ' больше ' + (PROG_LEN - 1) + ' — программа не влезает в лимит');
     cells[fx.d] = Math.floor(a / 10);
     cells[fx.e] = a % 10;
   }
@@ -417,23 +413,29 @@ function render(){
   out.innerHTML = html;
 }
 
-/* ---------- вывод: данные и панель регистров ---------- */
+/* ---------- панель регистров ---------- */
+function varAt(r){
+  var nm = '';
+  if (compiled){
+    Object.keys(compiled.vars).forEach(function(k){ if (compiled.vars[k] === r) nm = k; });
+  }
+  return nm;
+}
+
+function regCell(r, val){
+  var nm = varAt(r);
+  var has = (val !== undefined && val !== null && isFinite(val));
+  return '<div class="rg' + (has ? ' on' : '') + (nm ? ' hot' : '') + '">'
+       + '<b>R' + REG_NAMES[r] + (nm ? ' · ' + nm : '') + '</b>'
+       + '<span>' + (has ? fmtNum(val) : '—') + '</span></div>';
+}
+
 function drawRegs(){
   var box = $('regs');
   if (!box) return;
-  var html = '';
-  for (var r = 0; r < REG_COUNT; r++){
-    var v = inputRegs[r];
-    var has = (v !== undefined && v !== null && isFinite(v));
-    var nm = '';
-    if (compiled){
-      Object.keys(compiled.vars).forEach(function(k){ if (compiled.vars[k] === r) nm = k; });
-    }
-    html += '<div class="rg' + (has ? ' on' : '') + (nm ? ' hot' : '') + '">'
-          + '<b>R' + REG_NAMES[r] + (nm ? ' · ' + nm : '') + '</b>'
-          + '<span>' + (has ? fmtNum(v) : '—') + '</span></div>';
-  }
-  box.innerHTML = html;
+  var h = '';
+  for (var r = 0; r < REG_COUNT; r++) h += regCell(r, inputRegs[r]);
+  box.innerHTML = h;
 }
 
 function renderData(){
@@ -452,7 +454,7 @@ function renderData(){
       var cur = (inputRegs[r] !== undefined) ? fmtNum(inputRegs[r]) : '';
       h += '<tr><td>' + k + (isIn ? ' <span class="mut">(вход)</span>' : '') + '</td>'
          + '<td>R' + REG_NAMES[r] + '</td>'
-         + '<td><input class="num" data-reg="' + r + '" id="val' + r + '" value="' + cur + '" placeholder="0" inputmode="decimal"></td></tr>';
+         + '<td><input class="num" data-reg="' + r + '" value="' + cur + '" placeholder="0" inputmode="decimal"></td></tr>';
     });
     h += '</tbody></table>';
   } else {
@@ -468,8 +470,9 @@ function renderData(){
   Array.prototype.forEach.call(box.querySelectorAll('input.num[data-reg]'), function(el){
     el.oninput = function(){
       var r = +el.getAttribute('data-reg');
-      var v = parseFloat(String(el.value).replace(',', '.'));
-      if (String(el.value).trim() === '' || !isFinite(v)) delete inputRegs[r];
+      var raw = String(el.value).trim();
+      var v = parseFloat(raw.replace(',', '.'));
+      if (raw === '' || !isFinite(v)) delete inputRegs[r];
       else inputRegs[r] = v;
       drawRegs();
     };
@@ -478,13 +481,11 @@ function renderData(){
   $('btnExtra').onclick = function(){
     var r = +$('extraReg').value;
     var v = parseFloat(String($('extraVal').value).replace(',', '.'));
-    if (!isFinite(v)) return;
+    if (!isFinite(v)){ $('runOut').innerHTML = '<div class="warn">Введи число в поле рядом с кнопкой.</div>'; return; }
     inputRegs[r] = v;
     $('extraVal').value = '';
     drawRegs();
-    renderData();
-    var box2 = $('dataBox');
-    if (box2) box2.scrollIntoView({ block: 'nearest' });
+    $('runOut').innerHTML = '<div class="ok">R' + REG_NAMES[r] + ' = ' + fmtNum(v) + ' — значение в регистре, можно нажимать «Пуск».</div>';
   };
 
   drawRegs();
@@ -511,19 +512,6 @@ function collectData(){
 }
 
 /* ---------- прогон ---------- */
-function readRegs(core){
-  var res = {};
-  for (var r = 0; r < REG_COUNT; r++){
-    var v = null;
-    try {
-      if (core.ST && core.ST.R) v = core.ST.R[r];
-      else if (typeof core.getRegister === 'function') v = core.getRegister(r);
-    } catch(e){ v = null; }
-    if (typeof v === 'number' && isFinite(v)) res[r] = v;
-  }
-  return res;
-}
-
 function doRun(){
   var box = $('runOut');
   if (!compiled){ box.innerHTML = '<div class="warn">Сначала «Перевести».</div>'; return; }
@@ -535,27 +523,23 @@ function doRun(){
     core.reset(true);
     Object.keys(got.data).forEach(function(k){ core.setRegister(+k, got.data[k]); });
     core.setX(0);
-    var res = core.run(20000) || {};
-    var after = readRegs(core);
+    var res = core.run(200000) || {};
     var h = '';
     h += '<div>вход: <b>' + dataText(got.data) + '</b></div>';
     h += '<div style="margin-top:6px">результат X: <span class="big">'
        + (res.result === 'error' ? 'ЕГГОГ' : (res.x != null ? fmtNum(res.x) : '—')) + '</span></div>';
     h += '<div class="mut" style="margin-top:4px">шагов: ' + (res.steps != null ? res.steps : '—')
-       + ' · остановка: ' + (res.result || '—') + '</div>';
-    var keys = Object.keys(after);
-    if (keys.length){
-      h += '<div style="margin-top:10px">регистры после прогона:</div>';
-      h += '<div class="regs">';
-      for (var r = 0; r < REG_COUNT; r++){
-        var nm = '';
-        Object.keys(compiled.vars).forEach(function(v){ if (compiled.vars[v] === r) nm = v; });
-        var val = after[r];
-        h += '<div class="rg' + (val ? ' on' : '') + (nm ? ' hot' : '') + '">'
-           + '<b>R' + REG_NAMES[r] + (nm ? ' · ' + nm : '') + '</b>'
-           + '<span>' + (val != null ? fmtNum(val) : '—') + '</span></div>';
-      }
-      h += '</div>';
+       + ' · остановка: ' + (res.result === 'stop' ? 'по С/П' : (res.result === 'error' ? 'ошибка' : 'лимит шагов'))
+       + (res.overflow ? ' · программа зациклилась' : '') + '</div>';
+    h += '<div style="margin-top:10px">регистры после прогона:</div><div class="regs">';
+    for (var r = 0; r < REG_COUNT; r++){
+      var v = null;
+      try { v = core.ST && core.ST.R ? core.ST.R[r] : null; } catch(e){ v = null; }
+      h += regCell(r, v);
+    }
+    h += '</div>';
+    if (compiled.inputs.length && !Object.keys(got.data).length){
+      h += '<div class="warn" style="margin-top:8px">Входные значения не введены — все регистры были нулями. Впиши число в разделе 3.</div>';
     }
     box.innerHTML = h;
   } catch (e){
@@ -575,12 +559,8 @@ function openInBody(){
     src: $('src').value,
     from: 'Язык Алго'
   };
-  try {
-    localStorage.setItem(BRIDGE_KEY, JSON.stringify(payload));
-  } catch(e){
-    alert('Не смог сохранить данные для корпуса: ' + e);
-    return;
-  }
+  try { localStorage.setItem(BRIDGE_KEY, JSON.stringify(payload)); }
+  catch(e){ alert('Не смог сохранить данные для корпуса: ' + e); return; }
   location.assign('index.html');
 }
 
@@ -619,7 +599,6 @@ function clearPanels(){
 }
 
 function doCompile(){
-  var out = $('out');
   try {
     compiled = compile($('src').value);
     inputRegs = {};
@@ -632,18 +611,18 @@ function doCompile(){
     if (e.line) msg += ' в строке ' + e.line;
     msg += ': ' + (e.msg || e);
     if (e.whole) msg += '<div class="mut" style="margin-top:6px">' + e.whole.replace(/</g, '&lt;') + '</div>';
-    out.innerHTML = '<div class="err">' + msg + '</div>';
+    $('out').innerHTML = '<div class="err">' + msg + '</div>';
     $('dataBox').innerHTML = '<span class="mut">Появятся после перевода.</span>';
     $('runOut').innerHTML = '<span class="mut">—</span>';
   }
 }
 
 $('btnCompile').onclick = doCompile;
-
 $('btnRun').onclick = doRun;
 
 $('btnReset').onclick = function(){
   $('runOut').innerHTML = '<span class="mut">Сброс: программа снова с адреса 00, введённые значения сохранены. Нажми «Пуск».</span>';
+  drawRegs();
 };
 
 $('btnBody').onclick = openInBody;
@@ -651,14 +630,7 @@ $('btnBody').onclick = openInBody;
 $('btnJson').onclick = function(){
   if (!compiled){ alert('Сначала «Перевести».'); return; }
   var got = collectData();
-  var obj = {
-    model: 'b3-34',
-    prog: compiled.cells,
-    data: got.data,
-    layout: got.layout,
-    inputs: compiled.inputs,
-    src: $('src').value
-  };
+  var obj = { model: 'b3-34', prog: compiled.cells, data: got.data, layout: got.layout, inputs: compiled.inputs, src: $('src').value };
   var blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -668,13 +640,9 @@ $('btnJson').onclick = function(){
 
 $('exFact').onclick = function(){ $('src').value = EX_FACT; compiled = null; inputRegs = {}; clearPanels(); };
 $('exSq').onclick = function(){ $('src').value = EX_SQ; compiled = null; inputRegs = {}; clearPanels(); };
-$('btnClear').onclick = function(){
-  $('src').value = '';
-  compiled = null; inputRegs = {};
-  clearPanels();
-};
+$('btnClear').onclick = function(){ $('src').value = ''; compiled = null; inputRegs = {}; clearPanels(); };
 
-/* при открытии: текст примера есть, но расшифровки нет — только по кнопке */
+/* при открытии: текст примера есть, расшифровки нет — только по кнопке «Перевести» */
 $('src').value = EX_FACT;
 clearPanels();
 })();
