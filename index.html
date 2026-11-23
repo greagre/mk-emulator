@@ -176,9 +176,28 @@
     text-shadow: 0 1px 0 rgba(255,255,255,.25);
   }
   .lcd.err { color: #7d1d1d; }
-  .lcd-sub { display: flex; justify-content: space-between; margin-top: 6px;
+  .lcd-sub { display: flex; justify-content: space-between; gap: 6px; flex-wrap: wrap; margin-top: 6px;
     font-size: 11px; color: var(--muted); font-family: ui-monospace, Menlo, Consolas, monospace; }
   .lcd-sub b { color: var(--text); font-weight: 600; }
+
+  /* --- переключатель угла Р-ГРД-Г --- */
+  .angseg {
+    display: flex; align-items: center; gap: 5px; margin-top: 8px;
+  }
+  .angseg .anglab {
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted); margin-right: 2px;
+  }
+  .angseg button {
+    min-width: 46px;
+    background: var(--panel); color: var(--muted);
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 6px 9px; font: inherit; font-size: 11px; font-weight: 700;
+    cursor: pointer; line-height: 1.1;
+    box-shadow: 0 1px 0 var(--key-shadow);
+  }
+  .angseg button:active { background: var(--sel); border-color: var(--accent); color: var(--sel-ink); }
+  .angseg button.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 
   /* --- чип загруженной программы --- */
   .progtag {
@@ -276,6 +295,9 @@
   body[data-theme="classic"] .service button.on { background: var(--accent); color: #ffffff; border-color: var(--accent); }
   body[data-theme="classic"] .prog { background: #efeade; }
   body[data-theme="classic"] .progtag .ptag-num { color: #2e8f36; }
+  body[data-theme="classic"] .angseg button { background: #cfcaba; color: #3b3a2f; box-shadow: 0 1px 0 #a9a495; }
+  body[data-theme="classic"] .angseg button.on { background: #2e8f36; color: #ffffff; border-color: #2e8f36; }
+  body[data-theme="classic"] .angseg .anglab { color: #5c5847; }
 
   .service { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
   .service.wide { grid-template-columns: repeat(2, 1fr); }
@@ -486,8 +508,16 @@
       <div class="lcd-sub">
         <span>режим: <b id="stMode">АВТ</b></span>
         <span>слой: <b id="stLayer">—</b></span>
+        <span>угол: <b id="stAngle">Г</b></span>
         <span>адрес: <b id="stStep">00</b></span>
       </div>
+    </div>
+
+    <div class="angseg" id="angseg" role="group" aria-label="Единица измерения угла, как переключатель Р-ГРД-Г">
+      <span class="anglab">угол</span>
+      <button type="button" data-angle="deg" title="Градусы — полный оборот 360">Г</button>
+      <button type="button" data-angle="grad" title="Грады — полный оборот 400">ГРД</button>
+      <button type="button" data-angle="rad" title="Радианы — полный оборот 2π">Р</button>
     </div>
 
     <button type="button" class="progtag" id="progTag" hidden>
@@ -598,9 +628,65 @@
 })();
 </script>
 
-<script src="core.js?v=13"></script>
-<script src="profiles.js?v=13"></script>
-<script src="ui.js?v=13"></script>
-<script src="shelf.js?v=13"></script>
+<script src="core.js?v=14"></script>
+<script src="profiles.js?v=14"></script>
+<script src="ui.js?v=14"></script>
+<script src="shelf.js?v=14"></script>
+
+<script>
+/* Переключатель угла Р-ГРД-Г.
+   Живёт отдельно от ui.js: ui.js про угол ничего не знает,
+   ядро отдаёт setAngle/getAngle, здесь только кнопки и память. */
+(function () {
+  var KEY = 'mk-emulator/angle';
+  var MARK = { deg: 'Г', grad: 'ГРД', rad: 'Р' };
+  var WORD = { deg: 'градусы', grad: 'грады', rad: 'радианы' };
+  var seg = document.getElementById('angseg');
+  var mark = document.getElementById('stAngle');
+  var cur = 'deg';
+  if (!seg) return;
+
+  function core() {
+    return (window.MKUI && window.MKUI.getCore) ? window.MKUI.getCore() : null;
+  }
+
+  function paint() {
+    Array.prototype.forEach.call(seg.querySelectorAll('button'), function (b) {
+      b.classList.toggle('on', b.dataset.angle === cur);
+    });
+    if (mark) mark.textContent = MARK[cur];
+    seg.title = 'Угол: ' + WORD[cur];
+  }
+
+  function apply(mode, silent) {
+    if (!MARK[mode]) mode = 'deg';
+    cur = mode;
+    try { localStorage.setItem(KEY, mode); } catch (e) {}
+    var c = core();
+    if (c && c.setAngle) c.setAngle(mode);
+    paint();
+    if (!silent && window.MKUI && window.MKUI.hint) {
+      window.MKUI.hint('Угол: ' + WORD[mode] + ' — sin, cos, tg и обратные считаются в этих единицах');
+    }
+  }
+
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  apply(saved && MARK[saved] ? saved : 'deg', true);
+
+  seg.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-angle]');
+    if (b) apply(b.dataset.angle);
+  });
+
+  /* при смене модели ui.js создаёт новое ядро — возвращаем ему угол */
+  var model = document.getElementById('model');
+  if (model) {
+    model.addEventListener('change', function () {
+      setTimeout(function () { apply(cur, true); }, 0);
+    });
+  }
+})();
+</script>
 </body>
 </html>
