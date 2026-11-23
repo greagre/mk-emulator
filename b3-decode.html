@@ -37,10 +37,11 @@
   pre {
     margin: 0; padding: 14px; border-radius: 10px;
     background: #fbfcfd; border: 1px solid #dfe3e8;
-    font: 13px/1.55 ui-monospace, "SF Mono", Consolas, monospace;
+    font: 12.5px/1.55 ui-monospace, "SF Mono", Consolas, "Courier New", monospace;
     white-space: pre-wrap; word-break: break-word;
     min-height: 120px; color: #1d2126;
   }
+  pre.mono { white-space: pre; word-break: normal; overflow-x: auto; }
   .label { font-size: 13px; color: #5b6570; margin: 0 0 6px; }
   label.file {
     display: inline-block; padding: 9px 14px; border-radius: 8px;
@@ -49,6 +50,19 @@
   label.file input { display: none; }
   .err { color: #b3261e; font-size: 13px; margin-top: 8px; }
   a.back { color: #2f6fd0; font-size: 13px; text-decoration: none; }
+
+  /* подсветка листинга */
+  .kAddr { color: #8a949e; }
+  .kHex  { color: #2f6fd0; font-weight: 600; }
+  .kCmd  { color: #1d2126; }
+  .kTxt  { color: #1d2126; }
+  .kExact{ color: #2e7d32; }
+  .kHeur { color: #b26a00; }
+  .kUnk  { color: #b3261e; }
+  .kConf { font-weight: 600; }
+  .kMark { color: #7b3fb3; font-weight: 600; }
+  .viewrow { margin-top: 2px; }
+  .viewrow .ttl { font-size: 12.5px; color: #6b7681; align-self: center; margin-right: 4px; }
 </style>
 </head>
 <body>
@@ -77,6 +91,11 @@
     <button data-mode="detailed" class="on">Подробно</button>
     <button data-mode="listing">Листинг</button>
   </div>
+  <div class="row viewrow" id="viewRow">
+    <span class="ttl">вид листинга:</span>
+    <button data-view="text" class="on">текстом</button>
+    <button data-view="table">таблицей</button>
+  </div>
   <div class="row">
     <button id="copy">Скопировать</button>
     <button id="save">Скачать .txt</button>
@@ -101,20 +120,50 @@
   var errBox = document.getElementById('err');
   var outLbl = document.getElementById('outLabel');
   var fileIn = document.getElementById('file');
+  var viewRow = document.getElementById('viewRow');
 
   var model  = null;
   var mode   = 'detailed';
+  var view   = 'text';       /* листинг: текстом или таблицей */
   var fileName = '';
 
   function setErr(text) { errBox.textContent = text || ''; }
 
+  /* на узком экране листинг сжимается в три колонки */
+  function isCompact() {
+    var w = out.clientWidth || window.innerWidth || 400;
+    return w < 560;
+  }
+
+  function currentText() {
+    if (!model) return '';
+    if (mode === 'listing') {
+      return window.B3Decode.render(model, view === 'table' ? 'listingTable' : 'listing',
+        { compact: view === 'text' ? isCompact() : false });
+    }
+    return window.B3Decode.render(model, mode);
+  }
+
   function show() {
     if (!model) return;
-    var text = window.B3Decode.render(model, mode);
-    out.textContent = text;
+
+    var isListing = (mode === 'listing' && view === 'text');
+    var compact = isListing && isCompact();
+
+    if (isListing) {
+      out.classList.add('mono');
+      out.innerHTML = window.B3Decode.render(model, 'listing', { html: true, compact: compact });
+    } else {
+      out.classList.remove('mono');
+      out.textContent = currentText();
+    }
+
+    viewRow.style.display = (mode === 'listing') ? 'flex' : 'none';
+
     var names = { brief: 'Кратко', detailed: 'Подробно', listing: 'Листинг' };
-    outLbl.textContent = 'Результат · ' + names[mode] + (fileName ? ' · ' + fileName : '');
-    return text;
+    outLbl.textContent = 'Результат · ' + names[mode] +
+      (mode === 'listing' ? (view === 'table' ? ' · таблицей' : (compact ? ' · компактно' : ' · текстом')) : '') +
+      (fileName ? ' · ' + fileName : '');
   }
 
   function parseNow() {
@@ -159,6 +208,7 @@
 
   document.getElementById('clear').addEventListener('click', function () {
     src.value = '';
+    out.classList.remove('mono');
     out.textContent = 'Здесь появится текст. Вставь код и нажми «Разобрать».';
     outLbl.textContent = 'Результат';
     setErr('');
@@ -175,6 +225,25 @@
       mode = btn.getAttribute('data-mode');
       if (model) show();
     });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('#viewRow button'), function (btn) {
+    btn.addEventListener('click', function () {
+      Array.prototype.forEach.call(document.querySelectorAll('#viewRow button'), function (b) {
+        b.classList.remove('on');
+      });
+      btn.classList.add('on');
+      view = btn.getAttribute('data-view');
+      if (model) show();
+    });
+  });
+
+  /* при повороте телефона пересобрать листинг: компакт/широкий */
+  var rt = null;
+  window.addEventListener('resize', function () {
+    if (!model || mode !== 'listing' || view !== 'text') return;
+    if (rt) clearTimeout(rt);
+    rt = setTimeout(show, 150);
   });
 
   fileIn.addEventListener('change', function () {
@@ -216,7 +285,7 @@
 
   document.getElementById('copy').addEventListener('click', function () {
     if (!model) { setErr('Сначала разбери программу.'); return; }
-    var text = window.B3Decode.render(model, mode);
+    var text = currentText();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function () {
         outLbl.textContent = 'Результат скопирован в буфер';
@@ -237,7 +306,7 @@
 
   document.getElementById('save').addEventListener('click', function () {
     if (!model) { setErr('Сначала разбери программу.'); return; }
-    var text = window.B3Decode.render(model, mode);
+    var text = currentText();
     var name = (model.meta.name || 'program').replace(/[^\wа-яА-ЯёЁ0-9 _-]+/g, '_').slice(0, 40);
     var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     var a = document.createElement('a');
