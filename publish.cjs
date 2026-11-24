@@ -1,410 +1,492 @@
 #!/usr/bin/env node
-/**
- * publish.cjs — ревизия 2. Публикация разобранных программ Б3-34/МК-61.
- *
- * Читает каталог MKPro/readable (после scripts/export-readable.cjs),
- * проверяет условия готовности и раскладывает результат:
- *
- *   programs/b3-34/*.json|*.txt   — программы линии 34 (до 98 шагов)
- *   programs/mk61/*.json|*.txt    — программы линии 61 (до 105 шагов)
- *   programs/_unresolved/<раздел>/ — не прошло, причина в первой строке
- *   programs/_unresolved/_details/ — полные причины (не больше 200 знаков в каталоге)
- *   programs/_catalog.json         — имя, серия, модель, шаги, статус
- *
- * Ревизия 2 — что изменено против ревизии 1:
- *   1. Модель определяется по объёму (адрес последнего шага), а не по букве «К».
- *      Старое правило считало «КНОП» K-функцией и штамповало МК-61 всем.
- *   2. Нормализация начертаний: FLO/FO/Fo → F0, Fѻ → F eˣ, FѺ/F круг → F◯,
- *      Ftgᐨ¹ → F tg⁻¹, «К 2» → «К2», «3ВП» → «3 ВП», русская «х» в П→х → x.
- *   3. Одиночный символ — обрывок текста, а не команда: адрес занимает место,
- *      но шагом не считается и в замечания не идёт.
- *   4. Пропуск ровно одного адреса (92 на месте 91) принимается молча и уходит
- *      в структуру; настоящий сдвиг (75 на месте 19) остаётся замечанием.
- *   5. Замыкающее В/О после последнего шага не считается шагом (снимает «106 из 105»).
- *   6. Многосоставный файл делится по повтору адреса 00: имя-2, имя-3…
- *   7. Причина в каталоге — одна строка до 200 знаков; полный текст отдельным файлом.
- *   8. Шаги считаются по адресам, а не по числу распознанных строк.
- *
- * Использование:
- *   node publish.cjs --src ../MKPro/readable [--out ./programs]
- */
-
 'use strict';
+
+/**
+ * publish.cjs — ревизия 2.
+ *
+ * Раскладывает разобранные программы из MKPro/readable в programs/:
+ *   programs/b3-34/<имя>.json|.txt
+ *   programs/mk61/<имя>.json|.txt
+ *   programs/_unresolved/<раздел>/<имя>.txt      (причина в первой строке)
+ *   programs/_unresolved/_details/<раздел>/<имя>.txt
+ *   programs/_catalog.json, programs/README.md
+ *
+ * Что изменилось против ревизии 1:
+ *   1. Модель определяется по объёму программы, а не по наличию буквы «К»
+ *      (из-за /К/ все программы уходили в mk61, b3-34 не появлялся вообще).
+ *   2. Нормализация начертаний: FLO/FL0/FO/Fo -> F0, Fѻ/FѺ/«F круг» -> F eˣ/F◯,
+ *      Ftgᐨ¹ -> F tg⁻¹, «К 2» -> К2, «3ВП» -> 3 ВП, П→х -> П→x, ШГ-> -> ШГ→.
+ *   3. Одиночная буква или слово — обрывок текста, а не команда.
+ *   4. Пропуск ровно одного адреса (92 на месте 91) принимается молча,
+ *      настоящий сдвиг остаётся замечанием.
+ *   5. Замыкающее В/О после последнего шага шагом не считается.
+ *   6. Многосоставные файлы делятся по повтору адреса 00 на имя-2, имя-3.
+ *   7. Причина в каталоге — до 200 знаков, полный текст в _details/.
+ *   8. Шаги считаются по адресам, а не по числу распознанных строк.
+ */
 
 const fs = require('fs');
 const path = require('path');
 
-const args = process.argv.slice(2);
-function arg(name, def) {
-  const i = args.indexOf('--' + name);
-  return i >= 0 && args[i + 1] ? args[i + 1] : def;
-}
-
-const SRC = path.resolve(arg('src', path.join(__dirname, '..', 'MKPro', 'readable')));
-const OUT = path.resolve(arg('out', path.join(__dirname, 'programs')));
+const ROOT = __dirname;
+const SRC = process.env.MKPRO_DIR || path.join(ROOT, 'MKPro', 'readable');
+const OUT = path.join(ROOT, 'programs');
 
 const SECTIONS = [
   'action', 'adventure', 'arcade', 'educational', 'gambling',
   'logic', 'simulation', 'sports', 'strategy', 'utilities'
 ];
 
-const LINE_34 = 98;   // 00…97
-const LINE_61 = 105;  // 00…104
-const MAX_REASON = 200;
+const LIMIT_B3 = 98;      // полный объём Б3-34
+const LIMIT_MK61 = 105;   // полный объём МК-61
+const REASON_MAX = 200;
 
-// ---------- серии: чтобы редакции одной игры не терялись ----------------------
+const ANNOT = /^(?:перед\s+пуском|входные\s+данные|порядок\s+ввода)\s*:?\s*/i;
 
-const SERIES = [
-  [/kon-?tiki|lunolet|gravilet|kepler|mascon/i, 'Kon-Tiki'],
-  [/morskoy-boy|sea-battle|morskoe-srazhenie/i, 'Морской бой'],
-  [/^karate/i, 'Каратэ'],
-  [/^menedzher|^manager/i, 'Менеджер'],
-  [/trenirovka-pamyati|memory-training/i, 'Тренировка памяти'],
-  [/^bitva/i, 'Битва'],
-  [/^elite|^elita/i, 'Elite'],
-  [/^beskonechnaya-istoriya/i, 'Бесконечная история'],
-  [/^lovkach|^vorishka|^treasure-cave/i, 'Ловкач'],
-  [/^domino/i, 'Домино'],
-  [/^chest|^chot-nechot|^naval-battle/i, 'Чёт-нечёт']
+/* ------------------------------------------------------------------ */
+/* Нормализация начертаний                                            */
+/* ------------------------------------------------------------------ */
+
+const EXACT = [
+  [/^F\s*tg\s*[⁻−\-–—'’]?\s*1$/i, 'F tg⁻¹'],
+  [/^F\s*[ѻѺΘ]$/, 'F eˣ'],
+  [/^F\s*(?:круг|K|◯)$/i, 'F◯'],
+  [/^F\s*(?:LО|LO|L0)$/, 'FL0'],
+  [/^F\s*(?:o|O|0)$/, 'F0'],
+  [/^[КK]\s*(?:√|V)$/i, 'К √'],
+  [/^[КK]\s*ПП$/i, 'К ПП'],
+  [/^C\s*\/\s*А$/i, 'С/А'],
+  [/^[КK]\s*(?:⊕|XOR)$/i, 'К ⊕'],
+  [/^[КK]\s*(?:∧|AND)$/i, 'К ∧'],
+  [/^[КK]\s*(?:∨|OR)$/i, 'К ∨']
 ];
 
-function detectSeries(base) {
-  for (const [re, name] of SERIES) if (re.test(base)) return name;
-  return '';
+function normalizeCmd(input) {
+  let c = String(input).replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!c) return c;
+  for (const [re, to] of EXACT) if (re.test(c)) return to;
+  c = c
+    .replace(/П\s*→\s*х/g, 'П→x')
+    .replace(/х\s*→\s*П/g, 'x→П')
+    .replace(/ШГ\s*->/g, 'ШГ→')
+    .replace(/ШГ\s*<-/g, 'ШГ←')
+    .replace(/^([КK])\s+([0-9A-Ea-exх])$/, 'К$2');
+  if (/^[КK]\d$/.test(c)) return 'К' + c.slice(1);
+  return c;
 }
 
-// ---------- нормализация команд ----------------------------------------------
+/* ------------------------------------------------------------------ */
+/* Разбор строки шага                                                 */
+/* ------------------------------------------------------------------ */
 
-const NORMALIZE = [
-  [/^FLO$/, 'FL0'],
-  [/^FO$/, 'F0'],
-  [/^Fo$/, 'F0'],
-  [/^Ffl$/, 'F◯'],
-  [/^Fѻ$/, 'F eˣ'],
-  [/^FѺ$/, 'F◯'],
-  [/^F\s*круг$/i, 'F◯'],
-  [/^Ftg[ᐨ\-^]*1$/, 'F tg⁻¹'],
-  [/^Ftg\^?-?\^?1$/, 'F tg⁻¹'],
-  [/^3ВП$/, '3 ВП'],
-  [/^К 2$/, 'К2'],
-  [/^К 1$/, 'К1'],
-  [/^К 3$/, 'К3'],
-  [/^К П→х$/, 'К П→x'],
-  [/^П→х$/, 'П→x'],
-  [/^Пх$/, 'Пx'],
-  [/^Кх$/, 'Кx'],
-  [/^Fx>0$/, 'F x>0'],
-  [/^Fx≥0$/, 'F x≥0'],
-  [/^Fx<0$/, 'F x<0'],
-  [/^Kx>00$/, 'K x≥0']
-];
+const ADDR_RE = /^\s*(-?\d+)\s+(.+?)\s*$/;
+const ADDR_CMD = /^\s*(-?\d+)\s+([^\s]+)\s+(.+?)\s*$/;
+const TAB = /^([^\t]+?)\t+(.*)$/;
 
-const LONE = /^[A-Za-zА-Яа-яЁё]$/;
-
-function normalizeCmd(raw) {
-  let s = String(raw || '').trim();
-  if (!s) return { cmd: '', fragment: false };
-  s = s.replace(/\s+/g, ' ');
-
-  // одиночная буква — обрывок текста из источника, а не команда
-  if (LONE.test(s)) return { cmd: '', fragment: true };
-
-  // русская «х» вместо латинской в регистровых командах
-  if (/→х/.test(s) || /^[ПК]х/.test(s) || /^К\s*П/.test(s)) {
-    s = s.replace(/х/g, 'x');
-  }
-
-  for (const [re, to] of NORMALIZE) {
-    if (re.test(s)) { s = to; break; }
-  }
-  return { cmd: s, fragment: false };
-}
-
-// ---------- разбор листинга ----------------------------------------------------
-
-/**
- * Строка листинга: «00   04   КНОП» или с хвостом-примечанием:
- * «31   5D   FL0 мутант и Шреддер будут сильнее»
- */
 function parseStepLine(line) {
-  const m = line.match(/^\s*(-?\d{1,3})\s+([0-9A-Fa-f]{2})\s+(.*)$/);
-  if (!m) return null;
-  const addr = parseInt(m[1], 10);
-  const code = parseInt(m[2], 16);
-  const tail = (m[3] || '').trim();
+  let addr = null;
+  let tail = '';
 
-  // Команда — до первого пробела перед кириллицей, но не длиннее трёх токенов.
-  let cmd = tail;
-  let comment = '';
-  const cut = tail.search(/\s(?=[А-Яа-яЁё])/);
-  const cut2 = tail.search(/\s\S+\s\S+\s\S+/);
-  const at = cut >= 0 ? cut : cut2;
-  if (at >= 0) {
-    cmd = tail.slice(0, at).trim();
-    comment = tail.slice(at).trim();
+  let m = ADDR_RE.exec(line);
+  if (m) {
+    addr = parseInt(m[1], 10);
+    tail = m[2];
+  } else {
+    m = TAB.exec(line);
+    if (!m) return null;
+    const maybe = m[1].trim();
+    if (!/^-?\d+$/.test(maybe)) return null;
+    addr = parseInt(maybe, 10);
+    tail = m[2];
   }
-  return { addr, code, cmd, comment };
+
+  // команда / hex / подпись / комментарий
+  let cmd = '';
+  let hex = '';
+  let label = '';
+
+  const parts = tail.split(/\t+|\s{2,}/).map(s => s.trim()).filter(Boolean);
+  const words = parts.length > 1 ? parts : tail.split(/\s+/);
+
+  const hexIdx = words.findIndex(w => /^(?:[0-9A-F]{2}){1,4}$/i.test(w) && /[0-9]/i.test(w));
+
+  if (hexIdx >= 0 && words.length >= 2 && words.slice(0, hexIdx).length <= 1) {
+    hex = words[hexIdx].toUpperCase();
+    cmd = words[hexIdx + 1] || '';
+    label = words.slice(hexIdx + 2).join(' ');
+  } else if (words.length >= 2 && /^[0-9A-F]{2,4}$/i.test(words[0]) && /[A-F]/i.test(words[0])) {
+    hex = words[0].toUpperCase();
+    cmd = words[1];
+    label = words.slice(2).join(' ');
+  } else {
+    cmd = words[0] || '';
+    label = words.slice(1).join(' ');
+  }
+
+  // склейка команды с примечанием автора: «04 БП 12 - вечное топливо»
+  const note = label && !/^[0-9A-F]{2}$/i.test(label) ? label : '';
+  if (words.length > 2 && !note) cmd = words.slice(0, 2).join(' ');
+
+  return { addr, cmd: normalizeCmd(cmd), hex, note };
 }
 
-function parseInputs(text) {
-  const m = text.match(/Перед пуском\s*:\s*([^\n]+)/i);
-  if (!m) return [];
-  const raw = m[1].trim();
-  if (!raw || /^(нет|—|-|пусто)$/i.test(raw)) return [];
-  return raw.split(/[;,]/).map(s => s.trim()).filter(Boolean);
+/* ------------------------------------------------------------------ */
+/* Текст или команда                                                  */
+/* ------------------------------------------------------------------ */
+
+const TEXT_WORDS = /^(?:sin|cos|tg|ctg|ln|lg|max|min|mod|КНОП|БП|ПП|ВП|СЧ|В\/О|С\/П)$/i;
+
+function looksLikeText(cmd) {
+  const c = (cmd || '').trim();
+  if (!c) return true;
+  if (/^[+\-×÷/^√=]$/.test(c)) return false;          // одиночный знак операции
+  if (/^[\d.,]+$/.test(c)) return false;              // число
+  if (c.length <= 1) return true;                     // одиночная буква — обрывок
+  if (TEXT_WORDS.test(c)) return false;
+  if (!/[А-Яа-яЁё]/.test(c) && c.length <= 3) return false;  // короткие латинские — команды
+  if (/[А-Яа-яЁё]{3,}/.test(c)) return true;          // слово кириллицей — текст
+  if (/^(?:Б|Л|О|К|Н|И|П|А|С|В|М|Т|Р|Х|Ш|Э|Ю|Я)$/.test(c)) return true;
+  return false;
 }
 
-/**
- * Разбор файла в одну или несколько программ.
- * Новая программа начинается при повторе адреса 00 после того,
- * как уже набрано не меньше пяти шагов (так выглядят файлы с «Программа 2»).
- */
-function parseFile(fileText) {
-  const lines = fileText.split(/\r?\n/);
+/* ------------------------------------------------------------------ */
+/* Серии и редакции                                                   */
+/* ------------------------------------------------------------------ */
+
+function seriesOf(name) {
+  const n = name.toLowerCase();
+  if (/^(?:kon-tiki-)?(?:lunolet|atmosphere|gravilet|kepler|mascon|mr-2|os-\d|peak|pk-1)/.test(n)) return 'Kon-Tiki';
+  if (/^(?:morskoy-boy|sea-battle|morskoe-srazhenie)/.test(n)) return 'Морской бой';
+  if (/^karate/.test(n)) return 'Каратэ';
+  if (/^(?:menedzher|manager)/.test(n)) return 'Менеджер';
+  if (/^bitva/.test(n)) return 'Битва';
+  if (/^elite|^elita/.test(n)) return 'Elite';
+  if (/^treasure-cave/.test(n)) return 'Treasure Cave';
+  if (/^(?:lovkach|vorishka)/.test(n)) return 'Ловкач/Воришка';
+  if (/^(?:trenirovka-pamyati|memory-training)/.test(n)) return 'Тренировка памяти';
+  if (/^(?:chet-nechet|chetnochet)/.test(n)) return 'Чёт-нечёт';
+  if (/dolgushin/.test(n)) return 'Долгушин';
+  if (/gaishtut/.test(n)) return 'Гайштут';
+  if (/erichware/.test(n)) return 'erichware';
+  if (/renat/.test(n)) return 'Ренат';
+  if (/lunokhod|marsokhod/.test(n)) return 'Планетоходы';
+  return null;
+}
+
+/* ------------------------------------------------------------------ */
+/* Разбор файла                                                       */
+/* ------------------------------------------------------------------ */
+
+function newProgram() {
+  return { steps: [], inputs: [], comments: [], card: [] };
+}
+
+function parseFile(content) {
+  const lines = content.split(/\r?\n/);
   const programs = [];
-
-  let cur = { steps: [], comments: [], fragments: 0, skipAddr: [] };
-  let seen = new Set();
-  let closedVo = 0;
+  let cur = null;
+  let seenZero = false;
+  let listingStarted = false;
 
   const flush = () => {
-    if (cur.steps.length) programs.push(cur);
-    cur = { steps: [], comments: [], fragments: 0, skipAddr: [] };
-    seen = new Set();
+    if (cur && (cur.steps.length || cur.inputs.length)) programs.push(cur);
+    cur = null;
+    seenZero = false;
   };
 
-  for (const line of lines) {
-    const st = parseStepLine(line);
-    if (!st) continue;
+  for (const raw of lines) {
+    const line = raw.replace(/\u00A0/g, ' ').trimEnd();
+    if (!line.trim()) continue;
 
-    if (st.addr === 0 && cur.steps.length >= 5) flush();
+    const t = line.trim();
 
-    const { cmd, fragment } = normalizeCmd(st.cmd);
-    if (fragment) {
-      cur.fragments++;
-      if (!cmd && st.cmd && !cur.comments.some(c => c.addr === st.addr)) {
-        cur.comments.push({ addr: st.addr, text: st.cmd + ' (обрывок текста в листинге)' });
-      }
+    if (ANNOT.test(t)) {
+      if (!cur) cur = newProgram();
+      cur.inputs.push(t.replace(ANNOT, '').trim());
+      continue;
     }
-    if (st.comment) cur.comments.push({ addr: st.addr, text: st.comment });
 
-    // Второй проход листинга: адреса −0…−4 идут повторной пятёркой.
-    const secondPass = st.addr < 0;
+    const step = parseStepLine(line);
 
-    if (!secondPass && seen.has(st.addr) && st.addr !== 0) {
-      cur.skipAddr.push(st.addr);
+    if (step) {
+      if (!cur) cur = newProgram();
+      // новая программа в том же файле
+      if (step.addr === 0 && seenZero && cur.steps.length >= 3) flush();
+      if (!cur) cur = newProgram();
+
+      const fragment = looksLikeText(step.cmd);
+      cur.steps.push({ ...step, fragment });
+      if (step.addr === 0) seenZero = true;
+      listingStarted = true;
+      continue;
     }
-    seen.add(st.addr);
 
-    cur.steps.push({ addr: st.addr, code: st.code, cmd, fragment: fragment || !cmd });
+    if (!cur) cur = newProgram();
+    if (listingStarted) cur.comments.push(t);
+    else cur.card.push(t);
   }
   flush();
 
-  // Замыкающее В/О после последнего шага в отрицательной ячейке — не шаг программы.
-  for (const p of programs) {
-    while (p.steps.length >= 2) {
-      const last = p.steps[p.steps.length - 1];
-      const prev = p.steps[p.steps.length - 2];
-      if (last.cmd === 'В/О' && last.addr <= 0 && prev.addr >= LINE_34) {
-        p.steps.pop();
-        closedVo++;
-      } else break;
-    }
-  }
-
-  return { programs, inputs: parseInputs(fileText), closedVo, secondPass: /^\s*-\d/m.test(fileText) };
+  return programs.filter(p => p.steps.some(s => !s.fragment));
 }
 
-// ---------- условия готовности -------------------------------------------------
+/* ------------------------------------------------------------------ */
+/* Проверка и метрики                                                 */
+/* ------------------------------------------------------------------ */
 
-function checkReady(prog) {
+const ROMAN = {
+  'b3-34': 'Б3-34',
+  mk61: 'МК-61'
+};
+
+function analyse(prog) {
+  const notes = [];
   const reasons = [];
-  const real = prog.steps.filter(s => !s.fragment);
 
-  if (!prog.steps.length) {
-    reasons.push('листинг не найден');
-    return reasons;
-  }
-  if (!real.length) {
-    reasons.push('ни одной распознанной команды');
-    return reasons;
-  }
-  if (prog.fragments) {
-    reasons.push('обрывков текста на месте команд: ' + prog.fragments);
-  }
-
-  // Адреса: пропуск ровно одного номера — принято, больше — замечание.
-  const addrs = prog.steps.filter(s => s.addr >= 0).map(s => s.addr);
-  const skipped = [];
-  for (let i = 1; i < addrs.length; i++) {
-    const d = addrs[i] - addrs[i - 1];
-    if (d === 1) continue;
-    if (d === 2) { skipped.push(addrs[i - 1] + 1); continue; }
-    reasons.push('адреса не подряд: ' + addrs[i - 1] + ' → ' + addrs[i]);
-    break;
-  }
-  if (prog.skipAddr.length) {
-    reasons.push('адрес на месте уже занятого: ' + prog.skipAddr.slice(0, 3).join(', '));
-  }
-
-  return reasons;
-}
-
-// ---------- модель -------------------------------------------------------------
-
-/**
- * Модель — по объёму памяти, а не по наличию буквы «К»:
- * старое правило считало «КНОП» K-функцией и всем ставило МК-61.
- */
-function detectModel(prog) {
-  const maxAddr = prog.steps.reduce((a, s) => Math.max(a, s.addr), 0);
-  const len = maxAddr + 1;
-  return len <= LINE_34 ? 'b3-34' : 'mk61';
-}
-
-// ---------- запись -------------------------------------------------------------
-
-function pad(n, w) { return String(n).padStart(w, ' '); }
-function hex(code) { return code.toString(16).toUpperCase().padStart(2, '0'); }
-
-function renderTxt(rec) {
-  const out = [];
-  out.push(rec.name);
-  out.push('Модель: ' + rec.model + '  (' + rec.steps + ' шагов)');
-  if (rec.series) out.push('Серия: ' + rec.series);
-  out.push('Перед пуском: ' + (rec.inputs.length ? rec.inputs.join(', ') : 'нет'));
-  out.push('Ожидаемый результат: ' + (rec.result || 'см. описание источника'));
-  out.push('');
-  out.push('ЛИСТИНГ');
-  for (const s of rec.prog) {
-    if (s.fragment) {
-      out.push(pad(s.addr, 4) + '  ' + pad(hex(s.code), 3) + '  —');
-      continue;
+  // отбрасываем замыкающее В/О
+  let real = prog.steps.filter(s => !s.fragment);
+  let droppedTail = false;
+  if (real.length > 1 && /^В\/О$/i.test(real[real.length - 1].cmd)) {
+    const last = real[real.length - 1];
+    const prev = real[real.length - 2];
+    if (last.addr > prev.addr) {
+      real = real.slice(0, -1);
+      droppedTail = true;
     }
-    out.push(pad(s.addr, 4) + '  ' + pad(hex(s.code), 3) + '  ' + s.cmd);
   }
-  if (rec.comments.length) {
-    out.push('');
-    out.push('КОММЕНТАРИИ АВТОРА');
-    for (const c of rec.comments) out.push(pad(c.addr, 4) + '  — ' + c.text);
+
+  const fragments = prog.steps.filter(s => s.fragment);
+
+  // шаги по адресам
+  let maxAddr = -1;
+  for (const s of real) {
+    const a = s.addr >= 0 ? s.addr : 100 + Math.abs(s.addr);
+    if (a > maxAddr) maxAddr = a;
   }
-  return out.join('\n') + '\n';
+  const steps = maxAddr + 1;
+
+  let model = 'b3-34';
+  if (steps > LIMIT_B3) model = 'mk61';
+  if (steps > LIMIT_MK61) {
+    reasons.push(`шагов ${steps}, больше ${LIMIT_MK61}`);
+  }
+
+  if (droppedTail) notes.push('замыкающее В/О шагом не считается');
+  if (fragments.length) {
+    notes.push('обрывки текста на адресах ' + fragments.map(f => f.addr).join(', '));
+  }
+
+  // адреса
+  let prev = null;
+  for (const s of real) {
+    if (prev !== null) {
+      const a = s.addr >= 0 ? s.addr : 100 + Math.abs(s.addr);
+      const p = prev >= 0 ? prev : 100 + Math.abs(prev);
+      if (a === p) {
+        if (s.addr < 0) notes.push(`отрицательный адрес ${s.addr} после ${prev}`);
+        else reasons.push(`адрес ${s.addr} задан дважды`);
+      } else if (a === p + 2) {
+        notes.push(`пропущен адрес ${p + 1}`);
+      } else if (a !== p + 1) {
+        reasons.push(`адрес ${s.addr} стоит на месте ${p + 1}`);
+      }
+    }
+    prev = s.addr;
+  }
+
+  if (!prog.inputs.length) {
+    notes.push('блок «Перед пуском» не найден');
+  }
+
+  for (const s of real) {
+    const c = s.cmd;
+    if (!c) { reasons.push(`адрес ${s.addr}: пустая команда`); continue; }
+    if (/^[КK]\s*[0-9]$/.test(c)) continue;
+    if (/^A\d$/i.test(c)) continue;
+    if (/^F\s*L[0-3]$/i.test(c)) continue;
+  }
+
+  const unique = [];
+  for (const r of reasons) if (!unique.includes(r)) unique.push(r);
+
+  return {
+    steps,
+    model,
+    notes,
+    reasons: unique,
+    ready: unique.length === 0 && steps > 0,
+    inputs: prog.inputs,
+    comments: prog.comments,
+    card: prog.card
+  };
 }
 
-function renderJson(rec) {
-  const src = rec.prog.map(s =>
-    pad(s.addr, 4) + '  ' + pad(hex(s.code), 3) + '  ' + (s.fragment ? '—' : s.cmd)
-  ).join('\n');
+/* ------------------------------------------------------------------ */
+/* Выгрузка                                                           */
+/* ------------------------------------------------------------------ */
 
-  return JSON.stringify({
+function clip(s, n = REASON_MAX) {
+  const t = String(s || '').replace(/\s+/g, ' ').trim();
+  return t.length > n ? t.slice(0, n - 1) + '…' : t;
+}
+
+function writeProgram(dir, name, section, prog, info) {
+  fs.mkdirSync(dir, { recursive: true });
+
+  const slug = name;
+  const jsonName = slug + '.json';
+  const txtName = slug + '.txt';
+
+  const bytes = prog.steps.filter(s => !s.fragment).map(s => ({
+    addr: s.addr,
+    hex: s.hex || '',
+    cmd: s.cmd,
+    note: s.note || ''
+  }));
+
+  const payload = {
     app: 'mk-emulator',
     format: 'programs',
     version: 2,
-    model: rec.model,
-    saved: new Date().toISOString().slice(0, 10),
+    model: info.model,
+    saved: new Date().toISOString(),
     programs: [{
-      name: rec.name,
-      prog: rec.prog.filter(s => !s.fragment).map(s => s.code),
-      data: rec.data || {},
-      inputs: rec.inputs,
+      name,
+      section,
+      steps: info.steps,
+      inputs: info.inputs,
+      prog: bytes,
+      data: {},
       layout: {},
-      src,
-      savedAt: new Date().toISOString()
+      notes: info.notes,
+      src: 'MKPro/readable/' + section + '/' + name + '.txt'
     }]
-  }, null, 2) + '\n';
+  };
+
+  fs.writeFileSync(path.join(dir, jsonName), JSON.stringify(payload, null, 2), 'utf8');
+
+  const lines = [];
+  lines.push(`# ${name}`);
+  lines.push('');
+  lines.push('Раздел: ' + section + ' · Модель: ' + (ROMAN[info.model] || info.model) + ' · Шагов: ' + info.steps);
+  lines.push('');
+
+  if (info.inputs.length) {
+    lines.push('## Перед пуском');
+    for (const i of info.inputs) lines.push('- ' + i);
+    lines.push('');
+  }
+
+  lines.push('## Листинг');
+  lines.push('');
+  for (const s of bytes) {
+    const hex = s.hex ? s.hex.padEnd(4) : '    ';
+    lines.push(String(s.addr).padStart(3) + '  ' + hex + '  ' + s.cmd + (s.note ? '  — ' + s.note : ''));
+  }
+  lines.push('');
+
+  if (info.comments.length) {
+    lines.push('## Комментарии автора');
+    for (const c of info.comments) lines.push(c);
+    lines.push('');
+  }
+
+  if (info.notes.length) {
+    lines.push('## Примечания разбора');
+    for (const n of info.notes) lines.push('- ' + n);
+    lines.push('');
+  }
+
+  fs.writeFileSync(path.join(dir, txtName), lines.join('\n'), 'utf8');
 }
 
-// ---------- главный проход -----------------------------------------------------
-
-function shortReason(reasons) {
-  const s = reasons.join('; ');
-  return s.length <= MAX_REASON ? s : s.slice(0, MAX_REASON - 1) + '…';
-}
+/* ------------------------------------------------------------------ */
+/* Главный проход                                                     */
+/* ------------------------------------------------------------------ */
 
 function main() {
   if (!fs.existsSync(SRC)) {
-    console.error('Нет исходного каталога: ' + SRC);
+    console.error('Не найдена папка с разобранными программами: ' + SRC);
     process.exit(1);
   }
 
-  fs.mkdirSync(path.join(OUT, 'mk61'), { recursive: true });
-  fs.mkdirSync(path.join(OUT, 'b3-34'), { recursive: true });
-  fs.mkdirSync(path.join(OUT, '_unresolved'), { recursive: true });
-  fs.mkdirSync(path.join(OUT, '_unresolved', '_details'), { recursive: true });
+  fs.rmSync(OUT, { recursive: true, force: true });
+  fs.mkdirSync(OUT, { recursive: true });
 
   const catalog = [];
-  const byModel = { 'b3-34': 0, mk61: 0 };
-  let total = 0, ready = 0, unresolved = 0, splitFiles = 0, skippedAddr = 0, closedVo = 0;
+  const summary = {
+    total: 0,
+    ready: 0,
+    b3: 0,
+    mk61: 0,
+    unresolved: 0,
+    byModel: {},
+    topReasons: {},
+    notes: {}
+  };
 
   for (const section of SECTIONS) {
     const dir = path.join(SRC, section);
     if (!fs.existsSync(dir)) continue;
 
-    for (const fname of fs.readdirSync(dir).sort()) {
-      if (!/\.txt$/i.test(fname)) continue;
-      total++;
+    const files = fs.readdirSync(dir).filter(f => f.toLowerCase().endsWith('.txt'));
+    for (const file of files) {
+      const baseName = file.replace(/\.txt$/i, '');
+      const content = fs.readFileSync(path.join(dir, file), 'utf8');
 
-      const text = fs.readFileSync(path.join(dir, fname), 'utf8');
-      const base = fname.replace(/\.txt$/i, '');
-      const series = detectSeries(base);
-      const parsed = parseFile(text);
-      if (parsed.programs.length > 1) splitFiles++;
-      if (parsed.closedVo) closedVo += parsed.closedVo;
+      const programs = parseFile(content);
+      if (!programs.length) {
+        summary.total++;
+        summary.unresolved++;
+        const reason = 'листинг не найден';
+        summary.topReasons[reason] = (summary.topReasons[reason] || 0) + 1;
+        writeUnresolved(section, baseName, [reason], content);
+        catalog.push({ file: baseName, section, model: '—', status: 'unresolved', reason });
+        continue;
+      }
 
-      parsed.programs.forEach((prog, idx) => {
-        const suffix = idx === 0 ? '' : '-' + (idx + 1);
-        const name = (base + suffix).replace(/-/g, ' ').replace(/^\w/, c => c.toUpperCase());
-        const model = detectModel(prog);
-        const reasons = checkReady(prog);
+      programs.forEach((prog, idx) => {
+        const name = idx === 0 ? baseName : baseName + '-' + (idx + 1);
+        const info = analyse(prog);
+        summary.total++;
 
-        const rec = {
-          name,
-          base: base + suffix,
-          section,
-          series,
-          model,
-          inputs: parsed.inputs,
-          prog: prog.steps,
-          steps: prog.steps.filter(s => !s.fragment).length,
-          comments: prog.comments,
-          data: {}
-        };
+        if (info.ready) {
+          summary.ready++;
+          summary.byModel[info.model] = (summary.byModel[info.model] || 0) + 1;
+          if (info.model === 'b3-34') summary.b3++; else summary.mk61++;
 
-        if (reasons.length) {
-          unresolved++;
-          const dirU = path.join(OUT, '_unresolved', section);
-          fs.mkdirSync(dirU, { recursive: true });
-          fs.writeFileSync(
-            path.join(dirU, rec.base + '.txt'),
-            'НЕ РАЗОБРАНО: ' + shortReason(reasons) + '\n\n' + renderTxt(rec),
-            'utf8'
-          );
-          fs.writeFileSync(
-            path.join(OUT, '_unresolved', '_details', rec.base + '.txt'),
-            'Файл: ' + section + '/' + fname + '\n' +
-            'Причины:\n' + reasons.map(r => '  - ' + r).join('\n') + '\n',
-            'utf8'
-          );
+          writeProgram(path.join(OUT, info.model), name, section, prog, info);
+
+          for (const n of info.notes) summary.notes[n.slice(0, 40)] = (summary.notes[n.slice(0, 40)] || 0) + 1;
+
           catalog.push({
-            name, section, series, model, steps: rec.steps,
-            status: 'не разобрано', reason: shortReason(reasons)
+            file: name,
+            section,
+            model: info.model,
+            status: 'ready',
+            steps: info.steps,
+            series: seriesOf(name),
+            json: 'programs/' + info.model + '/' + name + '.json',
+            txt: 'programs/' + info.model + '/' + name + '.txt'
           });
         } else {
-          ready++;
-          byModel[model]++;
-          const dirR = path.join(OUT, model);
-          fs.writeFileSync(path.join(dirR, rec.base + '.json'), renderJson(rec), 'utf8');
-          fs.writeFileSync(path.join(dirR, rec.base + '.txt'), renderTxt(rec), 'utf8');
+          summary.unresolved++;
+          for (const r of info.reasons) {
+            const key = clip(r, 60);
+            summary.topReasons[key] = (summary.topReasons[key] || 0) + 1;
+          }
+          const reason = clip(info.reasons[0] || 'не прошла проверку');
+          writeUnresolved(section, name, info.reasons, content, info);
           catalog.push({
-            name, section, series, model, steps: rec.steps, status: 'готово',
-            json: model + '/' + rec.base + '.json',
-            txt: model + '/' + rec.base + '.txt'
+            file: name,
+            section,
+            model: info.model,
+            status: 'unresolved',
+            steps: info.steps,
+            series: seriesOf(name),
+            reason
           });
         }
-
-        // счёт пропуска одного адреса — только для отчёта
-        const addrs = prog.steps.filter(s => s.addr >= 0).map(s => s.addr);
-        for (let i = 1; i < addrs.length; i++) if (addrs[i] - addrs[i - 1] === 2) skippedAddr++;
       });
     }
   }
@@ -412,36 +494,82 @@ function main() {
   fs.writeFileSync(
     path.join(OUT, '_catalog.json'),
     JSON.stringify({
+      app: 'mk-emulator',
+      format: 'catalog',
+      version: 2,
       generated: new Date().toISOString(),
-      revision: 2,
-      total, ready, unresolved,
-      byModel,
-      splitFiles, skippedAddr, closedVo,
+      source: 'MKPro/readable',
+      summary: {
+        total: summary.total,
+        ready: summary.ready,
+        unresolved: summary.unresolved,
+        byModel: summary.byModel
+      },
       programs: catalog
-    }, null, 2) + '\n',
+    }, null, 2),
     'utf8'
   );
 
-  console.log('Ревизия 2');
-  console.log('Всего файлов:      ' + total);
-  console.log('Готово:            ' + ready);
-  console.log('  b3-34:           ' + byModel['b3-34']);
-  console.log('  mk61:            ' + byModel.mk61);
-  console.log('В _unresolved:     ' + unresolved);
-  console.log('Многосоставных:    ' + splitFiles);
-  console.log('Снято замыкающих В/О: ' + closedVo);
-  console.log('Принято пропусков адреса: ' + skippedAddr);
+  const readme = [
+    '# Каталог программ',
+    '',
+    'Разложено из `MKPro/readable` автоматически, генератор — `publish.cjs` (ревизия 2).',
+    '',
+    '## Итоги',
+    '',
+    '| Показатель | Значение |',
+    '|:---|---:|',
+    '| Всего файлов | ' + summary.total + ' |',
+    '| Готово | ' + summary.ready + ' |',
+    '| Б3-34 | ' + summary.b3 + ' |',
+    '| МК-61 | ' + summary.mk61 + ' |',
+    '| Не разобрано | ' + summary.unresolved + ' |',
+    '',
+    '## Папки',
+    '',
+    '- `b3-34/` — программы до 98 шагов, `.json` для импорта и `.txt` для чтения;',
+    '- `mk61/` — программы до 105 шагов, то же;',
+    '- `_unresolved/<раздел>/` — причина в первой строке файла;',
+    '- `_unresolved/_details/` — полный разбор причин;',
+    '- `_catalog.json` — полный список с ссылками и сериями.'
+  ].join('\n');
 
-  const groups = {};
-  for (const c of catalog.filter(c => c.status !== 'готово')) {
-    for (const r of c.reason.split('; ')) {
-      const key = r.replace(/\d+/g, 'N').slice(0, 70);
-      groups[key] = (groups[key] || 0) + 1;
+  fs.writeFileSync(path.join(OUT, 'README.md'), readme, 'utf8');
+
+  console.log('Всего файлов: ' + summary.total);
+  console.log('Готово: ' + summary.ready + ' (Б3-34: ' + summary.b3 + ', МК-61: ' + summary.mk61 + ')');
+  console.log('Не разобрано: ' + summary.unresolved);
+
+  console.log('\nТОП ПРИЧИН ОТСЕВА:');
+  Object.entries(summary.topReasons)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 25)
+    .forEach(([r, n]) => console.log('  ' + n + ' × ' + r));
+}
+
+function writeUnresolved(section, name, reasons, content, info) {
+  const dir = path.join(OUT, '_unresolved', section);
+  fs.mkdirSync(dir, { recursive: true });
+
+  const head = clip(reasons[0] || 'не прошла проверку', REASON_MAX);
+  fs.writeFileSync(path.join(dir, name + '.txt'), head + '\n\n' + content, 'utf8');
+
+  if (info) {
+    const ddir = path.join(OUT, '_unresolved', '_details', section);
+    fs.mkdirSync(ddir, { recursive: true });
+    const lines = [];
+    lines.push(name + ' — ' + section);
+    lines.push('модель: ' + (info.model || '—') + ', шагов: ' + (info.steps || 0));
+    lines.push('');
+    lines.push('Причины:');
+    for (const r of reasons) lines.push('- ' + r);
+    if (info.notes && info.notes.length) {
+      lines.push('');
+      lines.push('Примечания:');
+      for (const n of info.notes) lines.push('- ' + n);
     }
+    fs.writeFileSync(path.join(ddir, name + '.txt'), lines.join('\n'), 'utf8');
   }
-  console.log('\nПочему не разобрано:');
-  Object.entries(groups).sort((a, b) => b[1] - a[1])
-    .forEach(([k, v]) => console.log('  ' + v + ' × ' + k));
 }
 
 main();
