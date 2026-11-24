@@ -1,15 +1,65 @@
-/* convert.js — импорт файлов каталога programs/*.json прямо в корпусе.
-   Вкладка-надстройка: ядро (core.js), библиотека (shelf.js) и разметка корпуса не меняются,
+/* convert.js — импорт файлов каталога programs/*.json прямо в корпусе + починка вёрстки.
+   Надстройка: ядро (core.js), библиотека (shelf.js) и разметка корпуса не меняются,
    кроме одной строки подключения в index.html.
    Каталог хранит prog как массив объектов {addr, hex, cmd, note} —
    здесь он переводится в плоский массив кодов, который понимает core.js.
-   Нераспознанное ("??") не превращается в 0: такой шаг попадает в missing. */
+   Нераспознанное ("??") не превращается в 0: такой шаг попадает в missing.
+
+   v2: добавлена инъекция стилей.
+   Причина была не в шелфе и не в кнопке «Файл», а в строке шапки:
+   .top — flex без переноса, select растянут на всё свободное место.
+   Семью элементами шапка становилась шире телефона, документ получал
+   горизонтальную прокрутку, и всё содержимое (включая окно «Программы»)
+   уезжало вбок и обрезалось с обеих сторон. Здесь перенос включается,
+   а select больше не может выдавить кнопки за край. */
 (function () {
   'use strict';
 
-  var VERSION = 1;
+  var VERSION = 2;
+  var FIX_ID = 'mkLayoutFix';
 
   function byId(id) { return document.getElementById(id); }
+
+  /* --- починка вёрстки: одна таблица стилей, добавляется после штатных --- */
+  var FIX_CSS = [
+    /* горизонтальная прокрутка страницы не нужна никогда */
+    'html, body { overflow-x: hidden; max-width: 100%; }',
+
+    /* шапка: переносится, кнопки не растягиваются, список моделей не выдавливает */
+    '.top { flex-wrap: wrap; align-items: center; gap: 6px; }',
+    '.top > label { flex: 0 0 auto; }',
+    '.top > select, #model { flex: 1 1 120px; min-width: 0; max-width: 100%; }',
+    '.top > .topbtn { flex: 0 0 auto; }',
+    '.top > a.topbtn { white-space: nowrap; }',
+
+    /* окно «Программы»: не шире экрана, даже если что-то внутри попытается вырасти */
+    '.shelf { max-width: 100vw; }',
+    '.shelf-card { min-width: 0; max-width: min(520px, 100%); }',
+    '.shelf-head, .shelf-tools, .shelf-list { min-width: 0; }',
+    '.shelf-tools button { min-width: 0; flex: 1 1 130px; overflow: hidden; text-overflow: ellipsis; }',
+    '.srow { min-width: 0; }',
+    '.sbtns, .sb { min-width: 0; }',
+
+    /* само окно конвертера */
+    '#convWrap { max-width: 100vw; }',
+    '#convWrap > div, #convList { min-width: 0; }',
+
+    /* на узком экране подпись «Модель» убирается — она и так понятна по названию */
+    '@media (max-width: 380px) {',
+    '  .top > label { display: none; }',
+    '  .top > .topbtn { padding: 8px 8px; font-size: 13px; }',
+    '  .top > a.topbtn { font-size: 11px; }',
+    '  #themeBtn { min-width: 34px; }',
+    '}'
+  ].join('\n');
+
+  function injectLayoutFix() {
+    if (byId(FIX_ID)) return;
+    var st = document.createElement('style');
+    st.id = FIX_ID;
+    st.textContent = FIX_CSS;
+    (document.head || document.documentElement).appendChild(st);
+  }
 
   /* "14" -> 20, 20 -> 20, "??" -> null */
   function hexToCode(h) {
@@ -97,12 +147,13 @@
 
     var wrap = style('div',
       'position:fixed;inset:0;z-index:9999;display:none;background:rgba(0,0,0,.55);' +
-      'align-items:flex-start;justify-content:center;padding:16px;overflow:auto;');
+      'align-items:flex-start;justify-content:center;padding:16px;overflow:auto;max-width:100vw;');
     wrap.id = 'convWrap';
 
     var box = style('div',
       'background:var(--bg,#fff);color:var(--text,inherit);max-width:720px;width:100%;border-radius:14px;' +
-      'padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:15px;border:1px solid var(--line,#ccc);');
+      'padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:15px;border:1px solid var(--line,#ccc);' +
+      'box-sizing:border-box;min-width:0;');
 
     var title = style('div', 'font-weight:700;font-size:17px;margin-bottom:4px;', 'Импорт файлов каталога');
     var hint = style('div', 'opacity:.75;font-size:12px;line-height:1.4;margin-bottom:12px;',
@@ -118,10 +169,10 @@
       'border:2px dashed var(--line,currentColor);border-radius:10px;padding:18px;text-align:center;' +
       'opacity:.7;margin-bottom:12px;font-size:13px;', 'или перетащите .json сюда');
 
-    var list = style('div', 'display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow:auto;');
+    var list = style('div', 'display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow:auto;min-width:0;');
     list.id = 'convList';
 
-    var actions = style('div', 'display:flex;gap:8px;justify-content:flex-end;margin-top:12px;');
+    var actions = style('div', 'display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap;');
     var closeB = style('button', 'padding:8px 14px;border-radius:8px;border:1px solid var(--line,#ccc);' +
       'background:var(--chip,#f2f2f2);color:inherit;font:inherit;cursor:pointer;', 'Закрыть');
 
@@ -201,7 +252,7 @@
     items.forEach(function (p, idx) {
       var row = style('div',
         'border:1px solid var(--line,rgba(128,128,128,.35));border-radius:10px;padding:10px;' +
-        'display:flex;flex-direction:column;gap:6px;');
+        'display:flex;flex-direction:column;gap:6px;min-width:0;');
 
       row.appendChild(style('div', 'font-weight:600;word-break:break-word;font-size:14px;', p.name));
 
@@ -305,6 +356,7 @@
   }
 
   function boot() {
+    injectLayoutFix();
     if (!byId('convWrap')) buildUI();
     render();
   }
