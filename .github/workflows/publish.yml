@@ -2,13 +2,11 @@ name: Publish programs
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'publish.cjs'
-      - '.github/workflows/publish.yml'
-
-permissions:
-  contents: write
+    inputs:
+      src:
+        description: 'Путь к каталогу readable (по умолчанию ../MKPro/readable)'
+        required: false
+        default: ''
 
 jobs:
   publish:
@@ -21,34 +19,35 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: greagre/MKPro
-          path: MKPro-src
+          path: .src-MKPro
+        continue-on-error: true
 
-      - name: Node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Собрать программы
-        env:
-          SRC_DIR: MKPro-src/readable
-          OUT_DIR: programs
-        run: node publish.cjs
-
-      - name: Записать результат в репозиторий
+      - name: Publish
         run: |
-          git config user.name "publish-bot"
-          git config user.email "publish-bot@users.noreply.github.com"
-          git add programs
-          if git diff --cached --quiet; then
-            echo "Изменений нет"
-          else
-            git commit -m "publish: программы $(date -u +%Y-%m-%dT%H:%MZ)"
-            git push
-          fi
+          SRC="${{ github.event.inputs.src }}"
+          if [ -z "$SRC" ]; then SRC="$GITHUB_WORKSPACE/.src-MKPro/readable"; fi
+          echo "Источник: $SRC"
+          node publish.cjs --src "$SRC" --out ./programs
 
-      - name: Сводка в лог
-        if: always()
+      - name: Summary
         run: |
-          if [ -f programs/_catalog.json ]; then
-            node -e "const c=require('./programs/_catalog.json');console.log('готово',c.ready,'из',c.total,'| не разобрано',c.unresolved);console.log('модели',JSON.stringify(c.models));for(const r of c.topReasons)console.log(' ',r.count,'×',r.reason)"
-          fi
+          node -e "
+            const c=require('./programs/_catalog.json');
+            let s='## Публикация программ\n\n';
+            s+='| Показатель | Значение |\n|:---|---:|\n';
+            s+='| Всего файлов | '+c.total+' |\n';
+            s+='| Готово | '+c.ready+' |\n';
+            s+='| Не разобрано | '+c.unresolved+' |\n';
+            require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY,s);
+          "
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: programs
+          path: programs/
