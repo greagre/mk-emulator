@@ -1,0 +1,54 @@
+name: Publish programs
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'publish.cjs'
+      - '.github/workflows/publish.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout mk-emulator
+        uses: actions/checkout@v4
+
+      - name: Checkout MKPro (источник листингов)
+        uses: actions/checkout@v4
+        with:
+          repository: greagre/MKPro
+          path: MKPro-src
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Собрать программы
+        env:
+          SRC_DIR: MKPro-src/readable
+          OUT_DIR: programs
+        run: node publish.cjs
+
+      - name: Записать результат в репозиторий
+        run: |
+          git config user.name "publish-bot"
+          git config user.email "publish-bot@users.noreply.github.com"
+          git add programs
+          if git diff --cached --quiet; then
+            echo "Изменений нет"
+          else
+            git commit -m "publish: программы $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push
+          fi
+
+      - name: Сводка в лог
+        if: always()
+        run: |
+          if [ -f programs/_catalog.json ]; then
+            node -e "const c=require('./programs/_catalog.json');console.log('готово',c.ready,'из',c.total,'| не разобрано',c.unresolved);console.log('модели',JSON.stringify(c.models));for(const r of c.topReasons)console.log(' ',r.count,'×',r.reason)"
+          fi
