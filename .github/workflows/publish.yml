@@ -1,8 +1,5 @@
 name: Publish programs
 
-# Ручной запуск: Actions -> Publish programs -> Run workflow.
-# Генератор разбирает MKPro/readable и коммитит результат в programs/.
-
 on:
   workflow_dispatch:
 
@@ -22,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: greagre/MKPro
-          path: .src-MKPro
+          path: app/.src-MKPro
 
       - name: Node
         uses: actions/setup-node@v4
@@ -30,21 +27,21 @@ jobs:
           node-version: 20
 
       - name: Проверить источник
+        working-directory: app
         run: |
-          test -d "$GITHUB_WORKSPACE/.src-MKPro/readable" \
-            && echo "Источник на месте" \
-            || (echo "Нет папки .src-MKPro/readable" && exit 1)
+          test -d .src-MKPro/games || { echo "Нет папки .src-MKPro/games"; exit 1; }
+          echo "Файлов листингов: $(find .src-MKPro/games -name '*.txt' | wc -l)"
 
-      - name: Разобрать программы
+      - name: Собрать программы
         working-directory: app
         env:
-          MKPRO_DIR: ${{ github.workspace }}/.src-MKPro/readable
+          MKPRO_GAMES: ${{ github.workspace }}/app/.src-MKPro/games
         run: node publish.cjs
 
-      - name: Показать итог
+      - name: Итог в Job Summary
         working-directory: app
         run: |
-          node -e "const c=require('./programs/_catalog.json');console.log('всего '+c.total+', готово '+c.ready+', не разобрано '+c.unresolved)"
+          node -e "const c=require('./programs/_catalog.json');console.log('всего '+c.total+', готово '+c.ready+' (Б3-34 '+c.byModel['b3-34']+', МК-61 '+c.byModel.mk61+'), не разобрано '+c.unresolved)" | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Закоммитить программы
         working-directory: app
@@ -55,6 +52,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "Изменений нет"
           else
-            git commit -m "programs: каталог обновлён генератором"
+            git commit -m "programs: пересобрано из MKPro/games (publish.cjs rev3)"
             git push
           fi
