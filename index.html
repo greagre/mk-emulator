@@ -491,6 +491,26 @@
 
   .foot { text-align: center; margin-top: 12px; font-size: 11px; color: var(--muted); }
   .foot a { color: var(--accent); text-decoration: none; }
+
+  /* --- адаптивная шапка: строка переносится и не выдавливает кнопки за край --- */
+  .top { flex-wrap: wrap; row-gap: 6px; }
+  .top > label { flex: 0 0 auto; }
+  .top > select { flex: 1 1 120px; min-width: 0; max-width: 100%; }
+  .top > .topbtn { flex: 0 0 auto; }
+  .top > a.topbtn { white-space: nowrap; }
+
+  /* окно «Программы» по ширине экрана */
+  .shelf { padding: 8px; }
+  .shelf-card { max-width: min(520px, 100%); min-width: 0; }
+  .shelf-tools button { flex: 1 1 130px; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .srow, .sbody, .sbtns { min-width: 0; }
+
+  @media (max-width: 430px) {
+    .top > label { display: none; }
+    .top > .topbtn { padding: 8px 9px; font-size: 13px; }
+    #themeBtn { min-width: 36px; }
+    .top > a.topbtn { padding: 8px 8px; font-size: 11px; }
+  }
 </style>
 </head>
 <body data-theme="classic" data-mode="study" data-tab="num">
@@ -641,7 +661,7 @@
 <script src="profiles.js?v=14"></script>
 <script src="ui.js?v=14"></script>
 <script src="shelf.js?v=15"></script>
-<script src="convert.js?v=1"></script>
+<script src="convert.js?v=3"></script>
 
 <script>
 /* Переключатель угла Р-ГРД-Г.
