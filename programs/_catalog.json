@@ -1,0 +1,6510 @@
+{
+  "generated": "2026-11-24T00:15:37.492Z",
+  "source": "MKPro/readable",
+  "total": 696,
+  "ready": 172,
+  "unresolved": 524,
+  "models": {
+    "mk61": 172
+  },
+  "topReasons": [
+    {
+      "reason": "шагов N из N",
+      "count": 462
+    },
+    {
+      "reason": "замечания: не разобрано на N: K√",
+      "count": 4
+    },
+    {
+      "reason": "замечания: не разобрано на N: Б/К",
+      "count": 4
+    },
+    {
+      "reason": "замечания: адрес N задан дважды: В/О",
+      "count": 3
+    },
+    {
+      "reason": "замечания: не разобрано на N: Fx>N",
+      "count": 3
+    },
+    {
+      "reason": "замечания: не разобрано на N: КN",
+      "count": 3
+    },
+    {
+      "reason": "замечания: не разобрано на N: К N",
+      "count": 3
+    },
+    {
+      "reason": "замечания: не разобрано на N: FLO",
+      "count": 2
+    },
+    {
+      "reason": "замечания: не разобрано на N: ШГ->",
+      "count": 2
+    },
+    {
+      "reason": "замечания: не разобрано на N: АN",
+      "count": 2
+    },
+    {
+      "reason": "замечания: не разобрано на N: Ftgᐨ¹ | не разобрано на N: Fѻ | не разобрано на N:",
+      "count": 2
+    },
+    {
+      "reason": "замечания: не разобрано на N: Fx>N | не разобрано на N: Fx>N | не разобрано на N",
+      "count": 2
+    },
+    {
+      "reason": "замечания: не разобрано на N: N",
+      "count": 1
+    },
+    {
+      "reason": "замечания: не разобрано на N: ный",
+      "count": 1
+    },
+    {
+      "reason": "замечания: не разобрано на N: сво | не разобрано на N: бо | не разобрано на N: д",
+      "count": 1
+    }
+  ],
+  "programs": [
+    {
+      "slug": "afrikanskoe-safari",
+      "name": "Африканское сафари",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "шагов 94 из 105"
+    },
+    {
+      "slug": "alaram",
+      "name": "Alaram",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/alaram.json",
+      "txt": "programs/mk61/alaram.txt"
+    },
+    {
+      "slug": "american-ninja",
+      "name": "American Ninja",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/american-ninja.json",
+      "txt": "programs/mk61/american-ninja.txt"
+    },
+    {
+      "slug": "artilleriyskiy-boy-c3000",
+      "name": "Артиллерийский бой",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 54,
+      "status": "не разобрано",
+      "reason": "шагов 54 из 105"
+    },
+    {
+      "slug": "ataka",
+      "name": "ataka",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 42,
+      "status": "не разобрано",
+      "reason": "шагов 42 из 105"
+    },
+    {
+      "slug": "ballisticheskaya-igra-sistepskiy-1986",
+      "name": "Баллистическая игра",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 67,
+      "status": "не разобрано",
+      "reason": "шагов 67 из 105"
+    },
+    {
+      "slug": "bomber-video",
+      "name": "bomber-video",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 90,
+      "status": "не разобрано",
+      "reason": "шагов 90 из 105"
+    },
+    {
+      "slug": "boy-v-tumane-kibernetika-1986",
+      "name": "Бой в тумане",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 50,
+      "status": "не разобрано",
+      "reason": "шагов 50 из 105"
+    },
+    {
+      "slug": "chase-h-q",
+      "name": "Chase H.Q.",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/chase-h-q.json",
+      "txt": "programs/mk61/chase-h-q.txt"
+    },
+    {
+      "slug": "chronos",
+      "name": "Chronos",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 07: FLO; шагов 104 из 105"
+    },
+    {
+      "slug": "chuzhie",
+      "name": "chuzhie",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/chuzhie.json",
+      "txt": "programs/mk61/chuzhie.txt"
+    },
+    {
+      "slug": "cowboy",
+      "name": "Cowboy",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/cowboy.json",
+      "txt": "programs/mk61/cowboy.txt"
+    },
+    {
+      "slug": "diversant-dolgushin-notebook",
+      "name": "Диверсант",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 48,
+      "status": "не разобрано",
+      "reason": "шагов 48 из 105"
+    },
+    {
+      "slug": "diversant",
+      "name": "diversant",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/diversant.json",
+      "txt": "programs/mk61/diversant.txt"
+    },
+    {
+      "slug": "duel-pchely-s-ovodom-romanovsky-1989",
+      "name": "Дуэль пчелы с оводом",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "dzheyms-bond-agent-007-2",
+      "name": "dzheyms bond - agent 007 - 2",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/dzheyms-bond-agent-007-2.json",
+      "txt": "programs/mk61/dzheyms-bond-agent-007-2.txt"
+    },
+    {
+      "slug": "dzheyms-bond-agent-007",
+      "name": "dzheyms bond - agent 007",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/dzheyms-bond-agent-007.json",
+      "txt": "programs/mk61/dzheyms-bond-agent-007.txt"
+    },
+    {
+      "slug": "f-19",
+      "name": "F-19",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 35: N; шагов 98 из 105"
+    },
+    {
+      "slug": "galakticheskie-piraty",
+      "name": "galakticheskie piraty",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "galakticheskiy-patrul",
+      "name": "galakticheskiy patrul",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/galakticheskiy-patrul.json",
+      "txt": "programs/mk61/galakticheskiy-patrul.txt"
+    },
+    {
+      "slug": "gangstery",
+      "name": "gangstery",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 46,
+      "status": "не разобрано",
+      "reason": "шагов 46 из 105"
+    },
+    {
+      "slug": "hogans-alley-dolgushin-notebook",
+      "name": "HOGAN'S ALLEY",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 67,
+      "status": "не разобрано",
+      "reason": "шагов 67 из 105"
+    },
+    {
+      "slug": "kapral",
+      "name": "kapral",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/kapral.json",
+      "txt": "programs/mk61/kapral.txt"
+    },
+    {
+      "slug": "katapulta-gaishtut-1988",
+      "name": "Катапульта",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 55,
+      "status": "не разобрано",
+      "reason": "шагов 55 из 105"
+    },
+    {
+      "slug": "kiber-ubiytsa",
+      "name": "kiber-ubiytsa",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "klingi-2",
+      "name": "klingi-2",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/klingi-2.json",
+      "txt": "programs/mk61/klingi-2.txt"
+    },
+    {
+      "slug": "klingi-2m2",
+      "name": "klingi-2m2",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 23: ный; шагов 103 из 105; адрес 23 стоит на месте 22"
+    },
+    {
+      "slug": "klingi",
+      "name": "klingi",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/klingi.json",
+      "txt": "programs/mk61/klingi.txt"
+    },
+    {
+      "slug": "komandos-2",
+      "name": "komandos-2",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "шагов 103 из 105"
+    },
+    {
+      "slug": "komandos",
+      "name": "komandos",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "komissar-politsii",
+      "name": "komissar politsii",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 95,
+      "status": "не разобрано",
+      "reason": "шагов 95 из 105"
+    },
+    {
+      "slug": "kosmicheskiy-desant",
+      "name": "kosmicheskiy desant",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 42,
+      "status": "не разобрано",
+      "reason": "шагов 42 из 105"
+    },
+    {
+      "slug": "kosmopol",
+      "name": "kosmopol",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/kosmopol.json",
+      "txt": "programs/mk61/kosmopol.txt"
+    },
+    {
+      "slug": "kung-fu",
+      "name": "Kung-Fu",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 65,
+      "status": "не разобрано",
+      "reason": "шагов 65 из 105"
+    },
+    {
+      "slug": "mafiozi",
+      "name": "mafiozi",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/mafiozi.json",
+      "txt": "programs/mk61/mafiozi.txt"
+    },
+    {
+      "slug": "myatezhnik",
+      "name": "myatezhnik",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/myatezhnik.json",
+      "txt": "programs/mk61/myatezhnik.txt"
+    },
+    {
+      "slug": "navesnaya-strelba-c3000",
+      "name": "Навесная стрельба",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 20,
+      "status": "не разобрано",
+      "reason": "шагов 20 из 105"
+    },
+    {
+      "slug": "navesnaya-strelba-dolgushin-notebook",
+      "name": "Навесная стрельба",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 49,
+      "status": "не разобрано",
+      "reason": "шагов 49 из 105"
+    },
+    {
+      "slug": "nindzya-terminator",
+      "name": "nindzya-terminator",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/nindzya-terminator.json",
+      "txt": "programs/mk61/nindzya-terminator.txt"
+    },
+    {
+      "slug": "okhota-na-dinozavrov",
+      "name": "okhota na dinozavrov",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/okhota-na-dinozavrov.json",
+      "txt": "programs/mk61/okhota-na-dinozavrov.txt"
+    },
+    {
+      "slug": "okhota-na-medvedya-4pda",
+      "name": "Охота на медведя, доработка 4PDA",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/okhota-na-medvedya-4pda.json",
+      "txt": "programs/mk61/okhota-na-medvedya-4pda.txt"
+    },
+    {
+      "slug": "okhota-na-medvedya-variant",
+      "name": "Охота на медведя",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/okhota-na-medvedya-variant.json",
+      "txt": "programs/mk61/okhota-na-medvedya-variant.txt"
+    },
+    {
+      "slug": "okhota-na-medvedya",
+      "name": "Охота на медведя",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/okhota-na-medvedya.json",
+      "txt": "programs/mk61/okhota-na-medvedya.txt"
+    },
+    {
+      "slug": "okhota-na-skaloeda",
+      "name": "okhota na skaloeda",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 100,
+      "status": "не разобрано",
+      "reason": "шагов 100 из 105"
+    },
+    {
+      "slug": "okhota-na-sklyupikov",
+      "name": "okhota na sklyupikov",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 72,
+      "status": "не разобрано",
+      "reason": "шагов 72 из 105"
+    },
+    {
+      "slug": "opasnaya-igra",
+      "name": "opasnaya igra",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "шагов 94 из 105; адрес 10 стоит на месте 0"
+    },
+    {
+      "slug": "peredovoy-otryad",
+      "name": "peredovoy otryad",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 102,
+      "status": "не разобрано",
+      "reason": "шагов 102 из 105"
+    },
+    {
+      "slug": "perekhvat",
+      "name": "perekhvat",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 60,
+      "status": "не разобрано",
+      "reason": "шагов 60 из 105"
+    },
+    {
+      "slug": "perekhvatchik",
+      "name": "perekhvatchik",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 84,
+      "status": "не разобрано",
+      "reason": "шагов 84 из 105"
+    },
+    {
+      "slug": "pervoprokhodets",
+      "name": "pervoprokhodets",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "planet-z",
+      "name": "Planet Z",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "poedinok-na-orbite",
+      "name": "poedinok na orbite",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 89: ШГ->; шагов 96 из 105"
+    },
+    {
+      "slug": "poedinok-s-tankom-gaishtut-1988",
+      "name": "Поединок с танком",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 84,
+      "status": "не разобрано",
+      "reason": "шагов 84 из 105"
+    },
+    {
+      "slug": "poedinok",
+      "name": "poedinok",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/poedinok.json",
+      "txt": "programs/mk61/poedinok.txt"
+    },
+    {
+      "slug": "pogonya-v-lesu",
+      "name": "pogonya v lesu",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/pogonya-v-lesu.json",
+      "txt": "programs/mk61/pogonya-v-lesu.txt"
+    },
+    {
+      "slug": "pogonya",
+      "name": "pogonya",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/pogonya.json",
+      "txt": "programs/mk61/pogonya.txt"
+    },
+    {
+      "slug": "policeman",
+      "name": "Policeman",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 106,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 00: сво | не разобрано на 01: бо | не разобрано на 02: дн | не разобрано на 03: ая | не разобрано на 04: _ | не разобрано на 05: зо | не разобрано на 06: на; шагов 106 из 105; адрес 00 стоит на месте 1"
+    },
+    {
+      "slug": "pursuit",
+      "name": "Pursuit",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "шагов 96 из 105"
+    },
+    {
+      "slug": "rambo-i",
+      "name": "Rambo-I",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/rambo-i.json",
+      "txt": "programs/mk61/rambo-i.txt"
+    },
+    {
+      "slug": "rambo-ii",
+      "name": "Rambo-II",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 100,
+      "status": "не разобрано",
+      "reason": "шагов 100 из 105"
+    },
+    {
+      "slug": "rambo-iii",
+      "name": "Rambo-III",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/rambo-iii.json",
+      "txt": "programs/mk61/rambo-iii.txt"
+    },
+    {
+      "slug": "robin-hood",
+      "name": "Robin Hood",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 100,
+      "status": "не разобрано",
+      "reason": "шагов 100 из 105"
+    },
+    {
+      "slug": "roboteks",
+      "name": "roboteks",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/roboteks.json",
+      "txt": "programs/mk61/roboteks.txt"
+    },
+    {
+      "slug": "rukopashnyy-boy",
+      "name": "rukopashnyy boy",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/rukopashnyy-boy.json",
+      "txt": "programs/mk61/rukopashnyy-boy.txt"
+    },
+    {
+      "slug": "samurai-dolgushin-notebook",
+      "name": "Самурай",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/samurai-dolgushin-notebook.json",
+      "txt": "programs/mk61/samurai-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "sherif",
+      "name": "sherif",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/sherif.json",
+      "txt": "programs/mk61/sherif.txt"
+    },
+    {
+      "slug": "shturmovik",
+      "name": "shturmovik",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/shturmovik.json",
+      "txt": "programs/mk61/shturmovik.txt"
+    },
+    {
+      "slug": "skorpion",
+      "name": "skorpion",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "шагов 96 из 105"
+    },
+    {
+      "slug": "smertelnaya-igra",
+      "name": "Смертельная игра",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "soldat-udachi-2",
+      "name": "soldat udachi-2",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "soldier-of-fortune",
+      "name": "Soldier Of Fortune",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/soldier-of-fortune.json",
+      "txt": "programs/mk61/soldier-of-fortune.txt"
+    },
+    {
+      "slug": "space-ranger-dolgushin-notebook",
+      "name": "SPACE RANGER",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на −4: K√"
+    },
+    {
+      "slug": "stinger",
+      "name": "stinger",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 91,
+      "status": "не разобрано",
+      "reason": "шагов 91 из 105"
+    },
+    {
+      "slug": "super-pushka",
+      "name": "super-pushka",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/super-pushka.json",
+      "txt": "programs/mk61/super-pushka.txt"
+    },
+    {
+      "slug": "the-last-sapper-of-the-galaxy",
+      "name": "The Last Sapper Of The Galaxy",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/the-last-sapper-of-the-galaxy.json",
+      "txt": "programs/mk61/the-last-sapper-of-the-galaxy.txt"
+    },
+    {
+      "slug": "tir-2",
+      "name": "tir-2",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 59,
+      "status": "не разобрано",
+      "reason": "шагов 59 из 105"
+    },
+    {
+      "slug": "tir",
+      "name": "tir",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 64,
+      "status": "не разобрано",
+      "reason": "шагов 64 из 105"
+    },
+    {
+      "slug": "tsel-begushchiy-kaban-gaishtut-1988",
+      "name": "Цель - \"Бегущий кабан\"",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 47,
+      "status": "не разобрано",
+      "reason": "шагов 47 из 105"
+    },
+    {
+      "slug": "uchebnye-strelby-gaishtut-1988",
+      "name": "Учебные стрельбы",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 79,
+      "status": "не разобрано",
+      "reason": "шагов 79 из 105"
+    },
+    {
+      "slug": "vozdushnyy-boy",
+      "name": "vozdushnyy boy",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 56,
+      "status": "не разобрано",
+      "reason": "шагов 56 из 105"
+    },
+    {
+      "slug": "vozdushnyy-desant",
+      "name": "vozdushnyy desant",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 89: ШГ->"
+    },
+    {
+      "slug": "western",
+      "name": "Western",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "zakhvat",
+      "name": "zakhvat",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 70,
+      "status": "не разобрано",
+      "reason": "шагов 70 из 105"
+    },
+    {
+      "slug": "zvyozdnyy-boets-2",
+      "name": "zvyozdnyy boets-2",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "шагов 103 из 105"
+    },
+    {
+      "slug": "zvyozdnyy-boets-3",
+      "name": "zvyozdnyy boets-3",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 93,
+      "status": "не разобрано",
+      "reason": "шагов 93 из 105"
+    },
+    {
+      "slug": "zvyozdnyy-boets-4",
+      "name": "zvyozdnyy boets-4",
+      "model": "mk61",
+      "section": "action",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/zvyozdnyy-boets-4.json",
+      "txt": "programs/mk61/zvyozdnyy-boets-4.txt"
+    },
+    {
+      "slug": "zvyozdnyy-boets",
+      "name": "zvyozdnyy boets",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "шагов 103 из 105"
+    },
+    {
+      "slug": "zvyozdnyy-pokhod",
+      "name": "zvyozdnyy pokhod",
+      "model": "МК-61",
+      "section": "action",
+      "steps": 93,
+      "status": "не разобрано",
+      "reason": "шагов 93 из 105"
+    },
+    {
+      "slug": "avantyurist",
+      "name": "avantyurist",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 70,
+      "status": "не разобрано",
+      "reason": "шагов 70 из 105"
+    },
+    {
+      "slug": "beskonechnaya-istoriya-variant",
+      "name": "Бесконечная история",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/beskonechnaya-istoriya-variant.json",
+      "txt": "programs/mk61/beskonechnaya-istoriya-variant.txt"
+    },
+    {
+      "slug": "beskonechnaya-istoriya",
+      "name": "Beskonechnaya istoriya",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 106,
+      "status": "не разобрано",
+      "reason": "замечания: адрес 00 задан дважды: В/О; шагов 106 из 105; адрес 00 стоит на месте 1"
+    },
+    {
+      "slug": "black-lord",
+      "name": "Black Lord",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/black-lord.json",
+      "txt": "programs/mk61/black-lord.txt"
+    },
+    {
+      "slug": "brodyaga-vselennoy-2",
+      "name": "brodyaga vselennoy-2",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 99,
+      "status": "не разобрано",
+      "reason": "шагов 99 из 105"
+    },
+    {
+      "slug": "brodyaga-vselennoy-3",
+      "name": "brodyaga vselennoy-3",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 01: N | не разобрано на 06: M"
+    },
+    {
+      "slug": "brodyaga",
+      "name": "brodyaga",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 90,
+      "status": "не разобрано",
+      "reason": "шагов 90 из 105"
+    },
+    {
+      "slug": "cave",
+      "name": "Cave",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 66: Fx>0"
+    },
+    {
+      "slug": "colis-secret-base-dolgushin-notebook-2",
+      "name": "COLiS: SECRET BASE",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 02: К↑ | не разобрано на 08: К↑ | не разобрано на 42: К↑ | не разобрано на 95: К^ | ============================================================ | Программа 2: 7 хП0 | Исходные данные | -------------- | Ввести: | 7 хП0 | Шагов: 1 из 105 | Перед пуском: регистры задавать не нужно | Листинг: | адрес  hex  dec  команда | 30     41   065  хП1 | ============================================================ | Программа 3: 8808 В↑ 840315 К∨ К{} ВП 5 хП2 | 11111111 хП4 | 8808 В↑ 840315 К∨ К{} ВП 5 хП2 | Шагов: 1 из 105 | Перед пуском: регистры задавать не нужно | Листинг: | адрес  hex  dec  команда | 38     4D   077  хПd | Карточка из источника (до листинга): | COLiS: SECRET BASE | ================== | Источник: https://vk.com/wall-115251268_126; ручная перепечатка пользователя из второй тетради Александра Долгушина \"Мои игры МК-61\" | Номер в тетради: 61 | Автор: Александр Долгушин | Дата: 30.11.2001 | Листинг | ------ | Описание и примечания источника (после листинга): | 85000005 КИНВ К{} ВП 2 В↑ /-/ хП3 | 83030303 хП8 | 80404044 хП9 | КСЧ хПС | 880808 В↑ 870202 К∨ ВП 6 хПВ | 88088888 В↑ 82042642 К∨ К{} ВП 6 хПE | Запуск: ВО, С/П. | Суть дела | -------- | 2273 год. Вы спецагент. Вас послали на секретную военную базу планеты Колис. База занимается разработкой секретного оружия. | Вы попали на базу незамеченным и находитесь в одном из подземных тоннелей базы. Но раздалась сирена: похоже, вас обнаружили. Миссия - найти секретное оружие и убрать с него защитное поле. Поторопитесь: бомба, которую вы положили к главному реактору базы, скоро взорвется. | Игра состоит из трех уровней. | 1 уровень | -------- | На экране коридор с прессами, которые периодически опускаются и поднимаются. В левом краю экрана символ \"8\" - это проем, в котором стоите вы. Вы тоже обозначены символом \"8\". | Управление: | 1 С/П - идти прямо. | /-/ 1 С/П - идти назад. | 0 С/П - стоять на месте. | Совет: постойте на месте, посмотрите как опускаются прессы, а затем проходите через них. | \"--.  -\" - вы попали под пресс, конец игры. | \"-0С-ЕС.-\" - первый уровень успешно пройден, переход ко второму уровню. Нажать С/П. | 2 уровень | -------- | Вы вышли в центральный коридор, который ведет к секретному оружию базы. Перед вами толпа солдат. На экране \"8.EEEE  \". У вас есть скорострельный бластер. Выберите место обстрела от 1 до 7 и нажмите С/П. | Экран обстрела: | ┌────┬────┬────┬────┬────┬────┬────┬────┐ | │ 8. │    │ E  │ E  │ E  │ E  │    │    │ | ├────┼────┼────┼────┼────┼────┼────┼────┤ | │ 0  │ 1  │ 2  │ 3  │ 4  │ 5  │ 6  │ 7  │ | └────┴────┴────┴────┴────┴────┴────┴────┘ | После того как перестреляете всех солдат, появятся новые. | \"--.  -\" - взорвалась бомба, вы не успели, конец игры. | \"-0С-EC.-\" - солдаты на некоторое время перестали атаковать; вы добегаете до конца коридора. | 3 уровень | -------- | Перед вами замок снятия защиты секретного оружия: \"8. 0-0-0.\". | Замок имеет тройную систему кодов. Противокодовая карточка открыла одну часть кода, поэтому нужно разгадать еще две части. | Ввод кода: | ┌────────────────────┬────┬────────────────────┬─────┐ | │ первая часть кода  │ В↑ │ вторая часть кода   │ С/П │ | └────────────────────┴────┴────────────────────┴─────┘ | Возможные коды: | ┌───────┬───────┐ | │ 1 и 0 │ 1 и 2 │ | │ 1 и 3 │ 2 и 3 │ | │ 3 и 0 │ 2 и 0 │ | │ 0 и 0 │       │ | └───────┴───────┘ | Нюанс: если ввод кода оказался неверным, система заново кодирует замок. | \"--. -\" - взорвалась ваша бомба, вы не успели снять защиту, конец игры. | \"ЕГГОГ\" - вы сняли защиту с оружия, но не успели покинуть базу. Миссия выполнена, но какой ценой. | \"COLiS\" - база и секретное оружие уничтожены, вы успели покинуть базу. ↔ - заработанные очки. | Рекорд очков: 5,6. | Примечания к записи | ------------------ | Команда \"К⊕\" соответствует записи пользователя \"К плюс в круге\" / \"К плюс в кружке\". | Команда \"К^\" оставлена буквально по перепечатке пользователя. | Адреса после 99 нормализованы как A0-A4.; шагов 104 из 105; адрес 16 стоит на месте 15"
+    },
+    {
+      "slug": "dolina",
+      "name": "dolina",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 93: А1"
+    },
+    {
+      "slug": "dracula-dolgushin-notebook",
+      "name": "DRACULA",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/dracula-dolgushin-notebook.json",
+      "txt": "programs/mk61/dracula-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "dungeon",
+      "name": "Dungeon",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/dungeon.json",
+      "txt": "programs/mk61/dungeon.txt"
+    },
+    {
+      "slug": "dzhoy",
+      "name": "dzhoy",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/dzhoy.json",
+      "txt": "programs/mk61/dzhoy.txt"
+    },
+    {
+      "slug": "dzhungli-2",
+      "name": "dzhungli-2",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 59,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 42: FLO; шагов 59 из 105"
+    },
+    {
+      "slug": "dzhungli",
+      "name": "dzhungli",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 52,
+      "status": "не разобрано",
+      "reason": "шагов 52 из 105"
+    },
+    {
+      "slug": "elfy",
+      "name": "elfy",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "encircled-with-fantoms",
+      "name": "Encircled With Fantoms",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/encircled-with-fantoms.json",
+      "txt": "programs/mk61/encircled-with-fantoms.txt"
+    },
+    {
+      "slug": "fantastika",
+      "name": "fantastika",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "шагов 103 из 105"
+    },
+    {
+      "slug": "for-kicks-i",
+      "name": "For Kicks-I",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/for-kicks-i.json",
+      "txt": "programs/mk61/for-kicks-i.txt"
+    },
+    {
+      "slug": "for-kicks-ii",
+      "name": "For Kicks-II",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/for-kicks-ii.json",
+      "txt": "programs/mk61/for-kicks-ii.txt"
+    },
+    {
+      "slug": "for-kicks-iii",
+      "name": "For Kicks-III",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/for-kicks-iii.json",
+      "txt": "programs/mk61/for-kicks-iii.txt"
+    },
+    {
+      "slug": "freddi-kryuger",
+      "name": "freddi kryuger",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/freddi-kryuger.json",
+      "txt": "programs/mk61/freddi-kryuger.txt"
+    },
+    {
+      "slug": "giants-country",
+      "name": "Giants Country",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на −2: 0Е"
+    },
+    {
+      "slug": "indiana-jones-i-dolgushin-notebook",
+      "name": "INDIANA JONES I",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/indiana-jones-i-dolgushin-notebook.json",
+      "txt": "programs/mk61/indiana-jones-i-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "klad-2",
+      "name": "Клад",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/klad-2.json",
+      "txt": "programs/mk61/klad-2.txt"
+    },
+    {
+      "slug": "kladoiskatel",
+      "name": "kladoiskatel",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/kladoiskatel.json",
+      "txt": "programs/mk61/kladoiskatel.txt"
+    },
+    {
+      "slug": "korotkoe-zamykanie",
+      "name": "korotkoe zamykanie",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "шагов 94 из 105"
+    },
+    {
+      "slug": "kosmicheskaya-odisseya",
+      "name": "kosmicheskaya odisseya",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/kosmicheskaya-odisseya.json",
+      "txt": "programs/mk61/kosmicheskaya-odisseya.txt"
+    },
+    {
+      "slug": "kubok-klarensa",
+      "name": "kubok klarensa",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "шагов 96 из 105"
+    },
+    {
+      "slug": "labirint-8-13",
+      "name": "labirint 8*13",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 80,
+      "status": "не разобрано",
+      "reason": "шагов 80 из 105"
+    },
+    {
+      "slug": "labirint",
+      "name": "labirint",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "labyrinth777",
+      "name": "Лабиринт777",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105; адрес 36 стоит на месте 35"
+    },
+    {
+      "slug": "lamer-andrew-meets-america",
+      "name": "Lamer Andrew Meets America",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 07: Fx>0; шагов 103 из 105"
+    },
+    {
+      "slug": "m-skiy-treugolnik",
+      "name": "m-skiy treugolnik",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "myortvaya-zona-i",
+      "name": "myortvaya zona-I",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/myortvaya-zona-i.json",
+      "txt": "programs/mk61/myortvaya-zona-i.txt"
+    },
+    {
+      "slug": "myortvaya-zona-ii",
+      "name": "myortvaya zona-II",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/myortvaya-zona-ii.json",
+      "txt": "programs/mk61/myortvaya-zona-ii.txt"
+    },
+    {
+      "slug": "myortvaya-zona-iii",
+      "name": "myortvaya zona-III",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/myortvaya-zona-iii.json",
+      "txt": "programs/mk61/myortvaya-zona-iii.txt"
+    },
+    {
+      "slug": "nekromant",
+      "name": "nekromant",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/nekromant.json",
+      "txt": "programs/mk61/nekromant.txt"
+    },
+    {
+      "slug": "oborotni",
+      "name": "oborotni",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/oborotni.json",
+      "txt": "programs/mk61/oborotni.txt"
+    },
+    {
+      "slug": "oregon-2",
+      "name": "oregon-2",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/oregon-2.json",
+      "txt": "programs/mk61/oregon-2.txt"
+    },
+    {
+      "slug": "oregon",
+      "name": "oregon",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "oregonskaya-tropa-dolgushin-notebook",
+      "name": "Орегонская тропа",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/oregonskaya-tropa-dolgushin-notebook.json",
+      "txt": "programs/mk61/oregonskaya-tropa-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "oregonskaya-tropa",
+      "name": "oregonskaya tropa",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 90,
+      "status": "не разобрано",
+      "reason": "шагов 90 из 105"
+    },
+    {
+      "slug": "ostrov",
+      "name": "ostrov",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 91,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 57: K√; шагов 91 из 105"
+    },
+    {
+      "slug": "peshchera-dolgushin-notebook",
+      "name": "Пещера",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/peshchera-dolgushin-notebook.json",
+      "txt": "programs/mk61/peshchera-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "peshchera-syurprizov",
+      "name": "peshchera syurprizov",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/peshchera-syurprizov.json",
+      "txt": "programs/mk61/peshchera-syurprizov.txt"
+    },
+    {
+      "slug": "pobeg-iz-sistemy-x",
+      "name": "pobeg iz sistemy X",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "polet-shmelya",
+      "name": "Полёт шмеля",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 71: КЛ | не разобрано на 86: КЛ"
+    },
+    {
+      "slug": "priton",
+      "name": "priton",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/priton.json",
+      "txt": "programs/mk61/priton.txt"
+    },
+    {
+      "slug": "puteshestvie",
+      "name": "puteshestvie",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 52: K^<-oi"
+    },
+    {
+      "slug": "raby-obmena-razumov",
+      "name": "raby obmena razumov",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/raby-obmena-razumov.json",
+      "txt": "programs/mk61/raby-obmena-razumov.txt"
+    },
+    {
+      "slug": "raja-yoga",
+      "name": "Раджа-йога",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "шагов 96 из 105; адрес 35 стоит на месте 33"
+    },
+    {
+      "slug": "rising-from-hell",
+      "name": "Rising From Hell",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 102,
+      "status": "не разобрано",
+      "reason": "шагов 102 из 105"
+    },
+    {
+      "slug": "rytsar",
+      "name": "rytsar",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/rytsar.json",
+      "txt": "programs/mk61/rytsar.txt"
+    },
+    {
+      "slug": "sex-mission",
+      "name": "Sex-Mission",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/sex-mission.json",
+      "txt": "programs/mk61/sex-mission.txt"
+    },
+    {
+      "slug": "skazka-lordbss",
+      "name": "skazka",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 90: А1"
+    },
+    {
+      "slug": "skazka",
+      "name": "skazka",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/skazka.json",
+      "txt": "programs/mk61/skazka.txt"
+    },
+    {
+      "slug": "sokrovishche",
+      "name": "sokrovishche",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "speleolog-dolgushin-notebook",
+      "name": "SPELEOLOG",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "speleolog",
+      "name": "speleolog",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 89,
+      "status": "не разобрано",
+      "reason": "шагов 89 из 105"
+    },
+    {
+      "slug": "sprut",
+      "name": "sprut",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 92,
+      "status": "не разобрано",
+      "reason": "шагов 92 из 105"
+    },
+    {
+      "slug": "stalker",
+      "name": "stalker",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/stalker.json",
+      "txt": "programs/mk61/stalker.txt"
+    },
+    {
+      "slug": "strana-monstrov",
+      "name": "strana monstrov",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/strana-monstrov.json",
+      "txt": "programs/mk61/strana-monstrov.txt"
+    },
+    {
+      "slug": "swamp",
+      "name": "Swamp",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 102,
+      "status": "не разобрано",
+      "reason": "шагов 102 из 105"
+    },
+    {
+      "slug": "tayny-okeana-3",
+      "name": "tayny okeana-3",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 88,
+      "status": "не разобрано",
+      "reason": "шагов 88 из 105"
+    },
+    {
+      "slug": "tayny-okeana-4",
+      "name": "tayny okeana-4",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 86,
+      "status": "не разобрано",
+      "reason": "шагов 86 из 105"
+    },
+    {
+      "slug": "tayny-okeana",
+      "name": "tayny okeana",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 80,
+      "status": "не разобрано",
+      "reason": "шагов 80 из 105"
+    },
+    {
+      "slug": "teleport",
+      "name": "teleport",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/teleport.json",
+      "txt": "programs/mk61/teleport.txt"
+    },
+    {
+      "slug": "terra-incognita-dolgushin-notebook",
+      "name": "TERRA INCOGNITA",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/terra-incognita-dolgushin-notebook.json",
+      "txt": "programs/mk61/terra-incognita-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "the-goonmaster",
+      "name": "The Goonmaster",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/the-goonmaster.json",
+      "txt": "programs/mk61/the-goonmaster.txt"
+    },
+    {
+      "slug": "the-land-of-psycho-lamers",
+      "name": "Страна психоламеров",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 80,
+      "status": "не разобрано",
+      "reason": "шагов 80 из 105; адрес 03 стоит на месте 2"
+    },
+    {
+      "slug": "treasure-cave-demo",
+      "name": "Treasure Cave Demo",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/treasure-cave-demo.json",
+      "txt": "programs/mk61/treasure-cave-demo.txt"
+    },
+    {
+      "slug": "treasure-cave",
+      "name": "Treasure Cave",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/treasure-cave.json",
+      "txt": "programs/mk61/treasure-cave.txt"
+    },
+    {
+      "slug": "treasure-hunter-2",
+      "name": "Кладоискатель-2",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 102,
+      "status": "не разобрано",
+      "reason": "шагов 102 из 105; адрес 92 стоит на месте 91"
+    },
+    {
+      "slug": "tropa",
+      "name": "tropa",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/tropa.json",
+      "txt": "programs/mk61/tropa.txt"
+    },
+    {
+      "slug": "tutankhamon",
+      "name": "tutankhamon",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/tutankhamon.json",
+      "txt": "programs/mk61/tutankhamon.txt"
+    },
+    {
+      "slug": "twin-peaks",
+      "name": "Twin Peaks",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/twin-peaks.json",
+      "txt": "programs/mk61/twin-peaks.txt"
+    },
+    {
+      "slug": "winner",
+      "name": "Winner",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 101,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 11: КПП; шагов 101 из 105"
+    },
+    {
+      "slug": "wumpus",
+      "name": "Wumpus",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/wumpus.json",
+      "txt": "programs/mk61/wumpus.txt"
+    },
+    {
+      "slug": "xena-princess-warrior-dolgushin-notebook",
+      "name": "XENA-PRINCESS WARRIOR",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/xena-princess-warrior-dolgushin-notebook.json",
+      "txt": "programs/mk61/xena-princess-warrior-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "yantarnyy-gugon",
+      "name": "yantarnyy gugon",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 80,
+      "status": "не разобрано",
+      "reason": "шагов 80 из 105"
+    },
+    {
+      "slug": "zamok-s-prizrakami-4",
+      "name": "zamok s prizrakami-4",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/zamok-s-prizrakami-4.json",
+      "txt": "programs/mk61/zamok-s-prizrakami-4.txt"
+    },
+    {
+      "slug": "zamok-s-prizrakami",
+      "name": "zamok s prizrakami",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/zamok-s-prizrakami.json",
+      "txt": "programs/mk61/zamok-s-prizrakami.txt"
+    },
+    {
+      "slug": "zamok-satany",
+      "name": "zamok satany",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/zamok-satany.json",
+      "txt": "programs/mk61/zamok-satany.txt"
+    },
+    {
+      "slug": "zloveshchiy-chertog",
+      "name": "zloveshchiy chertog",
+      "model": "mk61",
+      "section": "adventure",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/zloveshchiy-chertog.json",
+      "txt": "programs/mk61/zloveshchiy-chertog.txt"
+    },
+    {
+      "slug": "zona",
+      "name": "zona",
+      "model": "МК-61",
+      "section": "adventure",
+      "steps": 83,
+      "status": "не разобрано",
+      "reason": "шагов 83 из 105"
+    },
+    {
+      "slug": "asteroid",
+      "name": "asteroid",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 80,
+      "status": "не разобрано",
+      "reason": "шагов 80 из 105"
+    },
+    {
+      "slug": "block-out",
+      "name": "Block Out",
+      "model": "mk61",
+      "section": "arcade",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/block-out.json",
+      "txt": "programs/mk61/block-out.txt"
+    },
+    {
+      "slug": "bosconien",
+      "name": "Bosconien",
+      "model": "mk61",
+      "section": "arcade",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/bosconien.json",
+      "txt": "programs/mk61/bosconien.txt"
+    },
+    {
+      "slug": "crazy-fly-dolgushin-notebook",
+      "name": "CRAZY FLY",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 92,
+      "status": "не разобрано",
+      "reason": "шагов 92 из 105"
+    },
+    {
+      "slug": "duck-dolgushin-notebook",
+      "name": "DUCK",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 86,
+      "status": "не разобрано",
+      "reason": "шагов 86 из 105"
+    },
+    {
+      "slug": "electronic-fortune-teller",
+      "name": "Electronic Fortune-Teller",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 67,
+      "status": "не разобрано",
+      "reason": "шагов 67 из 105"
+    },
+    {
+      "slug": "lovkach-video",
+      "name": "lovkach-video",
+      "model": "mk61",
+      "section": "arcade",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/lovkach-video.json",
+      "txt": "programs/mk61/lovkach-video.txt"
+    },
+    {
+      "slug": "lovkach",
+      "name": "lovkach",
+      "model": "mk61",
+      "section": "arcade",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/lovkach.json",
+      "txt": "programs/mk61/lovkach.txt"
+    },
+    {
+      "slug": "papago",
+      "name": "papago",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 90,
+      "status": "не разобрано",
+      "reason": "шагов 90 из 105"
+    },
+    {
+      "slug": "pi-cho-variant",
+      "name": "Пи-чо",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 51: К2"
+    },
+    {
+      "slug": "pi-cho",
+      "name": "pi-cho",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 101,
+      "status": "не разобрано",
+      "reason": "шагов 101 из 105"
+    },
+    {
+      "slug": "safari",
+      "name": "safari",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 99,
+      "status": "не разобрано",
+      "reason": "шагов 99 из 105"
+    },
+    {
+      "slug": "skala",
+      "name": "skala",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 99,
+      "status": "не разобрано",
+      "reason": "шагов 99 из 105"
+    },
+    {
+      "slug": "teenage-mutant-ninja-turtles-dolgushin-notebook-2",
+      "name": "TEENAGE-MUTANT NINJA TURTLES",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 16: + изменит тактику ведения боя мутанта | не разобрано на 19: 4 изменит тактику ведения боя мутанта | не разобрано на 68: Пх2 бессмертие | не разобрано на 78: 0 Шреддер будет слабее | не разобрано на 31: FL0 мутант и Шреддер будут сильнее | не разобрано на 24: 2 мутант и Шреддер будут сильнее | Карточка из источника (до листинга): | TEENAGE-MUTANT NINJA TURTLES | ============================ | Источник: https://vk.com/wall-115251268_126; ручная перепечатка пользователя из второй тетради Александра Долгушина \"Мои игры МК-61\", Рисунок (20).jpg; Рисунок (21).jpg; Рисунок (22).jpg; Рисунок (23).jpg; Рисунок (24).jpg | Номер в тетради: 59 | Автор: Александр Долгушин | Дата: 22.07.2001 | Листинг | ------ | Описание и примечания источника (после листинга): | P.S. | --- | \"Игра запрограммирована так, что у врага более 5 тактик ведения боя. Это главный цинус игры. A-LEX\" | Примечания к записи | ------------------ | Слово \"цинус\" в P.S. почти наверняка означает \"цимес\": разговорное \"самая соль\", \"главная изюминка\". Оригинальная запись сохранена буквально. | Последняя строка исходных данных в перепечатке была \"0 кп6\"; по смыслу и по скану это ввод \"0 хП6\". | Адреса после 99 нормализованы как A0-A4.; структура: ============================================================"
+    },
+    {
+      "slug": "tetris-lordbss",
+      "name": "tetris",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 60,
+      "status": "не разобрано",
+      "reason": "шагов 60 из 105"
+    },
+    {
+      "slug": "tetris",
+      "name": "tetris",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 60,
+      "status": "не разобрано",
+      "reason": "шагов 60 из 105"
+    },
+    {
+      "slug": "tom-i-dzherri-2",
+      "name": "tom i dzherri-2",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 100,
+      "status": "не разобрано",
+      "reason": "шагов 100 из 105"
+    },
+    {
+      "slug": "tom-i-dzherri-3",
+      "name": "tom i dzherri 3",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "шагов 103 из 105; адрес 53 стоит на месте 52"
+    },
+    {
+      "slug": "tom-i-dzherri",
+      "name": "tom i dzherri",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 74,
+      "status": "не разобрано",
+      "reason": "шагов 74 из 105"
+    },
+    {
+      "slug": "toti",
+      "name": "Toti",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 99,
+      "status": "не разобрано",
+      "reason": "шагов 99 из 105"
+    },
+    {
+      "slug": "turtles",
+      "name": "Turtles",
+      "model": "mk61",
+      "section": "arcade",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/turtles.json",
+      "txt": "programs/mk61/turtles.txt"
+    },
+    {
+      "slug": "v-oblake-asteroidov",
+      "name": "v oblake asteroidov",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "vodnaya-zmeya",
+      "name": "vodnaya zmeya",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "vorishka-video",
+      "name": "vorishka-video",
+      "model": "mk61",
+      "section": "arcade",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/vorishka-video.json",
+      "txt": "programs/mk61/vorishka-video.txt"
+    },
+    {
+      "slug": "zhonglyor-i-sharik",
+      "name": "Жонглёр и шарик",
+      "model": "МК-61",
+      "section": "arcade",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "шагов 96 из 105"
+    },
+    {
+      "slug": "99-bottles",
+      "name": "99 бутылок",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 53,
+      "status": "не разобрано",
+      "reason": "шагов 53 из 105"
+    },
+    {
+      "slug": "arithmetic",
+      "name": "Арифметика",
+      "model": "mk61",
+      "section": "educational",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/arithmetic.json",
+      "txt": "programs/mk61/arithmetic.txt"
+    },
+    {
+      "slug": "brounovskoe-dvizhenie-romanovsky-1989",
+      "name": "Броуновское движение",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 41,
+      "status": "не разобрано",
+      "reason": "шагов 41 из 105; адрес 75 стоит на месте 19"
+    },
+    {
+      "slug": "kon-tiki-multfilm",
+      "name": "Kon-Tiki: Multfilm",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 8,
+      "status": "не разобрано",
+      "reason": "шагов 8 из 105"
+    },
+    {
+      "slug": "markov-machine",
+      "name": "Markov Machine",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 100,
+      "status": "не разобрано",
+      "reason": "шагов 100 из 105"
+    },
+    {
+      "slug": "memory-training",
+      "name": "Тренировка памяти",
+      "model": "mk61",
+      "section": "educational",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/memory-training.json",
+      "txt": "programs/mk61/memory-training.txt"
+    },
+    {
+      "slug": "multfilm-dolgushin-bloknot",
+      "name": "Мультфильм",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 56,
+      "status": "не разобрано",
+      "reason": "шагов 56 из 105"
+    },
+    {
+      "slug": "multfilm-na-indikatore",
+      "name": "Мультфильм на индикаторе",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 47,
+      "status": "не разобрано",
+      "reason": "шагов 47 из 105"
+    },
+    {
+      "slug": "naberi-chet",
+      "name": "Набери чёт",
+      "model": "mk61",
+      "section": "educational",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/naberi-chet.json",
+      "txt": "programs/mk61/naberi-chet.txt"
+    },
+    {
+      "slug": "obshchitelny-li-vy-chelovek-gaishtut-1988",
+      "name": "Общительный ли вы человек?",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 51,
+      "status": "не разобрано",
+      "reason": "шагов 51 из 105"
+    },
+    {
+      "slug": "operatsionnaya-sistema-es-1840",
+      "name": "Операционная система ЕС-1840",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 85,
+      "status": "не разобрано",
+      "reason": "шагов 85 из 105"
+    },
+    {
+      "slug": "oplata-scheta",
+      "name": "Оплата счета",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 84,
+      "status": "не разобрано",
+      "reason": "шагов 84 из 105"
+    },
+    {
+      "slug": "paradoks-mnogougolnikov-1-kibernetika-1986",
+      "name": "Парадокс описанных многоугольников I",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 26,
+      "status": "не разобрано",
+      "reason": "шагов 26 из 105"
+    },
+    {
+      "slug": "paradoks-mnogougolnikov-2-kibernetika-1986",
+      "name": "Парадокс описанных многоугольников II",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 26,
+      "status": "не разобрано",
+      "reason": "шагов 26 из 105"
+    },
+    {
+      "slug": "povtori-chislo",
+      "name": "Повтори число",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 50,
+      "status": "не разобрано",
+      "reason": "шагов 50 из 105"
+    },
+    {
+      "slug": "povtori-tsifru",
+      "name": "Повтори цифру",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 42,
+      "status": "не разобрано",
+      "reason": "шагов 42 из 105"
+    },
+    {
+      "slug": "programma-dlya-testirovaniya-romanovsky-1989",
+      "name": "Программа для тестирования",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 39,
+      "status": "не разобрано",
+      "reason": "шагов 39 из 105"
+    },
+    {
+      "slug": "risovanie-romanovsky-1989",
+      "name": "Рисование",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 37,
+      "status": "не разобрано",
+      "reason": "шагов 37 из 105"
+    },
+    {
+      "slug": "schastlivye-bilety-brp4",
+      "name": "Счастливые билеты — БРП-4",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "soschitay-v-ume",
+      "name": "Сосчитай в уме",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 80,
+      "status": "не разобрано",
+      "reason": "шагов 80 из 105"
+    },
+    {
+      "slug": "trenirovka-pamyati-anvarov",
+      "name": "Тренировка памяти",
+      "model": "mk61",
+      "section": "educational",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/trenirovka-pamyati-anvarov.json",
+      "txt": "programs/mk61/trenirovka-pamyati-anvarov.txt"
+    },
+    {
+      "slug": "trenirovka-pamyati-kibernetika-1986",
+      "name": "Тренировка памяти",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "шагов 94 из 105"
+    },
+    {
+      "slug": "trenirovka-pamyati",
+      "name": "Тренировка памяти-1М",
+      "model": "mk61",
+      "section": "educational",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/trenirovka-pamyati.json",
+      "txt": "programs/mk61/trenirovka-pamyati.txt"
+    },
+    {
+      "slug": "tsifra-kibernetika-1986",
+      "name": "Цифра",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 40,
+      "status": "не разобрано",
+      "reason": "шагов 40 из 105"
+    },
+    {
+      "slug": "ugaday-chislo-po-ostatkam-brp4",
+      "name": "Угадывание числа по остаткам — БРП-4",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 35,
+      "status": "не разобрано",
+      "reason": "шагов 35 из 105"
+    },
+    {
+      "slug": "umeete-li-vy-slushat-gaishtut-1988",
+      "name": "Умеете ли вы слушать?",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 19,
+      "status": "не разобрано",
+      "reason": "шагов 19 из 105"
+    },
+    {
+      "slug": "ustnyy-schet-kibernetika-1986",
+      "name": "Устный счет",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "vosem-tsifr-v-ume",
+      "name": "Восемь цифр в уме",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 64,
+      "status": "не разобрано",
+      "reason": "шагов 64 из 105"
+    },
+    {
+      "slug": "zhizn-brp4",
+      "name": "Жизнь на 11 клетках — БРП-4",
+      "model": "МК-61",
+      "section": "educational",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "bezrukiy-bandit-trokhimenko-lyubich-1985",
+      "name": "Безрукий бандит",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 62,
+      "status": "не разобрано",
+      "reason": "шагов 62 из 105"
+    },
+    {
+      "slug": "black-jack-dolgushin-notebook",
+      "name": "BLACK JACK",
+      "model": "mk61",
+      "section": "gambling",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/black-jack-dolgushin-notebook.json",
+      "txt": "programs/mk61/black-jack-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "faraon",
+      "name": "faraon",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 85,
+      "status": "не разобрано",
+      "reason": "шагов 85 из 105"
+    },
+    {
+      "slug": "fortune-dolgushin-notebook",
+      "name": "FORTUNE",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 69: K√"
+    },
+    {
+      "slug": "game-100-pig",
+      "name": "Игра 100 (свинья) вдвоём с ПМК",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 101,
+      "status": "не разобрано",
+      "reason": "шагов 101 из 105; адрес 25 стоит на месте 24"
+    },
+    {
+      "slug": "igra-100-svinya-serge4mk-v2",
+      "name": "igra 100 svinya serge4mk v2",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "шагов 96 из 105"
+    },
+    {
+      "slug": "igra-100-svinya-serge4mk",
+      "name": "igra 100 svinya igrok protiv pmk",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "шагов 94 из 105"
+    },
+    {
+      "slug": "igralnyy-avtomat",
+      "name": "igralnyy avtomat",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "шагов 96 из 105"
+    },
+    {
+      "slug": "jack-pot",
+      "name": "Jack Pot",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "karusel-loto-gaishtut-1988",
+      "name": "Карусель-лото",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 40,
+      "status": "не разобрано",
+      "reason": "шагов 40 из 105"
+    },
+    {
+      "slug": "kazino",
+      "name": "kazino",
+      "model": "mk61",
+      "section": "gambling",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/kazino.json",
+      "txt": "programs/mk61/kazino.txt"
+    },
+    {
+      "slug": "klondayk-dolgushin-notebook",
+      "name": "Клондайк",
+      "model": "mk61",
+      "section": "gambling",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/klondayk-dolgushin-notebook.json",
+      "txt": "programs/mk61/klondayk-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "klondayk",
+      "name": "klondayk",
+      "model": "mk61",
+      "section": "gambling",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/klondayk.json",
+      "txt": "programs/mk61/klondayk.txt"
+    },
+    {
+      "slug": "loterei-kubik-orel-reshka-renat-notebook",
+      "name": "Лотереи: кубик, перебор, орёл-решка с заданной вероятностью",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 69,
+      "status": "не разобрано",
+      "reason": "шагов 69 из 105; адрес 00 стоит на месте 16"
+    },
+    {
+      "slug": "lotereya-2000-dolgushin-notebook",
+      "name": "Лотерея 2000",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "lotereya-renat-notebook",
+      "name": "Лотерея",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 25,
+      "status": "не разобрано",
+      "reason": "шагов 25 из 105"
+    },
+    {
+      "slug": "monte-karlo",
+      "name": "monte-karlo",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 81,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 20: C/А; шагов 81 из 105"
+    },
+    {
+      "slug": "ochko",
+      "name": "ochko",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 89,
+      "status": "не разобрано",
+      "reason": "шагов 89 из 105"
+    },
+    {
+      "slug": "poker-m-c",
+      "name": "poker M-C",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 90,
+      "status": "не разобрано",
+      "reason": "шагов 90 из 105"
+    },
+    {
+      "slug": "poker",
+      "name": "poker",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 58,
+      "status": "не разобрано",
+      "reason": "шагов 58 из 105"
+    },
+    {
+      "slug": "ruletka",
+      "name": "ruletka",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 81,
+      "status": "не разобрано",
+      "reason": "шагов 81 из 105"
+    },
+    {
+      "slug": "sportloto-5-iz-36-brp4",
+      "name": "Спортлото «5 из 36» — БРП-4",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 77,
+      "status": "не разобрано",
+      "reason": "шагов 77 из 105"
+    },
+    {
+      "slug": "sportloto-6-iz-45-brp4",
+      "name": "Спортлото «6 из 45» — БРП-4",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 70,
+      "status": "не разобрано",
+      "reason": "шагов 70 из 105"
+    },
+    {
+      "slug": "sportloto-model-5-of-36",
+      "name": "Sportloto Model",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 23,
+      "status": "не разобрано",
+      "reason": "шагов 23 из 105"
+    },
+    {
+      "slug": "the-dice",
+      "name": "The Dice",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 90,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 38: K1 | не разобрано на 39: K1; шагов 90 из 105"
+    },
+    {
+      "slug": "totalizator",
+      "name": "totalizator",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 40,
+      "status": "не разобрано",
+      "reason": "шагов 40 из 105"
+    },
+    {
+      "slug": "vovremya-ostanovis-gruzman-1989",
+      "name": "Вовремя остановись",
+      "model": "МК-61",
+      "section": "gambling",
+      "steps": 58,
+      "status": "не разобрано",
+      "reason": "шагов 58 из 105; адрес 50 стоит на месте 22"
+    },
+    {
+      "slug": "asim-trokhimenko-lyubich-1985",
+      "name": "Асим",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 8,
+      "status": "не разобрано",
+      "reason": "шагов 8 из 105"
+    },
+    {
+      "slug": "bash-game",
+      "name": "Bash Game",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 64,
+      "status": "не разобрано",
+      "reason": "шагов 64 из 105"
+    },
+    {
+      "slug": "bochonok-shapiro-boyko-1989",
+      "name": "Бочонок",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 67,
+      "status": "не разобрано",
+      "reason": "шагов 67 из 105"
+    },
+    {
+      "slug": "bolshe-menshe-gaishtut-1988",
+      "name": "Больше - меньше",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 48,
+      "status": "не разобрано",
+      "reason": "шагов 48 из 105"
+    },
+    {
+      "slug": "bridzh-it-raspopov-kuznetsov-1990",
+      "name": "Бридж-ит — 8 команд",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 8,
+      "status": "не разобрано",
+      "reason": "шагов 8 из 105"
+    },
+    {
+      "slug": "bridzh-it-shapiro-boyko-1989",
+      "name": "Бридж-ит",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "byki-i-korovy-geocities",
+      "name": "Быки и коровы (GeoCities)",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 79,
+      "status": "не разобрано",
+      "reason": "шагов 79 из 105"
+    },
+    {
+      "slug": "byki-i-korovy-obratnye-shapiro-boyko-1989",
+      "name": "Быки и коровы — ПМК отгадывает",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 79,
+      "status": "не разобрано",
+      "reason": "шагов 79 из 105"
+    },
+    {
+      "slug": "byki-i-korovy",
+      "name": "Быки и коровы-2 — редакция Храмова",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "chempion",
+      "name": "chempion",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "chet-nechet-3",
+      "name": "Чёт-нечёт-3",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/chet-nechet-3.json",
+      "txt": "programs/mk61/chet-nechet-3.txt"
+    },
+    {
+      "slug": "chet-nechet-danilov-slavin",
+      "name": "Чет-нечет",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "шагов 96 из 105"
+    },
+    {
+      "slug": "chet-nechet-dolgushin-notebook",
+      "name": "Чёт-нечёт",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "шагов 96 из 105"
+    },
+    {
+      "slug": "chet-nechet-kibernetika-1986",
+      "name": "Чет-нечет",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "шагов 96 из 105"
+    },
+    {
+      "slug": "chet-nechet-korrelyatsiya-c3000",
+      "name": "Чет — нечет с учетом корреляции ходов противника",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 72,
+      "status": "не разобрано",
+      "reason": "шагов 72 из 105"
+    },
+    {
+      "slug": "chet-nechet-predydushchie-khody-c3000",
+      "name": "Чет — нечет с учетом предыдущих ходов",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 46,
+      "status": "не разобрано",
+      "reason": "шагов 46 из 105"
+    },
+    {
+      "slug": "chisla-po-krugu",
+      "name": "Числа по кругу",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 83,
+      "status": "не разобрано",
+      "reason": "шагов 83 из 105"
+    },
+    {
+      "slug": "chyornyy-yashchik",
+      "name": "chyornyy yashchik",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/chyornyy-yashchik.json",
+      "txt": "programs/mk61/chyornyy-yashchik.txt"
+    },
+    {
+      "slug": "correspondence-chess",
+      "name": "Correspondence Chess",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "domino-vunderkind",
+      "name": "domino-vunderkind",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 106,
+      "status": "не разобрано",
+      "reason": "замечания: адрес 00 задан дважды: В/О; шагов 106 из 105; адрес 00 стоит на месте 1"
+    },
+    {
+      "slug": "dorozhka-modifikatsiya-shapiro-boyko-1989",
+      "name": "Дорожка — модификация",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 83,
+      "status": "не разобрано",
+      "reason": "шагов 83 из 105"
+    },
+    {
+      "slug": "dorozhka-shapiro-boyko-1989",
+      "name": "Дорожка — 55 команд",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 55,
+      "status": "не разобрано",
+      "reason": "шагов 55 из 105"
+    },
+    {
+      "slug": "duel-s-ezhikom-romanovskis-1987",
+      "name": "Дуэль с ёжиком",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 45,
+      "status": "не разобрано",
+      "reason": "шагов 45 из 105"
+    },
+    {
+      "slug": "dve-kuchki-kamney-gruzman-1989",
+      "name": "Две кучки камней",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 67,
+      "status": "не разобрано",
+      "reason": "шагов 67 из 105; адрес 40 стоит на месте 39"
+    },
+    {
+      "slug": "dvoynik-bashe-gaishtut-1988",
+      "name": "Игра \"Двойник Баше\"",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 28,
+      "status": "не разобрано",
+      "reason": "шагов 28 из 105"
+    },
+    {
+      "slug": "elektronnyy-ring",
+      "name": "elektronnyy ring",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "elektronnyy-sopernik",
+      "name": "elektronnyy sopernik",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 90,
+      "status": "не разобрано",
+      "reason": "шагов 90 из 105"
+    },
+    {
+      "slug": "ferz-shapiro-boyko-1989",
+      "name": "Ферзь",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 67,
+      "status": "не разобрано",
+      "reason": "шагов 67 из 105"
+    },
+    {
+      "slug": "fourteen-pawns",
+      "name": "Fourteen Pawns",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/fourteen-pawns.json",
+      "txt": "programs/mk61/fourteen-pawns.txt"
+    },
+    {
+      "slug": "fox-hunt-100",
+      "name": "Охота на лис 100",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 101,
+      "status": "не разобрано",
+      "reason": "шагов 101 из 105; адрес 11 стоит на месте 10"
+    },
+    {
+      "slug": "fox-hunt-mk61",
+      "name": "Охота на лис (вариант для МК-61)",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 92,
+      "status": "не разобрано",
+      "reason": "шагов 92 из 105"
+    },
+    {
+      "slug": "gaskell-i-vanigan-gruzman-1989",
+      "name": "Игра Р. Гаскела и М. Ванигана",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 83,
+      "status": "не разобрано",
+      "reason": "шагов 83 из 105; адрес 35 стоит на месте 33"
+    },
+    {
+      "slug": "geks-gaishtut-1988",
+      "name": "Гекс",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 72,
+      "status": "не разобрано",
+      "reason": "шагов 72 из 105"
+    },
+    {
+      "slug": "grandi-s-10-c3000",
+      "name": "Гранди при S=10",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 48,
+      "status": "не разобрано",
+      "reason": "шагов 48 из 105"
+    },
+    {
+      "slug": "hanoyskaya-bashnya-karabanov",
+      "name": "Ханойская башня, вариант Ю. Карабанова",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 66,
+      "status": "не разобрано",
+      "reason": "шагов 66 из 105"
+    },
+    {
+      "slug": "hanoyskaya-bashnya-khmelyuk",
+      "name": "Ханойская башня, вариант В. Хмелюка",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 90,
+      "status": "не разобрано",
+      "reason": "шагов 90 из 105"
+    },
+    {
+      "slug": "hanoyskaya-bashnya-sivkov",
+      "name": "Ханойская башня, вариант Ю. Сивкова",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 75,
+      "status": "не разобрано",
+      "reason": "шагов 75 из 105"
+    },
+    {
+      "slug": "igra-12-kabardcomp",
+      "name": "Игра 12",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 32,
+      "status": "не разобрано",
+      "reason": "шагов 32 из 105"
+    },
+    {
+      "slug": "igra-5-shapiro-boyko-1989",
+      "name": "Игра «5» — решатель",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 86,
+      "status": "не разобрано",
+      "reason": "шагов 86 из 105"
+    },
+    {
+      "slug": "igra-bashe-brp4",
+      "name": "Игра Баше — БРП-4",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 42,
+      "status": "не разобрано",
+      "reason": "шагов 42 из 105"
+    },
+    {
+      "slug": "igra-bashe-c3000",
+      "name": "Игра Баше",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 61,
+      "status": "не разобрано",
+      "reason": "шагов 61 из 105"
+    },
+    {
+      "slug": "igra-bashe-eboshe",
+      "name": "Игра Баше — eBoshe",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 50,
+      "status": "не разобрано",
+      "reason": "шагов 50 из 105"
+    },
+    {
+      "slug": "igra-bashe-gaishtut-1988",
+      "name": "Игра Баше",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 49,
+      "status": "не разобрано",
+      "reason": "шагов 49 из 105"
+    },
+    {
+      "slug": "igra-bashe-gruzman-1989",
+      "name": "Игра Баше",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 61,
+      "status": "не разобрано",
+      "reason": "шагов 61 из 105; адрес 35 стоит на месте 32"
+    },
+    {
+      "slug": "igra-bashe-sistepskiy-1986",
+      "name": "Игра Баше — «Квант», 1986",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 48,
+      "status": "не разобрано",
+      "reason": "шагов 48 из 105"
+    },
+    {
+      "slug": "igra-na-dorozhke-kibernetika-1986",
+      "name": "Игра на дорожке",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 70,
+      "status": "не разобрано",
+      "reason": "шагов 70 из 105"
+    },
+    {
+      "slug": "igra-so-spichkami-c3000",
+      "name": "Игра со спичками",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 64,
+      "status": "не разобрано",
+      "reason": "шагов 64 из 105"
+    },
+    {
+      "slug": "ili-ili-csakany-1981",
+      "name": "Или — или, адаптация для МК-61",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "kacheli-romanovskis-1987",
+      "name": "Качели",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 51,
+      "status": "не разобрано",
+      "reason": "шагов 51 из 105"
+    },
+    {
+      "slug": "kalah",
+      "name": "kalah",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/kalah.json",
+      "txt": "programs/mk61/kalah.txt"
+    },
+    {
+      "slug": "kaufsten-heavy",
+      "name": "Кауфстен — тяжёлый",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/kaufsten-heavy.json",
+      "txt": "programs/mk61/kaufsten-heavy.txt"
+    },
+    {
+      "slug": "kaufsten-light",
+      "name": "Кауфстен — лёгкий",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/kaufsten-light.json",
+      "txt": "programs/mk61/kaufsten-light.txt"
+    },
+    {
+      "slug": "kchppp",
+      "name": "kchppp",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/kchppp.json",
+      "txt": "programs/mk61/kchppp.txt"
+    },
+    {
+      "slug": "khanoiskaya-bashnya-pomoshchnik-shapiro-boyko-1989",
+      "name": "Ханойская башня — помощник",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 49,
+      "status": "не разобрано",
+      "reason": "шагов 49 из 105"
+    },
+    {
+      "slug": "koltso-s-sekretom",
+      "name": "Кольцо с секретом",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kombinator",
+      "name": "Комбинатор",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 106,
+      "status": "не разобрано",
+      "reason": "замечания: адрес 00 задан дважды: В/О; шагов 106 из 105; адрес 00 стоит на месте 1"
+    },
+    {
+      "slug": "krestiki-noliki-gaishtut-1988",
+      "name": "Крестики-нолики",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 52,
+      "status": "не разобрано",
+      "reason": "шагов 52 из 105"
+    },
+    {
+      "slug": "krestiki-noliki-kabardcomp",
+      "name": "Крестики-нолики",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 53,
+      "status": "не разобрано",
+      "reason": "шагов 53 из 105"
+    },
+    {
+      "slug": "krestiki-noliki-shapiro-boyko-1989",
+      "name": "Крестики-нолики",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 41,
+      "status": "не разобрано",
+      "reason": "шагов 41 из 105"
+    },
+    {
+      "slug": "krestiki-noliki-variatsiya-shapiro-boyko-1989",
+      "name": "Крестики-нолики — вариация",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 71,
+      "status": "не разобрано",
+      "reason": "шагов 71 из 105"
+    },
+    {
+      "slug": "kto-pervyy",
+      "name": "Кто первый",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 49,
+      "status": "не разобрано",
+      "reason": "шагов 49 из 105"
+    },
+    {
+      "slug": "labirint-brp4",
+      "name": "Лабиринт — БРП-4",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 84,
+      "status": "не разобрано",
+      "reason": "шагов 84 из 105"
+    },
+    {
+      "slug": "lloyd-queen-c5-renat-notebook",
+      "name": "Решение шахматной задачи Ллойда",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 33,
+      "status": "не разобрано",
+      "reason": "шагов 33 из 105"
+    },
+    {
+      "slug": "logika-dvuznachnaya-podskazka-shapiro-boyko-1989",
+      "name": "Логика — суммарная подсказка",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 88,
+      "status": "не разобрано",
+      "reason": "шагов 88 из 105"
+    },
+    {
+      "slug": "logika-gaishtut-1988",
+      "name": "Логика",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 54,
+      "status": "не разобрано",
+      "reason": "шагов 54 из 105"
+    },
+    {
+      "slug": "logika-mashina-partner-shapiro-boyko-1989",
+      "name": "Логика — машина-партнёр",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 71,
+      "status": "не разобрано",
+      "reason": "шагов 71 из 105"
+    },
+    {
+      "slug": "magicheskiy-kvadrat",
+      "name": "Магический квадрат",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 84,
+      "status": "не разобрано",
+      "reason": "шагов 84 из 105"
+    },
+    {
+      "slug": "magiya-tsifr",
+      "name": "magiya tsifr",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 63,
+      "status": "не разобрано",
+      "reason": "шагов 63 из 105"
+    },
+    {
+      "slug": "mastermind",
+      "name": "Мастермайнд",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 86,
+      "status": "не разобрано",
+      "reason": "шагов 86 из 105"
+    },
+    {
+      "slug": "minesweeper-9x9",
+      "name": "Сапёр 9x9",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 95,
+      "status": "не разобрано",
+      "reason": "шагов 95 из 105; адрес 77 стоит на месте 76"
+    },
+    {
+      "slug": "minesweeper",
+      "name": "Minesweeper",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "minipoddavki-trokhimenko-lyubich-1985",
+      "name": "Миниподдавки",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 64,
+      "status": "не разобрано",
+      "reason": "шагов 64 из 105"
+    },
+    {
+      "slug": "missionery-i-lyudoedy-shapiro-boyko-1989",
+      "name": "Миссионеры и людоеды",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 55,
+      "status": "не разобрано",
+      "reason": "шагов 55 из 105"
+    },
+    {
+      "slug": "monti",
+      "name": "monti",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/monti.json",
+      "txt": "programs/mk61/monti.txt"
+    },
+    {
+      "slug": "mushketery-belymi-c3000",
+      "name": "Игра белыми в «Мушкетеры»",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 57,
+      "status": "не разобрано",
+      "reason": "шагов 57 из 105"
+    },
+    {
+      "slug": "mustang-8x8-variant",
+      "name": "Охота на мустанга",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "mustang-8x8",
+      "name": "Mustang 8x8",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 81: Б/К; шагов 98 из 105"
+    },
+    {
+      "slug": "nim-s-odnoy-kuchey",
+      "name": "Ним с одной кучей",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 80,
+      "status": "не разобрано",
+      "reason": "шагов 80 из 105"
+    },
+    {
+      "slug": "nim-tri-kuchi-brp4",
+      "name": "Ним с тремя кучами — БРП-4",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "nim-tri-mnozhestva-c3000",
+      "name": "Ним с тремя множествами предметов",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "nim-uslozhnennyy-shapiro-boyko-1989",
+      "name": "Ним, усложнённый вариант",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "nim",
+      "name": "Ним",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/nim.json",
+      "txt": "programs/mk61/nim.txt"
+    },
+    {
+      "slug": "odd-even-1",
+      "name": "Чёт-нечёт-1",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 72,
+      "status": "не разобрано",
+      "reason": "шагов 72 из 105"
+    },
+    {
+      "slug": "odd-even-2",
+      "name": "Чёт-нечёт-2",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "odd-even-who-can-outsmart-who",
+      "name": "Кто кого перехитрит — Чёт-нечёт",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 54,
+      "status": "не разобрано",
+      "reason": "шагов 54 из 105"
+    },
+    {
+      "slug": "odinokaya-peshka-c3000",
+      "name": "Одинокая пешка",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 70,
+      "status": "не разобрано",
+      "reason": "шагов 70 из 105"
+    },
+    {
+      "slug": "odinokiy-ferz-c3000",
+      "name": "Одинокий ферзь",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 78,
+      "status": "не разобрано",
+      "reason": "шагов 78 из 105"
+    },
+    {
+      "slug": "odnomernyy-kubik-rubika",
+      "name": "Одномерный кубик Рубика",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "ohota-na-lis-gaishtut-1988",
+      "name": "Охота на лис",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 85,
+      "status": "не разобрано",
+      "reason": "шагов 85 из 105"
+    },
+    {
+      "slug": "okhota-na-lis-1-danilov-slavin",
+      "name": "Охота на лис-1",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 91,
+      "status": "не разобрано",
+      "reason": "шагов 91 из 105"
+    },
+    {
+      "slug": "okhota-na-lis-3-hramov",
+      "name": "Охота на лис-3",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/okhota-na-lis-3-hramov.json",
+      "txt": "programs/mk61/okhota-na-lis-3-hramov.txt"
+    },
+    {
+      "slug": "okhota-na-lis-3-poli",
+      "name": "Охота на лис-3 — для Поли",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/okhota-na-lis-3-poli.json",
+      "txt": "programs/mk61/okhota-na-lis-3-poli.txt"
+    },
+    {
+      "slug": "okhota-na-lis-38",
+      "name": "okhota na lis 38",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/okhota-na-lis-38.json",
+      "txt": "programs/mk61/okhota-na-lis-38.txt"
+    },
+    {
+      "slug": "okhota-na-lis-4-hramov",
+      "name": "Охота на лис-4",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "okhota-na-lis-4-poli",
+      "name": "Охота на лис-4 — для Поли",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "okhota-na-lis-boyko",
+      "name": "Охота на лис",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "шагов 94 из 105"
+    },
+    {
+      "slug": "okhota-na-lis-lordbss",
+      "name": "Охота на лис-2",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 99,
+      "status": "не разобрано",
+      "reason": "шагов 99 из 105"
+    },
+    {
+      "slug": "okhota-na-lis",
+      "name": "okhota na lis",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "шагов 103 из 105; адрес 23 стоит на месте 22"
+    },
+    {
+      "slug": "palochki-i-tsifry",
+      "name": "Палочки и цифры",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 41,
+      "status": "не разобрано",
+      "reason": "шагов 41 из 105"
+    },
+    {
+      "slug": "pelengatsiya-c3000",
+      "name": "Пеленгация",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "perekin-mostik",
+      "name": "Перекинь мостик",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "pmk-otgadyvaet-tsifry-shapiro-boyko-1989",
+      "name": "ПМК отгадывает цифры",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 28,
+      "status": "не разобрано",
+      "reason": "шагов 28 из 105"
+    },
+    {
+      "slug": "poymat-mustanga",
+      "name": "Поймать мустанга",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/poymat-mustanga.json",
+      "txt": "programs/mk61/poymat-mustanga.txt"
+    },
+    {
+      "slug": "radiatsiya-kabardcomp",
+      "name": "Радиация",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 36,
+      "status": "не разобрано",
+      "reason": "шагов 36 из 105"
+    },
+    {
+      "slug": "rasstanovka-ferzey",
+      "name": "rasstanovka ferzey",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 49,
+      "status": "не разобрано",
+      "reason": "шагов 49 из 105"
+    },
+    {
+      "slug": "razdaem-karty-i-chisla-csakany-1981",
+      "name": "Раздаём карты и числа — вариант без возврата отбоя для МК-61",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/razdaem-karty-i-chisla-csakany-1981.json",
+      "txt": "programs/mk61/razdaem-karty-i-chisla-csakany-1981.txt"
+    },
+    {
+      "slug": "rook-endgame-serge4mk",
+      "name": "Ladeynyy endshpil",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/rook-endgame-serge4mk.json",
+      "txt": "programs/mk61/rook-endgame-serge4mk.txt"
+    },
+    {
+      "slug": "shakhmatnaya-igra-magaradzha-renat-notebook",
+      "name": "Шахматная игра \"Магараджа\"",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 43,
+      "status": "не разобрано",
+      "reason": "шагов 43 из 105"
+    },
+    {
+      "slug": "shakhmaty-ferz-protiv-korolya-1",
+      "name": "Белый ферзь и король против черного короля - 1",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/shakhmaty-ferz-protiv-korolya-1.json",
+      "txt": "programs/mk61/shakhmaty-ferz-protiv-korolya-1.txt"
+    },
+    {
+      "slug": "shakhmaty-ferz-protiv-korolya-2",
+      "name": "Белый ферзь и король против черного короля - 2",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 41: К1 | не разобрано на 47: К2"
+    },
+    {
+      "slug": "shakhmaty-korol-kon-slon",
+      "name": "Король, конь и слон против короля",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/shakhmaty-korol-kon-slon.json",
+      "txt": "programs/mk61/shakhmaty-korol-kon-slon.txt"
+    },
+    {
+      "slug": "shakhmaty-ladya-protiv-korolya",
+      "name": "Белая ладья и король против черного короля",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 78: К2"
+    },
+    {
+      "slug": "shakhmaty-mat-ladyoy",
+      "name": "shakhmaty. mat ladyoy",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "шагов 103 из 105; адрес 45 стоит на месте 44"
+    },
+    {
+      "slug": "shakhmaty",
+      "name": "shakhmaty",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 86,
+      "status": "не разобрано",
+      "reason": "шагов 86 из 105"
+    },
+    {
+      "slug": "shashki-12",
+      "name": "Шашки-12",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/shashki-12.json",
+      "txt": "programs/mk61/shashki-12.txt"
+    },
+    {
+      "slug": "shashki-13-new",
+      "name": "shashki-13-New",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/shashki-13-new.json",
+      "txt": "programs/mk61/shashki-13-new.txt"
+    },
+    {
+      "slug": "shashki-9-auto",
+      "name": "Шашки-9 авто",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/shashki-9-auto.json",
+      "txt": "programs/mk61/shashki-9-auto.txt"
+    },
+    {
+      "slug": "shashki-baran-c3000",
+      "name": "Шашки",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "шагов 103 из 105"
+    },
+    {
+      "slug": "shashki-chuvyrov-c3000",
+      "name": "Шашки",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/shashki-chuvyrov-c3000.json",
+      "txt": "programs/mk61/shashki-chuvyrov-c3000.txt"
+    },
+    {
+      "slug": "sokoban",
+      "name": "sokoban",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 100,
+      "status": "не разобрано",
+      "reason": "шагов 100 из 105"
+    },
+    {
+      "slug": "solitaire-classen-1983",
+      "name": "Солитер — штырьковый пасьянс, адаптация для МК-61",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "шагов 103 из 105"
+    },
+    {
+      "slug": "soschitay-palochki",
+      "name": "Сосчитай палочки",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 65,
+      "status": "не разобрано",
+      "reason": "шагов 65 из 105"
+    },
+    {
+      "slug": "spichki-bergsona",
+      "name": "Спички Бергсона",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 44: К2"
+    },
+    {
+      "slug": "stones-dolgushin-notebook-2",
+      "name": "STONES",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 63,
+      "status": "не разобрано",
+      "reason": "шагов 63 из 105"
+    },
+    {
+      "slug": "syshchik-dolgushin-notebook",
+      "name": "Сыщик",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 92,
+      "status": "не разобрано",
+      "reason": "шагов 92 из 105"
+    },
+    {
+      "slug": "syshchik",
+      "name": "syshchik",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 92,
+      "status": "не разобрано",
+      "reason": "шагов 92 из 105"
+    },
+    {
+      "slug": "taktika-na-shashechnoy-doske-gaishtut-1988",
+      "name": "Тактика на шашечной доске",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 55,
+      "status": "не разобрано",
+      "reason": "шагов 55 из 105"
+    },
+    {
+      "slug": "tic-tac-toe-4x4",
+      "name": "Крестики-нолики 4x4",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/tic-tac-toe-4x4.json",
+      "txt": "programs/mk61/tic-tac-toe-4x4.txt"
+    },
+    {
+      "slug": "tic-tac-toe",
+      "name": "Tic-Tac-Toe",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "tri-shashki",
+      "name": "Три шашки",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 68,
+      "status": "не разобрано",
+      "reason": "шагов 68 из 105"
+    },
+    {
+      "slug": "trigeks-c3000",
+      "name": "Тригекс",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "trigeks-shapiro-boyko-1989",
+      "name": "Тригекс",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 82,
+      "status": "не разобрано",
+      "reason": "шагов 82 из 105"
+    },
+    {
+      "slug": "tszyanshitszy-brp4",
+      "name": "Цзяньшицзы — БРП-4",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 91,
+      "status": "не разобрано",
+      "reason": "шагов 91 из 105"
+    },
+    {
+      "slug": "ugaday-chislo-brp4",
+      "name": "Угадывание числа — БРП-4",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 91,
+      "status": "не разобрано",
+      "reason": "шагов 91 из 105"
+    },
+    {
+      "slug": "ugaday-chislo-kabardcomp",
+      "name": "Угадай число",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 14,
+      "status": "не разобрано",
+      "reason": "шагов 14 из 105"
+    },
+    {
+      "slug": "ugaday-chislo-kibernetika-1986",
+      "name": "Угадай число",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "шагов 94 из 105"
+    },
+    {
+      "slug": "ugaday-chislo-romanovsky-1989",
+      "name": "Угадай число",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 63,
+      "status": "не разобрано",
+      "reason": "шагов 63 из 105; адрес 75 стоит на месте 41"
+    },
+    {
+      "slug": "ugaday-chislo-woodstock",
+      "name": "Угадай число — Woodstock",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 15,
+      "status": "не разобрано",
+      "reason": "шагов 15 из 105"
+    },
+    {
+      "slug": "ugaday-funktsiyu-romanovsky-1989",
+      "name": "Угадай функцию",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 46,
+      "status": "не разобрано",
+      "reason": "шагов 46 из 105; адрес 75 стоит на месте 24"
+    },
+    {
+      "slug": "veryu-ne-veryu-zapisal-1-2-c3000",
+      "name": "Верю — не верю: «записал 1» (вариант 2)",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 77,
+      "status": "не разобрано",
+      "reason": "шагов 77 из 105"
+    },
+    {
+      "slug": "veryu-ne-veryu-zapisal-1-c3000",
+      "name": "Верю — не верю: «записал 1» (вариант 1)",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 56,
+      "status": "не разобрано",
+      "reason": "шагов 56 из 105"
+    },
+    {
+      "slug": "volki-i-kozlik-8x8",
+      "name": "volki i kozlik 8x8",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 39: П5(6) | не разобрано на 42: 4(5) | не разобрано на 56: 5(6) | не разобрано на 63: ИП5(6) | не разобрано на 64: П4(5) | не разобрано на 80: Fo | не разобрано на 92: 4(5); шагов 98 из 105"
+    },
+    {
+      "slug": "volki-i-kozlik-9x9",
+      "name": "volki i kozlik 9x9",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "vosem-ferzey-tarasov",
+      "name": "Восемь ферзей — поиск решения Тарасова",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 67,
+      "status": "не разобрано",
+      "reason": "шагов 67 из 105"
+    },
+    {
+      "slug": "vybiranie-kamney-c3000",
+      "name": "Выбирание камней",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 89,
+      "status": "не разобрано",
+      "reason": "шагов 89 из 105"
+    },
+    {
+      "slug": "white-starts-and-loses",
+      "name": "White Starts... and Loses",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 91: Fo; шагов 94 из 105"
+    },
+    {
+      "slug": "zagaday-tsifru-hs-on",
+      "name": "Загадай цифру",
+      "model": "mk61",
+      "section": "logic",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/zagaday-tsifru-hs-on.json",
+      "txt": "programs/mk61/zagaday-tsifru-hs-on.txt"
+    },
+    {
+      "slug": "zvezdolyot",
+      "name": "zvezdolyot",
+      "model": "МК-61",
+      "section": "logic",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "aeroport",
+      "name": "aeroport",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/aeroport.json",
+      "txt": "programs/mk61/aeroport.txt"
+    },
+    {
+      "slug": "aes",
+      "name": "aes",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/aes.json",
+      "txt": "programs/mk61/aes.txt"
+    },
+    {
+      "slug": "apollo11-launch",
+      "name": "Apollo 11 Launch from Earth (Refined)",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 14: Ftgᐨ¹ | не разобрано на 53: Fѻ | не разобрано на 75: Fѻ | адрес −0 задан дважды: ÷ | адрес −0 задан дважды: Пx2 | адрес −0 задан дважды: × | адрес −0 задан дважды: В/О; адрес −0 стоит на месте 101"
+    },
+    {
+      "slug": "arkticheskiy-reys-c3000",
+      "name": "Арктический рейс",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 49,
+      "status": "не разобрано",
+      "reason": "шагов 49 из 105"
+    },
+    {
+      "slug": "arkticheskiy-reys-dolgushin-notebook",
+      "name": "Арктический рейс",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 52,
+      "status": "не разобрано",
+      "reason": "шагов 52 из 105"
+    },
+    {
+      "slug": "avariynaya-posadka",
+      "name": "Аварийная посадка (БП 86)",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/avariynaya-posadka.json",
+      "txt": "programs/mk61/avariynaya-posadka.txt"
+    },
+    {
+      "slug": "aviatsionnyy-perelet-c3000",
+      "name": "Авиационный перелет",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 39,
+      "status": "не разобрано",
+      "reason": "шагов 39 из 105"
+    },
+    {
+      "slug": "avtomobil-erichware",
+      "name": "Автомобиль",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "bankir",
+      "name": "bankir",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 100,
+      "status": "не разобрано",
+      "reason": "шагов 100 из 105"
+    },
+    {
+      "slug": "biocenoz",
+      "name": "biocenoz",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 90,
+      "status": "не разобрано",
+      "reason": "шагов 90 из 105"
+    },
+    {
+      "slug": "birzha-lordbss",
+      "name": "birzha",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/birzha-lordbss.json",
+      "txt": "programs/mk61/birzha-lordbss.txt"
+    },
+    {
+      "slug": "birzha",
+      "name": "birzha",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 80: K; шагов 97 из 105"
+    },
+    {
+      "slug": "bort-69",
+      "name": "bort-69",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/bort-69.json",
+      "txt": "programs/mk61/bort-69.txt"
+    },
+    {
+      "slug": "bussinesman-dolgushin-notebook",
+      "name": "BUSSINESMAN",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 56,
+      "status": "не разобрано",
+      "reason": "шагов 56 из 105"
+    },
+    {
+      "slug": "chellendzher",
+      "name": "chellendzher",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "шагов 94 из 105"
+    },
+    {
+      "slug": "combat-maneuver-turn",
+      "name": "Combat Maneuvering: Unsteady Turn",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 57,
+      "status": "не разобрано",
+      "reason": "шагов 57 из 105"
+    },
+    {
+      "slug": "combat-maneuver-vertical",
+      "name": "Combat Maneuvering: Vertical Flight",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "шагов 96 из 105"
+    },
+    {
+      "slug": "cooperative-2",
+      "name": "Cooperative 2",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 10: А1 | не разобрано на 27: А0 | не разобрано на 63: А0"
+    },
+    {
+      "slug": "cooperative-cafe-variant",
+      "name": "Кооперативное кафе",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/cooperative-cafe-variant.json",
+      "txt": "programs/mk61/cooperative-cafe-variant.txt"
+    },
+    {
+      "slug": "cooperative-cafe",
+      "name": "Cooperative Cafe",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 27: Б/К | не разобрано на 44: Б/К"
+    },
+    {
+      "slug": "course-of-voyage-caston-city-dolgushin-notebook-2",
+      "name": "COURSE OF <VOYAGE> - CASTON CITY",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 03: 04 БП 12 - вечное топливо | не разобрано на 24: Пх6 разворот руля 49 градусов, а не 5 | не разобрано на 83: 5 максимальная скорость при посадке не более 50 м/с | не разобрано на −1: F√ во втором уровне груз будет ужасно тяжелым | не разобрано на −3: Fe^x; A4 хПE во втором уровне начнете играть с высоты 8103 м | Карточка из источника (до листинга): | COURSE OF <VOYAGE> - CASTON CITY | ================================= | Источник: https://vk.com/wall-115251268_126; вторая тетрадь Александра Долгушина \"Мои игры МК-61\", Рисунок (17).jpg; Рисунок (18).jpg; Рисунок (19).jpg; Рисунок (20).jpg | Номер в тетради: 58 | Автор: Александр Долгушин | Дата: 19.07.2001 | Режим: переключатель Р-ГРД-Г поставить в положение \"Г\". | Листинг | ------ | Описание и примечания источника (после листинга): | Примечания | --------- | В тетради адреса после 99 записаны как \"-0\", \"-1\", \"-2\", \"-3\"; здесь они нормализованы как A0-A3. | Последний код в тетради записан как \"-3 F e^x ХПE\"; по смыслу это замена хвоста программы для записи высоты во втором уровне.; структура: ============================================================; шагов 104 из 105"
+    },
+    {
+      "slug": "dangerous-loading",
+      "name": "Опасная погрузка",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 101,
+      "status": "не разобрано",
+      "reason": "шагов 101 из 105; адрес 35 стоит на месте 34"
+    },
+    {
+      "slug": "dispetcher-2",
+      "name": "dispetcher-2",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/dispetcher-2.json",
+      "txt": "programs/mk61/dispetcher-2.txt"
+    },
+    {
+      "slug": "dispetcher",
+      "name": "dispetcher",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 01: К | не разобрано на 03: Н; шагов 104 из 105"
+    },
+    {
+      "slug": "elita",
+      "name": "elita",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "elite-2-dolgushin-notebook",
+      "name": "ELITE 2",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 102,
+      "status": "не разобрано",
+      "reason": "шагов 102 из 105"
+    },
+    {
+      "slug": "elite-dolgushin-notebook",
+      "name": "ELITE",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/elite-dolgushin-notebook.json",
+      "txt": "programs/mk61/elite-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "elite-iii-coriolis-dolgushin-notebook-2",
+      "name": "ELITE III (CORiOLiS)",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "структура: Карточка из источника (до листинга):"
+    },
+    {
+      "slug": "elite",
+      "name": "Elite",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/elite.json",
+      "txt": "programs/mk61/elite.txt"
+    },
+    {
+      "slug": "fondovaya-birzha",
+      "name": "fondovaya birzha",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/fondovaya-birzha.json",
+      "txt": "programs/mk61/fondovaya-birzha.txt"
+    },
+    {
+      "slug": "hamurabi-poloczek-1983",
+      "name": "Хаммурапи — компактная экономическая модель",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/hamurabi-poloczek-1983.json",
+      "txt": "programs/mk61/hamurabi-poloczek-1983.txt"
+    },
+    {
+      "slug": "harvest-extensive-model",
+      "name": "Harvest Extensive Model",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 71: Б/К"
+    },
+    {
+      "slug": "harvest-intensive-model",
+      "name": "Harvest Intensive Model",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 71: Б/К"
+    },
+    {
+      "slug": "ispytateli-vertoletov-c3000",
+      "name": "Испытатели вертолетов",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 62,
+      "status": "не разобрано",
+      "reason": "шагов 62 из 105"
+    },
+    {
+      "slug": "kafe-geocities",
+      "name": "Кафе (GeoCities)",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kapitan",
+      "name": "kapitan",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 60,
+      "status": "не разобрано",
+      "reason": "шагов 60 из 105"
+    },
+    {
+      "slug": "kazanova",
+      "name": "kazanova",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "kombinat",
+      "name": "kombinat",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 95,
+      "status": "не разобрано",
+      "reason": "шагов 95 из 105"
+    },
+    {
+      "slug": "kon-tiki-atmosphere-1",
+      "name": "Kon-Tiki: Atmosphere-1",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kon-tiki-atmosphere-2",
+      "name": "Kon-Tiki: Atmosphere-2",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kon-tiki-atmosphere-3",
+      "name": "Kon-Tiki: Atmosphere-3",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "kon-tiki-atmosphere-4",
+      "name": "Kon-Tiki: Atmosphere-4",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 99,
+      "status": "не разобрано",
+      "reason": "шагов 99 из 105"
+    },
+    {
+      "slug": "kon-tiki-gravilet-mod",
+      "name": "Kon-Tiki: Gravilet Modified",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kon-tiki-gravilet",
+      "name": "Kon-Tiki: Gravilet",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 100,
+      "status": "не разобрано",
+      "reason": "шагов 100 из 105"
+    },
+    {
+      "slug": "kon-tiki-kepler",
+      "name": "Kon-Tiki: Kepler",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "шагов 94 из 105"
+    },
+    {
+      "slug": "kon-tiki-lunolet-1",
+      "name": "Kon-Tiki: Lunolet-1",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kon-tiki-lunolet-1m",
+      "name": "Kon-Tiki: Lunolet-1M",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "kon-tiki-lunolet-2-original",
+      "name": "Kon-Tiki: Lunolet-2 (TM original)",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kon-tiki-lunolet-3",
+      "name": "Kon-Tiki: Lunolet-3",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "kon-tiki-lunolet-4",
+      "name": "Kon-Tiki: Lunolet-4",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kon-tiki-lunolet-d-original",
+      "name": "Kon-Tiki: Lunolet-D (TM original)",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 80,
+      "status": "не разобрано",
+      "reason": "шагов 80 из 105"
+    },
+    {
+      "slug": "kon-tiki-mascon",
+      "name": "Kon-Tiki: Mascon",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 92,
+      "status": "не разобрано",
+      "reason": "шагов 92 из 105"
+    },
+    {
+      "slug": "kon-tiki-mesto-pod-solntsem",
+      "name": "Kon-Tiki: Mesto pod Solntsem",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 65,
+      "status": "не разобрано",
+      "reason": "шагов 65 из 105"
+    },
+    {
+      "slug": "kon-tiki-mr-2",
+      "name": "Kon-Tiki: MR-2",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kon-tiki-os-1",
+      "name": "Kon-Tiki: OS-1",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kon-tiki-os-2-buffer",
+      "name": "Kon-Tiki: OS-2 Buffer",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 26,
+      "status": "не разобрано",
+      "reason": "шагов 26 из 105"
+    },
+    {
+      "slug": "kon-tiki-os-2",
+      "name": "Kon-Tiki: OS-2",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "kon-tiki-os-3",
+      "name": "Kon-Tiki: OS-3",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kon-tiki-peak",
+      "name": "Kon-Tiki: Peak",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 93,
+      "status": "не разобрано",
+      "reason": "шагов 93 из 105"
+    },
+    {
+      "slug": "kon-tiki-pk-1",
+      "name": "Kon-Tiki: PK-1",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 25,
+      "status": "не разобрано",
+      "reason": "шагов 25 из 105"
+    },
+    {
+      "slug": "kooperativnoe-kafe-2",
+      "name": "kooperativnoe kafe 2",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 93,
+      "status": "не разобрано",
+      "reason": "шагов 93 из 105; адрес 84 стоит на месте 83"
+    },
+    {
+      "slug": "kooperativnoe-kafe",
+      "name": "kooperativnoe kafe",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 81,
+      "status": "не разобрано",
+      "reason": "шагов 81 из 105; адрес 61 стоит на месте 60"
+    },
+    {
+      "slug": "kosmicheskaya-posadka-brp4",
+      "name": "Космическая посадка — БРП-4",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kosmicheskaya-posadka-c3000",
+      "name": "Космическая посадка",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "kosmicheskaya-stantsiya",
+      "name": "kosmicheskaya stantsiya",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/kosmicheskaya-stantsiya.json",
+      "txt": "programs/mk61/kosmicheskaya-stantsiya.txt"
+    },
+    {
+      "slug": "kosmicheskiy-kurer",
+      "name": "kosmicheskiy kurer",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 63,
+      "status": "не разобрано",
+      "reason": "шагов 63 из 105"
+    },
+    {
+      "slug": "kosmicheskiy-perelet-dolgushin-notebook",
+      "name": "Космический перелёт",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "lunar-landing",
+      "name": "Lunar Landing",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 58,
+      "status": "не разобрано",
+      "reason": "шагов 58 из 105"
+    },
+    {
+      "slug": "lunolet-1",
+      "name": "Lunolet-1",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "lunolet-3",
+      "name": "Lunolet-3",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "lunolet-d",
+      "name": "Lunolet-D",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/lunolet-d.json",
+      "txt": "programs/mk61/lunolet-d.txt"
+    },
+    {
+      "slug": "lunolyot-1",
+      "name": "lunolyot-1",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 77,
+      "status": "не разобрано",
+      "reason": "шагов 77 из 105; адрес 09 стоит на месте 8"
+    },
+    {
+      "slug": "lunolyot-2",
+      "name": "lunolyot 2",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "lunolyot-d",
+      "name": "lunolyot-d",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 80,
+      "status": "не разобрано",
+      "reason": "шагов 80 из 105"
+    },
+    {
+      "slug": "manager-dolgushin-notebook",
+      "name": "MANAGER",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 101,
+      "status": "не разобрано",
+      "reason": "шагов 101 из 105"
+    },
+    {
+      "slug": "menedzher-lordbss",
+      "name": "menedzher",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 68,
+      "status": "не разобрано",
+      "reason": "шагов 68 из 105"
+    },
+    {
+      "slug": "menedzher-renat-notebook-2",
+      "name": "МЕНЕДЖЕР",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 66,
+      "status": "не разобрано",
+      "reason": "шагов 66 из 105"
+    },
+    {
+      "slug": "menedzher",
+      "name": "menedzher",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 86,
+      "status": "не разобрано",
+      "reason": "шагов 86 из 105"
+    },
+    {
+      "slug": "morskoe-puteshestvie-dolgushin-notebook",
+      "name": "Морское путешествие",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 77,
+      "status": "не разобрано",
+      "reason": "шагов 77 из 105"
+    },
+    {
+      "slug": "myagkaya-posadka-romanovskis-1987",
+      "name": "Мягкая посадка на Луну",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/myagkaya-posadka-romanovskis-1987.json",
+      "txt": "programs/mk61/myagkaya-posadka-romanovskis-1987.txt"
+    },
+    {
+      "slug": "na-gorizonte-kit",
+      "name": "Whale on the Horizon",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/na-gorizonte-kit.json",
+      "txt": "programs/mk61/na-gorizonte-kit.txt"
+    },
+    {
+      "slug": "neboskryob",
+      "name": "neboskryob",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 100,
+      "status": "не разобрано",
+      "reason": "шагов 100 из 105"
+    },
+    {
+      "slug": "opasnyy-reys",
+      "name": "Опасный рейс",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "ostrov-kolkhoz",
+      "name": "Остров (Колхоз)",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "perelet-na-termodirizhable-brp4",
+      "name": "Перелёт на термодирижабле — БРП-4",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "playboy",
+      "name": "Playboy",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/playboy.json",
+      "txt": "programs/mk61/playboy.txt"
+    },
+    {
+      "slug": "podvodnaya-lodka-lazarev",
+      "name": "Подводная лодка (реконструкция)",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/podvodnaya-lodka-lazarev.json",
+      "txt": "programs/mk61/podvodnaya-lodka-lazarev.txt"
+    },
+    {
+      "slug": "podvodnoe-puteshestvie-brp4",
+      "name": "Подводное путешествие — БРП-4",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "podvodnoe-puteshestvie-c3000",
+      "name": "Подводное путешествие",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 70,
+      "status": "не разобрано",
+      "reason": "шагов 70 из 105"
+    },
+    {
+      "slug": "podvodnye-apparaty",
+      "name": "Подводные аппараты",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 64: Fx>0; шагов 94 из 105"
+    },
+    {
+      "slug": "poezdka-po-gorodu",
+      "name": "Поездка по городу",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 90,
+      "status": "не разобрано",
+      "reason": "шагов 90 из 105"
+    },
+    {
+      "slug": "polet-na-avialaynere-c3000",
+      "name": "Полет на авиалайнере",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 58,
+      "status": "не разобрано",
+      "reason": "шагов 58 из 105"
+    },
+    {
+      "slug": "poligon",
+      "name": "poligon",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/poligon.json",
+      "txt": "programs/mk61/poligon.txt"
+    },
+    {
+      "slug": "pomoshch-polyarnikam-gaishtut-1988",
+      "name": "Помощь полярникам",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 55,
+      "status": "не разобрано",
+      "reason": "шагов 55 из 105"
+    },
+    {
+      "slug": "posadka-gravileta",
+      "name": "posadka gravileta",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 30,
+      "status": "не разобрано",
+      "reason": "шагов 30 из 105"
+    },
+    {
+      "slug": "posadka-na-lunu-1",
+      "name": "Посадка на Луну-1",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 70,
+      "status": "не разобрано",
+      "reason": "шагов 70 из 105"
+    },
+    {
+      "slug": "posadka-na-lunu-2",
+      "name": "Посадка на Луну-2",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 86,
+      "status": "не разобрано",
+      "reason": "шагов 86 из 105"
+    },
+    {
+      "slug": "posadka-na-lunu-c3000",
+      "name": "Посадка на Луну",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 60,
+      "status": "не разобрано",
+      "reason": "шагов 60 из 105"
+    },
+    {
+      "slug": "posadka-na-lunu-kibernetika-1986",
+      "name": "Посадка на Луну",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 81,
+      "status": "не разобрано",
+      "reason": "шагов 81 из 105"
+    },
+    {
+      "slug": "prostitutka",
+      "name": "prostitutka",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "publichnyy-dom",
+      "name": "publichnyy dom",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 102,
+      "status": "не разобрано",
+      "reason": "шагов 102 из 105"
+    },
+    {
+      "slug": "raketa-erichware",
+      "name": "Ракета",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "rock-star-ate-my-hamster-dolgushin-notebook",
+      "name": "ROCK STAR ATE MY HAMSTER",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/rock-star-ate-my-hamster-dolgushin-notebook.json",
+      "txt": "programs/mk61/rock-star-ate-my-hamster-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "sadist",
+      "name": "sadist",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/sadist.json",
+      "txt": "programs/mk61/sadist.txt"
+    },
+    {
+      "slug": "samolet-erichware",
+      "name": "Самолет",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "samolet-tm-1986",
+      "name": "samolet",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "saturn5-first-stage",
+      "name": "Saturn V First Stage (MK61)",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 09: Ftgᐨ¹ | не разобрано на 56: Fѻ | не разобрано на 79: Fѻ"
+    },
+    {
+      "slug": "shkola-kapitanov-na-podvodnykh-krylyakh-c3000",
+      "name": "Школа капитанов для судов на подводных крыльях",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 34,
+      "status": "не разобрано",
+      "reason": "шагов 34 из 105"
+    },
+    {
+      "slug": "shkola-vysshego-pilotazha-c3000",
+      "name": "Школа высшего пилотажа",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 87,
+      "status": "не разобрано",
+      "reason": "шагов 87 из 105"
+    },
+    {
+      "slug": "shlyukha",
+      "name": "shlyukha",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "sim-city-dolgushin-notebook",
+      "name": "SIM CITY",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/sim-city-dolgushin-notebook.json",
+      "txt": "programs/mk61/sim-city-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "space-travel-dolgushin-notebook",
+      "name": "SPACE TRAVEL",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/space-travel-dolgushin-notebook.json",
+      "txt": "programs/mk61/space-travel-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "star-trek-classen-1983",
+      "name": "Star Trek — бой с клингонами, адаптация для МК-61",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/star-trek-classen-1983.json",
+      "txt": "programs/mk61/star-trek-classen-1983.txt"
+    },
+    {
+      "slug": "submarina",
+      "name": "submarina",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/submarina.json",
+      "txt": "programs/mk61/submarina.txt"
+    },
+    {
+      "slug": "tamagotchi",
+      "name": "Tamagotchi",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 93,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 71: О; шагов 93 из 105; адрес 52 стоит на месте 51"
+    },
+    {
+      "slug": "termodirizhabl",
+      "name": "termodirizhabl",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 92,
+      "status": "не разобрано",
+      "reason": "шагов 92 из 105"
+    },
+    {
+      "slug": "trenazher-dlya-letchikov-gaishtut-1988",
+      "name": "Тренажер для летчиков",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 35,
+      "status": "не разобрано",
+      "reason": "шагов 35 из 105"
+    },
+    {
+      "slug": "trenazher-dlya-letchikov-renat-notebook-2",
+      "name": "ТРЕНАЖЁР ДЛЯ ЛЁТЧИКОВ",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 35,
+      "status": "не разобрано",
+      "reason": "шагов 35 из 105"
+    },
+    {
+      "slug": "uchebnyy-polyot-bez-ucheta-topliva",
+      "name": "Учебный полет — Вариант без учета топлива",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "uchebnyy-polyot-modernized",
+      "name": "Учебный полёт — редакция Храмова",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/uchebnyy-polyot-modernized.json",
+      "txt": "programs/mk61/uchebnyy-polyot-modernized.txt"
+    },
+    {
+      "slug": "uchebnyy-polyot-s-uchetom-topliva",
+      "name": "Учебный полет — Вариант с учетом топлива",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/uchebnyy-polyot-s-uchetom-topliva.json",
+      "txt": "programs/mk61/uchebnyy-polyot-s-uchetom-topliva.txt"
+    },
+    {
+      "slug": "uchebnyy-polyot",
+      "name": "uchebnyy polyot",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 100,
+      "status": "не разобрано",
+      "reason": "шагов 100 из 105"
+    },
+    {
+      "slug": "upravlenie-raketoy-c3000",
+      "name": "Управление ракетой",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 77,
+      "status": "не разобрано",
+      "reason": "шагов 77 из 105"
+    },
+    {
+      "slug": "urozhay-ekstensivnaya-model",
+      "name": "urozhay",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/urozhay-ekstensivnaya-model.json",
+      "txt": "programs/mk61/urozhay-ekstensivnaya-model.txt"
+    },
+    {
+      "slug": "urozhay-intensivnaya-model",
+      "name": "urozhay",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/urozhay-intensivnaya-model.json",
+      "txt": "programs/mk61/urozhay-intensivnaya-model.txt"
+    },
+    {
+      "slug": "vertol-2",
+      "name": "Vertol-2",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 100,
+      "status": "не разобрано",
+      "reason": "шагов 100 из 105"
+    },
+    {
+      "slug": "vertol-2d",
+      "name": "Vertol-2D",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "vertol-3",
+      "name": "Vertol-3",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 91,
+      "status": "не разобрано",
+      "reason": "шагов 91 из 105; адрес 10 стоит на месте 0"
+    },
+    {
+      "slug": "vertol",
+      "name": "Vertol",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 101,
+      "status": "не разобрано",
+      "reason": "шагов 101 из 105"
+    },
+    {
+      "slug": "videosalon",
+      "name": "videosalon",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/videosalon.json",
+      "txt": "programs/mk61/videosalon.txt"
+    },
+    {
+      "slug": "virus-lordbss",
+      "name": "virus",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "шагов 103 из 105"
+    },
+    {
+      "slug": "virus",
+      "name": "Virus",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/virus.json",
+      "txt": "programs/mk61/virus.txt"
+    },
+    {
+      "slug": "vostok-1-atmosphere",
+      "name": "Восток-1: Атмосфера",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/vostok-1-atmosphere.json",
+      "txt": "programs/mk61/vostok-1-atmosphere.txt"
+    },
+    {
+      "slug": "vostok-1-carrier",
+      "name": "Восток-1: Ракета-Носитель",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/vostok-1-carrier.json",
+      "txt": "programs/mk61/vostok-1-carrier.txt"
+    },
+    {
+      "slug": "vozhdenie-avtomobilya-c3000",
+      "name": "Вождение автомобиля",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 74,
+      "status": "не разобрано",
+      "reason": "шагов 74 из 105"
+    },
+    {
+      "slug": "vysshie-morekhodnye-kursy-c3000",
+      "name": "Высшие мореходные курсы",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 46,
+      "status": "не разобрано",
+      "reason": "шагов 46 из 105"
+    },
+    {
+      "slug": "yadernyy-reaktor",
+      "name": "yadernyy reaktor",
+      "model": "МК-61",
+      "section": "simulation",
+      "steps": 92,
+      "status": "не разобрано",
+      "reason": "шагов 92 из 105"
+    },
+    {
+      "slug": "zond-earth-moon",
+      "name": "Зонд: Земля — Луна",
+      "model": "mk61",
+      "section": "simulation",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/zond-earth-moon.json",
+      "txt": "programs/mk61/zond-earth-moon.txt"
+    },
+    {
+      "slug": "arctic-race-ii-dolgushin-notebook",
+      "name": "ARCTIC RACE II",
+      "model": "mk61",
+      "section": "sports",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/arctic-race-ii-dolgushin-notebook.json",
+      "txt": "programs/mk61/arctic-race-ii-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "avtogonki-po-pryamoy-c3000",
+      "name": "Автогонки по прямой",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 44,
+      "status": "не разобрано",
+      "reason": "шагов 44 из 105"
+    },
+    {
+      "slug": "avtogonki-renat-notebook-2",
+      "name": "АВТОГОНКИ",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 55,
+      "status": "не разобрано",
+      "reason": "шагов 55 из 105"
+    },
+    {
+      "slug": "avtogonki",
+      "name": "avtogonki",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 60,
+      "status": "не разобрано",
+      "reason": "шагов 60 из 105"
+    },
+    {
+      "slug": "avtoprobeg-c3000",
+      "name": "Автопробег",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 29,
+      "status": "не разобрано",
+      "reason": "шагов 29 из 105"
+    },
+    {
+      "slug": "avtoprobeg-dolgushin-notebook",
+      "name": "Автопробег",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 30,
+      "status": "не разобрано",
+      "reason": "шагов 30 из 105"
+    },
+    {
+      "slug": "avtoralli-1-gaishtut-1988",
+      "name": "Авторалли-1",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "avtoralli-2-gaishtut-1988",
+      "name": "Авторалли-2",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 74,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 52: К 2; шагов 74 из 105"
+    },
+    {
+      "slug": "badminton",
+      "name": "badminton",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 71,
+      "status": "не разобрано",
+      "reason": "шагов 71 из 105"
+    },
+    {
+      "slug": "biatlon",
+      "name": "biatlon",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 92,
+      "status": "не разобрано",
+      "reason": "шагов 92 из 105"
+    },
+    {
+      "slug": "billiard-gaishtut-1988",
+      "name": "Биллиард",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 70,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 51: К 2; шагов 70 из 105"
+    },
+    {
+      "slug": "boks-2",
+      "name": "boks-2",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 88,
+      "status": "не разобрано",
+      "reason": "шагов 88 из 105"
+    },
+    {
+      "slug": "boxing",
+      "name": "Boxing",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 67,
+      "status": "не разобрано",
+      "reason": "шагов 67 из 105"
+    },
+    {
+      "slug": "camel-trophy",
+      "name": "Camel Trophy",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 102,
+      "status": "не разобрано",
+      "reason": "шагов 102 из 105"
+    },
+    {
+      "slug": "detskiy-billiard-gaishtut-1988",
+      "name": "Детский бильярд",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 66,
+      "status": "не разобрано",
+      "reason": "шагов 66 из 105"
+    },
+    {
+      "slug": "elektronnye-gorodki-gaishtut-1988",
+      "name": "Электронные городки",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 84,
+      "status": "не разобрано",
+      "reason": "шагов 84 из 105"
+    },
+    {
+      "slug": "elektronnye-gorodki",
+      "name": "elektronnye gorodki",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "fifa-2001-taktic-game-dolgushin-notebook-2",
+      "name": "FIFA 2001 TAKTIC GAME",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 63: КПЧ5 | не разобрано на 70: К^ | не разобрано на 87: КПЧ4 | ============================================================ | Программа 2: 33333333 хП0 | Исходные данные | -------------- | В режиме F АВТ ввести: | 33333333 хП0 | Шагов: 1 из 105 | Перед пуском: регистры задавать не нужно | Листинг: | адрес  hex  dec  команда | 80     41   065  хП1 | ============================================================ | Программа 3: 88880888 В↑ 87720277 К∨ хП7 | 800111 хП3 | 0 хП4 | 0 хП5 | 6 хП6 | 88880888 В↑ 87720277 К∨ хП7 | Шагов: 1 из 105 | Перед пуском: регистры задавать не нужно | Листинг: | адрес  hex  dec  команда | 21     48   072  хП8 | ============================================================ | Программа 4: КСЧ хПС | 8808 В↑ 840505 К∨ К{} ВП 5 хП9 | 0,07 хПA | 85557555 КИНВ хПВ | КСЧ хПС | Шагов: 1 из 105 | Перед пуском: регистры задавать не нужно | Листинг: | адрес  hex  dec  команда | 93     4D   077  хПd | ============================================================ | Программа 5: Ввести | 800058 КИНВ хПE | Запуск: ВО, С/П. | Возможные ситуации после запуска | ------------------------------- | 1. Противник развел мяч: на экране \"8  -1\". | 2. Вы развели мяч: на экране поле, например \"8.  Г ЕСГ\". | Поле PLAYER/CPU со страницы 27 | ----------------------------- | PLAYER | ┌───────────────────┐ 12 | │      ┌─────┐      │ 11 | │      │░░░░░│      │ 10 | │      └─────┘      │  9 | │                   │  8 | │                   │  7 | ├─────────○─────────┤  6 | │                   │  5 | │                   │  4 | │                   │  3 | │                   │  2 | │      ┌─────┐      │  1 | │      │░░░░░│      │  0 | └───────────────────┘ | CPU | Сектора считаются снизу вверх: 0 - возле ворот CPU, 12 - возле ворот PLAYER, 6 - центр поля. | Пример экрана: \"8.  Г ЕСГ\". | Г - ваши футболисты. | Е - футболисты противника. | С - ваши футболисты, накрытые футболистами противника. | Вид из глаз со страницы 27 | ------------------------- | На странице отдельно зарисован вид от первого лица: сверху пример индикатора, снизу перспективный вид поля. | Индикатор: | ┌────────────────────────────┐ | │ 8        ГГ          E     │ | └────────────────────────────┘ | Вид из глаз: | ┌════════════════════════════┐ | │░░╲                      ╱░░│ | │░░░╲                    ╱░░░│ | │    ╲      🧍🧍     🏃   ╱    │ | │     ╲________________╱     │ | └────────────────────────────┘ | 🧍🧍 - ваши игроки, стоят вместе слева. | 🏃 - игрок противника справа. | Ваше владение мячом | ------------------ | Если вы развели мяч, можно: | 0 С/П - побежать прямо, к воротам противника. | /-/ 1 С/П - дать пас. | 1 С/П - ударить по воротам противника. | Если на пути нет противника, можно бежать прямо. Если кто-то есть на пути, можно дать пас; мяч останется в том же секторе. Можно также ударить по воротам противника из любого сектора. Если вы далеко от ворот, мяч может попасть к футболисту противника, и на экране будет \"8  -1\". | Если вы забили гол, на экране ваши очки. Нажать С/П, и вратарь противника выбьет мяч. | Владение противника | ------------------ | Если противник ведет мяч, на экране \"8  -1\". Можно: | 1 С/П - обвести противника. | 0 С/П - выбить у противника мяч. | Выбить мяч немного легче, но он может снова попасть к противнику. | Пасовать можно сколько угодно раз, но нужно следить за временем тайма. | Символы | ------ | \"8.  -0-\" - вратарь противника взял мяч. | \"COГОС\" - конец тайма. | \"8.---8---\" - вратарь поймал мяч. | \"8.   -7   \" - противник ведет мяч. | \"ЕГГОГ\" - мяч ушел за пределы поля. Для продолжения: 0 х-П6, ВО, С/П. | Регистры | ------- | П-х4 - ваши очки. | П-х5 - очки противника. | П-х6 - сектор, в котором находится мяч. | П-х1 - время до конца тайма. | После таймаута | ------------- | Ввести: | Шагов: 1 из 105 | Перед пуском: регистры задавать не нужно | Листинг: | адрес  hex  dec  команда | 80     41   065  хП1 | ============================================================ | Программа 6: Адрес\tКод\tЧто станет | 6 хП6 | ВО, С/П | Это запускает следующий тайм. | Коды | --- | Адрес\tКод\tЧто станет | Шагов: 5 из 105 | Перед пуском: регистры задавать не нужно | Листинг: | адрес  hex  dec  команда | 26     00   000  3 противник слабее | 34     00   000  4 противник сильнее | 54     00   000  2 противник слабее | 70     00   000  0 у вас супер-футболисты | 80     00   000  0 вратарь противника слабее | не разобрано на 26: 3 противник слабее | не разобрано на 54: 2 противник слабее | не разобрано на 34: 4 противник сильнее | не разобрано на 80: 0 вратарь противника слабее | не разобрано на 70: 0 у вас супер-футболисты | Карточка из источника (до листинга): | FIFA 2001 TAKTIC GAME | ===================== | Источник: https://vk.com/wall-115251268_126; ручная перепечатка пользователя из второй тетради Александра Долгушина \"Мои игры МК-61\", страница 27 | Номер в тетради: 60 | Автор: Александр Долгушин | Дата: 12.10.2001 | Листинг | ------ | Описание и примечания источника (после листинга): | Примечания к записи | ------------------ | В исходной перепечатке переход по адресу 85 записан как \"-2\"; здесь он нормализован как A2. | Команды \"КПЧ5\" и \"КПЧ4\" оставлены буквально по перепечатке пользователя. | Адреса после 99 нормализованы как A0-A3.; шагов 104 из 105"
+    },
+    {
+      "slug": "formula-1-dolgushin-notebook",
+      "name": "FORMULA-1",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "futbol-vratar-dolgushin-notebook",
+      "name": "Футбол",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 102,
+      "status": "не разобрано",
+      "reason": "шагов 102 из 105"
+    },
+    {
+      "slug": "futbol",
+      "name": "futbol",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 40: Z | не разобрано на 72: Y"
+    },
+    {
+      "slug": "futbolnyy-match",
+      "name": "Футбольный матч",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 62,
+      "status": "не разобрано",
+      "reason": "шагов 62 из 105"
+    },
+    {
+      "slug": "gigantskiy-slalom-c3000",
+      "name": "Гигантский слалом",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 66,
+      "status": "не разобрано",
+      "reason": "шагов 66 из 105"
+    },
+    {
+      "slug": "gonka-cherepakhi-ulitki-i-mnogonozhki-romanovskis-1987",
+      "name": "Гонка черепахи, улитки и многоножки",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "шагов 103 из 105"
+    },
+    {
+      "slug": "gonki-na-aerosanyakh-renat-notebook",
+      "name": "Гонки на аэросанях",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 82,
+      "status": "не разобрано",
+      "reason": "шагов 82 из 105"
+    },
+    {
+      "slug": "gonki-na-zimnem-ozere-brp4",
+      "name": "Гонки на зимнем озере — БРП-4",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 91,
+      "status": "не разобрано",
+      "reason": "шагов 91 из 105"
+    },
+    {
+      "slug": "gonki-na-zimnem-ozere",
+      "name": "gonki na zimnem ozere",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "шагов 94 из 105"
+    },
+    {
+      "slug": "gonki-po-krugovomu-treku-c3000",
+      "name": "Гонки по круговому треку",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 69,
+      "status": "не разобрано",
+      "reason": "шагов 69 из 105"
+    },
+    {
+      "slug": "gonki-po-pryamoy-na-katerakh-c3000",
+      "name": "Гонки по прямой на катерах",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 25,
+      "status": "не разобрано",
+      "reason": "шагов 25 из 105"
+    },
+    {
+      "slug": "gonki-s-prepyatstviyami-c3000",
+      "name": "Гонки с препятствиями",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 42,
+      "status": "не разобрано",
+      "reason": "шагов 42 из 105"
+    },
+    {
+      "slug": "horses-race-dolgushin-notebook",
+      "name": "HORSES RACE",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 86,
+      "status": "не разобрано",
+      "reason": "шагов 86 из 105"
+    },
+    {
+      "slug": "karate-2",
+      "name": "karate-2",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 90,
+      "status": "не разобрано",
+      "reason": "шагов 90 из 105"
+    },
+    {
+      "slug": "karate-m",
+      "name": "karate-m",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 80,
+      "status": "не разобрано",
+      "reason": "шагов 80 из 105"
+    },
+    {
+      "slug": "karate-xm",
+      "name": "karate-XM",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 77,
+      "status": "не разобрано",
+      "reason": "шагов 77 из 105"
+    },
+    {
+      "slug": "karate",
+      "name": "karate",
+      "model": "mk61",
+      "section": "sports",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/karate.json",
+      "txt": "programs/mk61/karate.txt"
+    },
+    {
+      "slug": "kaskadyor",
+      "name": "kaskadyor",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "шагов 94 из 105; адрес 10 стоит на месте 0"
+    },
+    {
+      "slug": "kendo",
+      "name": "kendo",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 92,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 14: А; шагов 92 из 105"
+    },
+    {
+      "slug": "mikrovoleybol-1-gaishtut-1988",
+      "name": "Микроволейбол-1",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 91,
+      "status": "не разобрано",
+      "reason": "шагов 91 из 105"
+    },
+    {
+      "slug": "mikrovoleybol-2-gaishtut-1988",
+      "name": "Микроволейбол-2",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 95,
+      "status": "не разобрано",
+      "reason": "шагов 95 из 105"
+    },
+    {
+      "slug": "moto",
+      "name": "moto",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 80,
+      "status": "не разобрано",
+      "reason": "шагов 80 из 105"
+    },
+    {
+      "slug": "new-rally",
+      "name": "New Rally",
+      "model": "mk61",
+      "section": "sports",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/new-rally.json",
+      "txt": "programs/mk61/new-rally.txt"
+    },
+    {
+      "slug": "nochnaya-trassa",
+      "name": "Ночная трасса",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105; адрес 11 стоит на месте 10"
+    },
+    {
+      "slug": "obgon",
+      "name": "obgon",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "parusnaya-regata-c3000",
+      "name": "Парусная регата",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 28,
+      "status": "не разобрано",
+      "reason": "шагов 28 из 105"
+    },
+    {
+      "slug": "popast-v-tsel-gaishtut-1988",
+      "name": "Попасть в цель",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 41,
+      "status": "не разобрано",
+      "reason": "шагов 41 из 105"
+    },
+    {
+      "slug": "professional-box",
+      "name": "Professional Box",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "ralli-na-regulyarnost-romanovskis-1987",
+      "name": "Ралли на регулярность",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 100,
+      "status": "не разобрано",
+      "reason": "шагов 100 из 105"
+    },
+    {
+      "slug": "ralli-novye-trassy-romanovskis-1987",
+      "name": "Ралли на регулярность — новые трассы",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "rally",
+      "name": "Rally",
+      "model": "mk61",
+      "section": "sports",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/rally.json",
+      "txt": "programs/mk61/rally.txt"
+    },
+    {
+      "slug": "regata",
+      "name": "Регата",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 91,
+      "status": "не разобрано",
+      "reason": "шагов 91 из 105"
+    },
+    {
+      "slug": "rybalka",
+      "name": "rybalka",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "sailing-regatta",
+      "name": "Sailing Regatta",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 57,
+      "status": "не разобрано",
+      "reason": "шагов 57 из 105"
+    },
+    {
+      "slug": "ski-98-dolgushin-notebook",
+      "name": "SKi-'98",
+      "model": "mk61",
+      "section": "sports",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/ski-98-dolgushin-notebook.json",
+      "txt": "programs/mk61/ski-98-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "smeshannyy-marafon-dolgushin-notebook",
+      "name": "Смешанный марафон",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 36,
+      "status": "не разобрано",
+      "reason": "шагов 36 из 105"
+    },
+    {
+      "slug": "soccer-manager-dolgushin-notebook",
+      "name": "SOCCER MANAGER",
+      "model": "mk61",
+      "section": "sports",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/soccer-manager-dolgushin-notebook.json",
+      "txt": "programs/mk61/soccer-manager-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "sorevnovanie-yunykh-kartingistov-1-gaishtut-1988",
+      "name": "Соревнование юных картингистов-1",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "sorevnovanie-yunykh-kartingistov-2-gaishtut-1988",
+      "name": "Соревнование юных картингистов-2",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 95,
+      "status": "не разобрано",
+      "reason": "шагов 95 из 105"
+    },
+    {
+      "slug": "strelba-v-tsel-iz-luka-gaishtut-1988",
+      "name": "Стрельба в цель из лука",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 63,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 41: К 2 | не разобрано на 44: К 2; шагов 63 из 105"
+    },
+    {
+      "slug": "supertrassa",
+      "name": "supertrassa",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 94,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 59: ный | не разобрано на 60: бл | не разобрано на 61: ок; шагов 94 из 105; адрес 59 стоит на месте 58"
+    },
+    {
+      "slug": "tolkanie-yadra-romanovsky-1989",
+      "name": "Толкание ядра",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 40,
+      "status": "не разобрано",
+      "reason": "шагов 40 из 105"
+    },
+    {
+      "slug": "trassa",
+      "name": "trassa",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 102,
+      "status": "не разобрано",
+      "reason": "шагов 102 из 105"
+    },
+    {
+      "slug": "turboslalom",
+      "name": "Turboslalom",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 83,
+      "status": "не разобрано",
+      "reason": "шагов 83 из 105"
+    },
+    {
+      "slug": "virtua-soccer-dolgushin-notebook",
+      "name": "VIRTUA SOCCER",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 03: K√"
+    },
+    {
+      "slug": "volvo",
+      "name": "volvo",
+      "model": "mk61",
+      "section": "sports",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/volvo.json",
+      "txt": "programs/mk61/volvo.txt"
+    },
+    {
+      "slug": "vratar",
+      "name": "vratar",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 102,
+      "status": "не разобрано",
+      "reason": "шагов 102 из 105"
+    },
+    {
+      "slug": "yakhta-erichware",
+      "name": "Яхта",
+      "model": "МК-61",
+      "section": "sports",
+      "steps": 50,
+      "status": "не разобрано",
+      "reason": "шагов 50 из 105"
+    },
+    {
+      "slug": "zhokey",
+      "name": "zhokey",
+      "model": "mk61",
+      "section": "sports",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/zhokey.json",
+      "txt": "programs/mk61/zhokey.txt"
+    },
+    {
+      "slug": "agressiya",
+      "name": "agressiya",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105"
+    },
+    {
+      "slug": "armageddon-man-dolgushin-notebook",
+      "name": "ARMAGEDDON MAN",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/armageddon-man-dolgushin-notebook.json",
+      "txt": "programs/mk61/armageddon-man-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "ataka-erichware",
+      "name": "Атака",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "bastion",
+      "name": "Бастион",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 65,
+      "status": "не разобрано",
+      "reason": "шагов 65 из 105"
+    },
+    {
+      "slug": "beregovaya-oborona-gaishtut-1988",
+      "name": "Береговая оборона",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 63,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 54: К 2; шагов 63 из 105"
+    },
+    {
+      "slug": "bitva-3",
+      "name": "Bitva-3",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 10: Fx>0 | не разобрано на 29: Fx>0 | не разобрано на 32: 3ВП | не разобрано на 46: N | не разобрано на 78: Fx>0 | не разобрано на 83: Fx>0 | не разобрано на 99: И"
+    },
+    {
+      "slug": "bitva-4",
+      "name": "bitva-4",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 10: ный | не разобрано на 11: Б | не разобрано на 12: Л | не разобрано на 13: О | не разобрано на 14: К | не разобрано на 26: H | не разобрано на 48: П | не разобрано на −0: И; шагов 104 из 105; адрес 10 стоит на месте 9"
+    },
+    {
+      "slug": "bitva-kei-1988",
+      "name": "Bitva: KEI Variant",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 12: Fx>0 | не разобрано на 42: 3ВП | не разобрано на 85: Кx>00 | не разобрано на 90: Fx>0 | не разобрано на 94: Fo | не разобрано на 95: Fo; шагов 98 из 105"
+    },
+    {
+      "slug": "bitva-pshennik",
+      "name": "Bitva: Pshennik Variant",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 88,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 21: Fx>0 | не разобрано на 47: Fx>0 | не разобрано на 53: Fx>0; шагов 88 из 105"
+    },
+    {
+      "slug": "blokada",
+      "name": "blokada",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "dark-empire-dolgushin-notebook",
+      "name": "DARK EMPIRE",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/dark-empire-dolgushin-notebook.json",
+      "txt": "programs/mk61/dark-empire-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "dune-ii-3d-rus-dolgushin-notebook",
+      "name": "DUNE II 3D RUS",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/dune-ii-3d-rus-dolgushin-notebook.json",
+      "txt": "programs/mk61/dune-ii-3d-rus-dolgushin-notebook.txt"
+    },
+    {
+      "slug": "dune-ii-dolgushin-notebook",
+      "name": "Dune II",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "dune-iii-no-fate-dolgushin-notebook",
+      "name": "DUNE III: NO FATE",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 47: K√"
+    },
+    {
+      "slug": "i-c-p",
+      "name": "I.C.P.",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "korolevstvo",
+      "name": "korolevstvo",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "matrichnaya-igra-gruzman-1989",
+      "name": "Матричная игра n×n",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 16,
+      "status": "не разобрано",
+      "reason": "шагов 16 из 105"
+    },
+    {
+      "slug": "monopoliya",
+      "name": "monopoliya",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/monopoliya.json",
+      "txt": "programs/mk61/monopoliya.txt"
+    },
+    {
+      "slug": "morskoe-srazhenie-c3000",
+      "name": "Морское сражение",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 77,
+      "status": "не разобрано",
+      "reason": "шагов 77 из 105"
+    },
+    {
+      "slug": "morskoy-boy-1-kibernetika-1986",
+      "name": "Морской бой I",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 95,
+      "status": "не разобрано",
+      "reason": "шагов 95 из 105"
+    },
+    {
+      "slug": "morskoy-boy-2-kibernetika-1986",
+      "name": "Морской бой II",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 65,
+      "status": "не разобрано",
+      "reason": "шагов 65 из 105"
+    },
+    {
+      "slug": "morskoy-boy-dolgushin-bloknot",
+      "name": "Морской бой",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 88,
+      "status": "не разобрано",
+      "reason": "шагов 88 из 105"
+    },
+    {
+      "slug": "morskoy-boy-gaishtut-1988",
+      "name": "Морской бой",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 55,
+      "status": "не разобрано",
+      "reason": "шагов 55 из 105"
+    },
+    {
+      "slug": "morskoy-boy-igra-erichware",
+      "name": "Морской бой: игра",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 63,
+      "status": "не разобрано",
+      "reason": "шагов 63 из 105"
+    },
+    {
+      "slug": "morskoy-boy-rasstanovka-erichware",
+      "name": "Морской бой: расстановка",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 84,
+      "status": "не разобрано",
+      "reason": "шагов 84 из 105"
+    },
+    {
+      "slug": "morskoy-boy-srazhenie-erichware",
+      "name": "Сражение",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "morskoy-boy-xvadim",
+      "name": "morskoy boy",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/morskoy-boy-xvadim.json",
+      "txt": "programs/mk61/morskoy-boy-xvadim.txt"
+    },
+    {
+      "slug": "naval-battle",
+      "name": "Naval Battle",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 42: Б/К"
+    },
+    {
+      "slug": "neulovimaya-podvodnaya-lodka-gaishtut-1988",
+      "name": "Неуловимая подводная лодка",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 47,
+      "status": "не разобрано",
+      "reason": "шагов 47 из 105"
+    },
+    {
+      "slug": "nochnoy-boy",
+      "name": "Ночной бой",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/nochnoy-boy.json",
+      "txt": "programs/mk61/nochnoy-boy.txt"
+    },
+    {
+      "slug": "obnaruzhit-i-unichtozhit-lineynyy-korabl-gaishtut-1988",
+      "name": "Обнаружить и уничтожить линейный корабль",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 59,
+      "status": "не разобрано",
+      "reason": "шагов 59 из 105"
+    },
+    {
+      "slug": "polyot-v-sozvezdie-chyornykh-dyr",
+      "name": "polyot v sozvezdie chyornykh dyr",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 68,
+      "status": "не разобрано",
+      "reason": "шагов 68 из 105"
+    },
+    {
+      "slug": "potopi-korabl-dolgushin-notebook",
+      "name": "Потопи корабль",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 96,
+      "status": "не разобрано",
+      "reason": "шагов 96 из 105"
+    },
+    {
+      "slug": "potopi-korabl-gruzman-1989",
+      "name": "Потопи корабль",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 83,
+      "status": "не разобрано",
+      "reason": "шагов 83 из 105; адрес 50 стоит на месте 47"
+    },
+    {
+      "slug": "sea-battle",
+      "name": "Морской бой",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 102,
+      "status": "не разобрано",
+      "reason": "шагов 102 из 105"
+    },
+    {
+      "slug": "spartak",
+      "name": "spartak",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 103,
+      "status": "не разобрано",
+      "reason": "шагов 103 из 105"
+    },
+    {
+      "slug": "strategicheskaya-bombardirovka",
+      "name": "strategicheskaya bombardirovka",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 102,
+      "status": "не разобрано",
+      "reason": "шагов 102 из 105"
+    },
+    {
+      "slug": "tank-battle",
+      "name": "Бой с танком",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/tank-battle.json",
+      "txt": "programs/mk61/tank-battle.txt"
+    },
+    {
+      "slug": "tankovaya-ataka-c3000",
+      "name": "Танковая атака",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 23,
+      "status": "не разобрано",
+      "reason": "шагов 23 из 105"
+    },
+    {
+      "slug": "tankovaya-ataka-gaishtut-1988",
+      "name": "Танковая атака",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "tankovaya-ataka-renat-notebook-2",
+      "name": "ТАНКОВАЯ АТАКА",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 71: КПЧ9 | не разобрано на 72: F круг | не разобрано на 73: F круг; шагов 98 из 105"
+    },
+    {
+      "slug": "tankovaya-bataliya-matematicheskiy-boy",
+      "name": "Танковая баталия — математический бой",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/tankovaya-bataliya-matematicheskiy-boy.json",
+      "txt": "programs/mk61/tankovaya-bataliya-matematicheskiy-boy.txt"
+    },
+    {
+      "slug": "tankovaya-bataliya-realnyy-boy",
+      "name": "Танковая баталия — реальный бой",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/tankovaya-bataliya-realnyy-boy.json",
+      "txt": "programs/mk61/tankovaya-bataliya-realnyy-boy.txt"
+    },
+    {
+      "slug": "torpednaya-ataka-brp4",
+      "name": "Торпедная атака — БРП-4, исправленная версия",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/torpednaya-ataka-brp4.json",
+      "txt": "programs/mk61/torpednaya-ataka-brp4.txt"
+    },
+    {
+      "slug": "torpednaya-ataka-dolgushin-notebook",
+      "name": "Торпедная атака",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 46,
+      "status": "не разобрано",
+      "reason": "шагов 46 из 105"
+    },
+    {
+      "slug": "unichtozhit-lineynyy-korabl-dolgushin-notebook",
+      "name": "Уничтожить линейный корабль",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 34,
+      "status": "не разобрано",
+      "reason": "шагов 34 из 105"
+    },
+    {
+      "slug": "viking-intervent",
+      "name": "viking-intervent",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/viking-intervent.json",
+      "txt": "programs/mk61/viking-intervent.txt"
+    },
+    {
+      "slug": "viking-korol",
+      "name": "viking-korol",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/viking-korol.json",
+      "txt": "programs/mk61/viking-korol.txt"
+    },
+    {
+      "slug": "viking-zavoevatel",
+      "name": "viking-zavoevatel",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "vpered-i-vverkh-gruzman-1989",
+      "name": "Вперёд и вверх",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 97,
+      "status": "не разобрано",
+      "reason": "шагов 97 из 105; адрес 70 стоит на месте 68"
+    },
+    {
+      "slug": "zashchita-ot-napadeniya",
+      "name": "zashchita ot napadeniya",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "zashchitnik-2",
+      "name": "zashchitnik-2",
+      "model": "МК-61",
+      "section": "strategy",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105"
+    },
+    {
+      "slug": "zashchitnik-3",
+      "name": "zashchitnik-3",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/zashchitnik-3.json",
+      "txt": "programs/mk61/zashchitnik-3.txt"
+    },
+    {
+      "slug": "zashchitnik",
+      "name": "zashchitnik",
+      "model": "mk61",
+      "section": "strategy",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/zashchitnik.json",
+      "txt": "programs/mk61/zashchitnik.txt"
+    },
+    {
+      "slug": "annuity-loan-serge4mk",
+      "name": "raschet annuitetnogo kredita",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 67,
+      "status": "не разобрано",
+      "reason": "шагов 67 из 105"
+    },
+    {
+      "slug": "balanced-ternary-converter",
+      "name": "Balanced Ternary Converter",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 101,
+      "status": "не разобрано",
+      "reason": "шагов 101 из 105"
+    },
+    {
+      "slug": "calendar-past-future",
+      "name": "Calendar for the Past and the Future",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 104,
+      "status": "не разобрано",
+      "reason": "шагов 104 из 105; адрес 57 стоит на месте 56"
+    },
+    {
+      "slug": "clock",
+      "name": "Программа-часы",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 63,
+      "status": "не разобрано",
+      "reason": "шагов 63 из 105"
+    },
+    {
+      "slug": "data-i-ritmy-dolgushin-bloknot",
+      "name": "ДАТА и РИТМЫ",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 101,
+      "status": "не разобрано",
+      "reason": "шагов 101 из 105"
+    },
+    {
+      "slug": "e-94-digits",
+      "name": "94 цифры числа e",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 61,
+      "status": "не разобрано",
+      "reason": "шагов 61 из 105; адрес 30 стоит на месте 29"
+    },
+    {
+      "slug": "easter-date-passover-alt",
+      "name": "Easter Date Helper (Ascension and Pentecost)",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 44,
+      "status": "не разобрано",
+      "reason": "шагов 44 из 105"
+    },
+    {
+      "slug": "easter-date-passover",
+      "name": "Easter Date (Orthodox, Primary)",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 98,
+      "status": "не разобрано",
+      "reason": "шагов 98 из 105"
+    },
+    {
+      "slug": "generator-sluchaynykh-chisel-romanovsky-1989",
+      "name": "Генератор случайных чисел",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 27,
+      "status": "не разобрано",
+      "reason": "шагов 27 из 105; адрес 70 стоит на месте 0"
+    },
+    {
+      "slug": "kalendar-xx-stoletiya-romanovsky-1989",
+      "name": "Календарь XX столетия",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 75,
+      "status": "не разобрано",
+      "reason": "шагов 75 из 105"
+    },
+    {
+      "slug": "kvur-quadratic-no-register",
+      "name": "Quadratic Equation Solver without Registers (MK61/52)",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 25,
+      "status": "не разобрано",
+      "reason": "замечания: не разобрано на 08: FѺ | не разобрано на 09: FѺ; шагов 25 из 105"
+    },
+    {
+      "slug": "kvur-quadratic-register",
+      "name": "Quadratic Equation Solver with Registers (MK61/52)",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 26,
+      "status": "не разобрано",
+      "reason": "шагов 26 из 105"
+    },
+    {
+      "slug": "ploshchad-tela-cheloveka-romanovsky-1989",
+      "name": "Площадь тела человека",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 23,
+      "status": "не разобрано",
+      "reason": "шагов 23 из 105"
+    },
+    {
+      "slug": "put-tormozheniya-romanovsky-1989",
+      "name": "Путь торможения",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 28,
+      "status": "не разобрано",
+      "reason": "шагов 28 из 105"
+    },
+    {
+      "slug": "raspisanie-vstrech-krugovogo-turnira-renat-notebook",
+      "name": "Составление расписания встреч M участников кругового турнира",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 25,
+      "status": "не разобрано",
+      "reason": "шагов 25 из 105"
+    },
+    {
+      "slug": "rasstoyanie-mezhdu-gorodami-romanovsky-1989",
+      "name": "Расстояние между городами",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 67,
+      "status": "не разобрано",
+      "reason": "шагов 67 из 105"
+    },
+    {
+      "slug": "razorvannaya-kniga",
+      "name": "Задача о разорванной книге",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 24,
+      "status": "не разобрано",
+      "reason": "шагов 24 из 105"
+    },
+    {
+      "slug": "reshenie-kvadratnogo-uravneniya",
+      "name": "reshenie kvadratnogo uravneniya",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 26,
+      "status": "не разобрано",
+      "reason": "шагов 26 из 105"
+    },
+    {
+      "slug": "scetovod",
+      "name": "Счетовод",
+      "model": "mk61",
+      "section": "utilities",
+      "steps": 105,
+      "status": "готово",
+      "json": "programs/mk61/scetovod.json",
+      "txt": "programs/mk61/scetovod.txt"
+    },
+    {
+      "slug": "sekundomer-renat-notebook",
+      "name": "Секундомер",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 8,
+      "status": "не разобрано",
+      "reason": "шагов 8 из 105"
+    },
+    {
+      "slug": "srednyaya-ploshchad-krugov-kibernetika-1986",
+      "name": "Определение средней площади кругов",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 17,
+      "status": "не разобрано",
+      "reason": "шагов 17 из 105"
+    },
+    {
+      "slug": "sum-cubes-formula-gaishtut-1988",
+      "name": "Сумма кубов, 2-й способ",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 7,
+      "status": "не разобрано",
+      "reason": "шагов 7 из 105"
+    },
+    {
+      "slug": "sum-cubes-iterative-gaishtut-1988",
+      "name": "Сумма кубов, 1-й способ",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 10,
+      "status": "не разобрано",
+      "reason": "шагов 10 из 105"
+    },
+    {
+      "slug": "sum-natural-formula-gaishtut-1988",
+      "name": "Сумма 1+2+...+n, 2-й способ",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 8,
+      "status": "не разобрано",
+      "reason": "шагов 8 из 105"
+    },
+    {
+      "slug": "sum-natural-iterative-gaishtut-1988",
+      "name": "Сумма 1+2+...+n, 1-й способ",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 7,
+      "status": "не разобрано",
+      "reason": "шагов 7 из 105"
+    },
+    {
+      "slug": "sum-squares-formula-gaishtut-1988",
+      "name": "Сумма квадратов, 2-й способ",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 12,
+      "status": "не разобрано",
+      "reason": "шагов 12 из 105"
+    },
+    {
+      "slug": "sum-squares-iterative-gaishtut-1988",
+      "name": "Сумма квадратов, 1-й способ",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 8,
+      "status": "не разобрано",
+      "reason": "шагов 8 из 105"
+    },
+    {
+      "slug": "triangle-side-two-adjacent-angles-gaishtut-1988",
+      "name": "Решение треугольника по стороне и двум прилежащим углам",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 34,
+      "status": "не разобрано",
+      "reason": "шагов 34 из 105"
+    },
+    {
+      "slug": "triangle-three-sides-gaishtut-1988",
+      "name": "Решение треугольника по трем сторонам",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 44,
+      "status": "не разобрано",
+      "reason": "шагов 44 из 105"
+    },
+    {
+      "slug": "triangle-two-sides-included-angle-gaishtut-1988",
+      "name": "Решение треугольника по двум сторонам и углу между ними",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 44,
+      "status": "не разобрано",
+      "reason": "шагов 44 из 105"
+    },
+    {
+      "slug": "triangle-two-sides-opposite-angle-gaishtut-1988",
+      "name": "Решение треугольника по двум сторонам и углу против одной из них",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 32,
+      "status": "не разобрано",
+      "reason": "шагов 32 из 105"
+    },
+    {
+      "slug": "vechnyy-kalendar",
+      "name": "Вечный календарь",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 57,
+      "status": "не разобрано",
+      "reason": "шагов 57 из 105"
+    },
+    {
+      "slug": "vybory",
+      "name": "Выборы",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 26,
+      "status": "не разобрано",
+      "reason": "шагов 26 из 105"
+    },
+    {
+      "slug": "weather-forecast-socrates87",
+      "name": "prognoz pogody",
+      "model": "МК-61",
+      "section": "utilities",
+      "steps": 78,
+      "status": "не разобрано",
+      "reason": "шагов 78 из 105"
+    }
+  ]
+}
