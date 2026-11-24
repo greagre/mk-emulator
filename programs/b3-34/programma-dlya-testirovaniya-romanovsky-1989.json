@@ -1,0 +1,257 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.671Z",
+  "programs": [
+    {
+      "name": "programma-dlya-testirovaniya-romanovsky-1989",
+      "section": "educational",
+      "steps": 39,
+      "inputs": [
+        "R2, RA, RB, RC — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 1,
+          "hex": "44",
+          "cmd": "068",
+          "note": "хП4"
+        },
+        {
+          "addr": 2,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 3,
+          "hex": "45",
+          "cmd": "069",
+          "note": "хП5"
+        },
+        {
+          "addr": 4,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "ПхВ"
+        },
+        {
+          "addr": 5,
+          "hex": "40",
+          "cmd": "064",
+          "note": "хП0"
+        },
+        {
+          "addr": 6,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхС"
+        },
+        {
+          "addr": 7,
+          "hex": "49",
+          "cmd": "073",
+          "note": "хП9"
+        },
+        {
+          "addr": 8,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 9,
+          "hex": "65",
+          "cmd": "101",
+          "note": "Пх5"
+        },
+        {
+          "addr": 10,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 11,
+          "hex": "4D",
+          "cmd": "077",
+          "note": "хПД"
+        },
+        {
+          "addr": 12,
+          "hex": "69",
+          "cmd": "105",
+          "note": "Пх9"
+        },
+        {
+          "addr": 13,
+          "hex": "41",
+          "cmd": "065",
+          "note": "хП1"
+        },
+        {
+          "addr": 14,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ПхА"
+        },
+        {
+          "addr": 15,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 16,
+          "hex": "49",
+          "cmd": "073",
+          "note": "хП9"
+        },
+        {
+          "addr": 17,
+          "hex": "D9",
+          "cmd": "217",
+          "note": "КПх9"
+        },
+        {
+          "addr": 18,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 19,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ПхА"
+        },
+        {
+          "addr": 20,
+          "hex": "69",
+          "cmd": "105",
+          "note": "Пх9"
+        },
+        {
+          "addr": 21,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 22,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 23,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "ПхД"
+        },
+        {
+          "addr": 24,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 25,
+          "hex": "5E",
+          "cmd": "094",
+          "note": "Fx=0"
+        },
+        {
+          "addr": 26,
+          "hex": "28",
+          "cmd": "28 040",
+          "note": ""
+        },
+        {
+          "addr": 27,
+          "hex": "D4",
+          "cmd": "212",
+          "note": "КПх4"
+        },
+        {
+          "addr": 28,
+          "hex": "D5",
+          "cmd": "213",
+          "note": "КПх5"
+        },
+        {
+          "addr": 29,
+          "hex": "5D",
+          "cmd": "093",
+          "note": "FL0"
+        },
+        {
+          "addr": 30,
+          "hex": "09",
+          "cmd": "09 009",
+          "note": ""
+        },
+        {
+          "addr": 31,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "ПхВ"
+        },
+        {
+          "addr": 32,
+          "hex": "62",
+          "cmd": "098",
+          "note": "Пх2"
+        },
+        {
+          "addr": 33,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 34,
+          "hex": "64",
+          "cmd": "100",
+          "note": "Пх4"
+        },
+        {
+          "addr": 35,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 36,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 37,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 38,
+          "hex": "00",
+          "cmd": "00 000",
+          "note": ""
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/educational/programma-dlya-testirovaniya-romanovsky-1989.txt"
+    }
+  ]
+}

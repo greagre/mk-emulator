@@ -1,0 +1,173 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.836Z",
+  "programs": [
+    {
+      "name": "kvur-quadratic-no-register",
+      "section": "utilities",
+      "steps": 25,
+      "inputs": [
+        "регистры задавать не нужно"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "14",
+          "cmd": "020",
+          "note": "<->"
+        },
+        {
+          "addr": 1,
+          "hex": "0F",
+          "cmd": "015",
+          "note": "FВx"
+        },
+        {
+          "addr": 2,
+          "hex": "13",
+          "cmd": "019",
+          "note": ":"
+        },
+        {
+          "addr": 3,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 4,
+          "hex": "13",
+          "cmd": "019",
+          "note": ":"
+        },
+        {
+          "addr": 5,
+          "hex": "0B",
+          "cmd": "011",
+          "note": "/-/"
+        },
+        {
+          "addr": 6,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В^"
+        },
+        {
+          "addr": 7,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx^2"
+        },
+        {
+          "addr": 8,
+          "hex": "00",
+          "cmd": "000",
+          "note": "FѺ"
+        },
+        {
+          "addr": 9,
+          "hex": "00",
+          "cmd": "000",
+          "note": "FѺ"
+        },
+        {
+          "addr": 10,
+          "hex": "13",
+          "cmd": "019",
+          "note": ":"
+        },
+        {
+          "addr": 11,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 12,
+          "hex": "5C",
+          "cmd": "092",
+          "note": "Fx<0"
+        },
+        {
+          "addr": 13,
+          "hex": "17",
+          "cmd": "17 023",
+          "note": ""
+        },
+        {
+          "addr": 14,
+          "hex": "0B",
+          "cmd": "011",
+          "note": "/-/"
+        },
+        {
+          "addr": 15,
+          "hex": "21",
+          "cmd": "033",
+          "note": "F√"
+        },
+        {
+          "addr": 16,
+          "hex": "27",
+          "cmd": "039",
+          "note": "К-"
+        },
+        {
+          "addr": 17,
+          "hex": "21",
+          "cmd": "033",
+          "note": "F√"
+        },
+        {
+          "addr": 18,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 19,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В^"
+        },
+        {
+          "addr": 20,
+          "hex": "0F",
+          "cmd": "015",
+          "note": "FВx"
+        },
+        {
+          "addr": 21,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 22,
+          "hex": "12",
+          "cmd": "018",
+          "note": "x"
+        },
+        {
+          "addr": 23,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 24,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/utilities/kvur-quadratic-no-register.txt"
+    }
+  ]
+}

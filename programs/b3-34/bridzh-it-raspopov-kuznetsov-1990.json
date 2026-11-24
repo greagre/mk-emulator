@@ -1,0 +1,71 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.685Z",
+  "programs": [
+    {
+      "name": "bridzh-it-raspopov-kuznetsov-1990",
+      "section": "logic",
+      "steps": 8,
+      "inputs": [
+        "R8 — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "68",
+          "cmd": "104",
+          "note": "Пх8"
+        },
+        {
+          "addr": 1,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 2,
+          "hex": "49",
+          "cmd": "073",
+          "note": "хП9"
+        },
+        {
+          "addr": 3,
+          "hex": "D9",
+          "cmd": "217",
+          "note": "КПх9"
+        },
+        {
+          "addr": 4,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 5,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 6,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 7,
+          "hex": "00",
+          "cmd": "00 000",
+          "note": ""
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/logic/bridzh-it-raspopov-kuznetsov-1990.txt"
+    }
+  ]
+}

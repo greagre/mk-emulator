@@ -1,0 +1,203 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.777Z",
+  "programs": [
+    {
+      "name": "posadka-gravileta",
+      "section": "simulation",
+      "steps": 30,
+      "inputs": [
+        "R4, RA, RB, RC, RD — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Сх"
+        },
+        {
+          "addr": 1,
+          "hex": "D4",
+          "cmd": "212",
+          "note": "КПх4"
+        },
+        {
+          "addr": 2,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ПхА"
+        },
+        {
+          "addr": 3,
+          "hex": "1D",
+          "cmd": "029",
+          "note": "Fcos"
+        },
+        {
+          "addr": 4,
+          "hex": "32",
+          "cmd": "050",
+          "note": "Кзн"
+        },
+        {
+          "addr": 5,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "ПхВ"
+        },
+        {
+          "addr": 6,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 7,
+          "hex": "4B",
+          "cmd": "075",
+          "note": "хПВ"
+        },
+        {
+          "addr": 8,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхС"
+        },
+        {
+          "addr": 9,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 10,
+          "hex": "4C",
+          "cmd": "076",
+          "note": "хПС"
+        },
+        {
+          "addr": 11,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "ПхД"
+        },
+        {
+          "addr": 12,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 13,
+          "hex": "4D",
+          "cmd": "077",
+          "note": "хПД"
+        },
+        {
+          "addr": 14,
+          "hex": "5C",
+          "cmd": "092",
+          "note": "Fx<o"
+        },
+        {
+          "addr": 15,
+          "hex": "18",
+          "cmd": "18 024",
+          "note": ""
+        },
+        {
+          "addr": 16,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхС"
+        },
+        {
+          "addr": 17,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 18,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "ПхВ"
+        },
+        {
+          "addr": 19,
+          "hex": "AE",
+          "cmd": "174",
+          "note": "КППЕ"
+        },
+        {
+          "addr": 20,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхС"
+        },
+        {
+          "addr": 21,
+          "hex": "AE",
+          "cmd": "174",
+          "note": "КППЕ"
+        },
+        {
+          "addr": 22,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "ПхД"
+        },
+        {
+          "addr": 23,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 24,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 25,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 26,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 27,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 28,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 29,
+          "hex": "52",
+          "cmd": "082",
+          "note": "В/О"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/simulation/posadka-gravileta.txt"
+    }
+  ]
+}

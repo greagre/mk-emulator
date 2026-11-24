@@ -1,0 +1,311 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.685Z",
+  "programs": [
+    {
+      "name": "bolshe-menshe-gaishtut-1988",
+      "section": "logic",
+      "steps": 48,
+      "inputs": [
+        "R1, R3, R4, R6, R7 — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "45",
+          "cmd": "069",
+          "note": "хП5"
+        },
+        {
+          "addr": 1,
+          "hex": "4C",
+          "cmd": "076",
+          "note": "хПc"
+        },
+        {
+          "addr": 2,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 3,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 4,
+          "hex": "42",
+          "cmd": "066",
+          "note": "хП2"
+        },
+        {
+          "addr": 5,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "Пхc"
+        },
+        {
+          "addr": 6,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 7,
+          "hex": "57",
+          "cmd": "087",
+          "note": "Fx≠0"
+        },
+        {
+          "addr": 8,
+          "hex": "C7",
+          "cmd": "199",
+          "note": "Кx<07"
+        },
+        {
+          "addr": 9,
+          "hex": "5C",
+          "cmd": "092",
+          "note": "Fx<0"
+        },
+        {
+          "addr": 10,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 11,
+          "hex": "0B",
+          "cmd": "011",
+          "note": "/-/"
+        },
+        {
+          "addr": 12,
+          "hex": "4C",
+          "cmd": "076",
+          "note": "хПc"
+        },
+        {
+          "addr": 13,
+          "hex": "D6",
+          "cmd": "214",
+          "note": "КПх6"
+        },
+        {
+          "addr": 14,
+          "hex": "62",
+          "cmd": "098",
+          "note": "Пх2"
+        },
+        {
+          "addr": 15,
+          "hex": "5C",
+          "cmd": "092",
+          "note": "Fx<0"
+        },
+        {
+          "addr": 16,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 17,
+          "hex": "66",
+          "cmd": "102",
+          "note": "Пх6"
+        },
+        {
+          "addr": 18,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 19,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 20,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx^2"
+        },
+        {
+          "addr": 21,
+          "hex": "1C",
+          "cmd": "028",
+          "note": "Fsin"
+        },
+        {
+          "addr": 22,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx^2"
+        },
+        {
+          "addr": 23,
+          "hex": "65",
+          "cmd": "101",
+          "note": "Пх5"
+        },
+        {
+          "addr": 24,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 25,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 26,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 27,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "хПa"
+        },
+        {
+          "addr": 28,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхa"
+        },
+        {
+          "addr": 29,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 30,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 31,
+          "hex": "D4",
+          "cmd": "212",
+          "note": "КПх4"
+        },
+        {
+          "addr": 32,
+          "hex": "14",
+          "cmd": "020",
+          "note": "↔"
+        },
+        {
+          "addr": 33,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "Пхa"
+        },
+        {
+          "addr": 34,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 35,
+          "hex": "57",
+          "cmd": "087",
+          "note": "Fx≠0"
+        },
+        {
+          "addr": 36,
+          "hex": "46",
+          "cmd": "070",
+          "note": "хП6"
+        },
+        {
+          "addr": 37,
+          "hex": "5B",
+          "cmd": "091",
+          "note": "FL1"
+        },
+        {
+          "addr": 38,
+          "hex": "42",
+          "cmd": "066",
+          "note": "хП2"
+        },
+        {
+          "addr": 39,
+          "hex": "63",
+          "cmd": "099",
+          "note": "Пх3"
+        },
+        {
+          "addr": 40,
+          "hex": "5C",
+          "cmd": "092",
+          "note": "Fx<0"
+        },
+        {
+          "addr": 41,
+          "hex": "30",
+          "cmd": "048",
+          "note": "К °<-′\""
+        },
+        {
+          "addr": 42,
+          "hex": "63",
+          "cmd": "099",
+          "note": "Пх3"
+        },
+        {
+          "addr": 43,
+          "hex": "0B",
+          "cmd": "011",
+          "note": "/-/"
+        },
+        {
+          "addr": 44,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 45,
+          "hex": "30",
+          "cmd": "048",
+          "note": "К °<-′\""
+        },
+        {
+          "addr": 46,
+          "hex": "64",
+          "cmd": "100",
+          "note": "Пх4"
+        },
+        {
+          "addr": 47,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/logic/bolshe-menshe-gaishtut-1988.txt"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.839Z",
+  "programs": [
+    {
+      "name": "sum-squares-iterative-gaishtut-1988",
+      "section": "utilities",
+      "steps": 8,
+      "inputs": [
+        "регистры задавать не нужно"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "40",
+          "cmd": "064",
+          "note": "хП0"
+        },
+        {
+          "addr": 1,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 2,
+          "hex": "60",
+          "cmd": "096",
+          "note": "Пх0"
+        },
+        {
+          "addr": 3,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx^2"
+        },
+        {
+          "addr": 4,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 5,
+          "hex": "5D",
+          "cmd": "093",
+          "note": "FL0"
+        },
+        {
+          "addr": 6,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 7,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/utilities/sum-squares-iterative-gaishtut-1988.txt"
+    }
+  ]
+}

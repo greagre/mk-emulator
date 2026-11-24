@@ -1,0 +1,227 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.830Z",
+  "programs": [
+    {
+      "name": "unichtozhit-lineynyy-korabl-dolgushin-notebook",
+      "section": "strategy",
+      "steps": 34,
+      "inputs": [
+        "R4, RD, RE — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "45",
+          "cmd": "069",
+          "note": "хП5"
+        },
+        {
+          "addr": 1,
+          "hex": "6E",
+          "cmd": "110",
+          "note": "ПхЕ"
+        },
+        {
+          "addr": 2,
+          "hex": "15",
+          "cmd": "021",
+          "note": "F10^x"
+        },
+        {
+          "addr": 3,
+          "hex": "35",
+          "cmd": "053",
+          "note": "K{x}"
+        },
+        {
+          "addr": 4,
+          "hex": "4E",
+          "cmd": "078",
+          "note": "хПЕ"
+        },
+        {
+          "addr": 5,
+          "hex": "08",
+          "cmd": "008",
+          "note": "8"
+        },
+        {
+          "addr": 6,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 7,
+          "hex": "34",
+          "cmd": "052",
+          "note": "K[x]"
+        },
+        {
+          "addr": 8,
+          "hex": "15",
+          "cmd": "021",
+          "note": "F10^x"
+        },
+        {
+          "addr": 9,
+          "hex": "05",
+          "cmd": "005",
+          "note": "5"
+        },
+        {
+          "addr": 10,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 11,
+          "hex": "3A",
+          "cmd": "058",
+          "note": "КИНВ"
+        },
+        {
+          "addr": 12,
+          "hex": "47",
+          "cmd": "071",
+          "note": "хП7"
+        },
+        {
+          "addr": 13,
+          "hex": "65",
+          "cmd": "101",
+          "note": "Пх5"
+        },
+        {
+          "addr": 14,
+          "hex": "15",
+          "cmd": "021",
+          "note": "F10^x"
+        },
+        {
+          "addr": 15,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 16,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 17,
+          "hex": "67",
+          "cmd": "103",
+          "note": "Пх7"
+        },
+        {
+          "addr": 18,
+          "hex": "37",
+          "cmd": "055",
+          "note": "K∧"
+        },
+        {
+          "addr": 19,
+          "hex": "35",
+          "cmd": "053",
+          "note": "K{x}"
+        },
+        {
+          "addr": 20,
+          "hex": "57",
+          "cmd": "087",
+          "note": "Fx≠0"
+        },
+        {
+          "addr": 21,
+          "hex": "27",
+          "cmd": "27 039",
+          "note": ""
+        },
+        {
+          "addr": 22,
+          "hex": "D4",
+          "cmd": "212",
+          "note": "КПх4"
+        },
+        {
+          "addr": 23,
+          "hex": "67",
+          "cmd": "103",
+          "note": "Пх7"
+        },
+        {
+          "addr": 24,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 25,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 26,
+          "hex": "00",
+          "cmd": "00 000",
+          "note": ""
+        },
+        {
+          "addr": 27,
+          "hex": "07",
+          "cmd": "007",
+          "note": "7"
+        },
+        {
+          "addr": 28,
+          "hex": "15",
+          "cmd": "021",
+          "note": "F10^x"
+        },
+        {
+          "addr": 29,
+          "hex": "64",
+          "cmd": "100",
+          "note": "Пх4"
+        },
+        {
+          "addr": 30,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 31,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "Пхd"
+        },
+        {
+          "addr": 32,
+          "hex": "38",
+          "cmd": "056",
+          "note": "K∨"
+        },
+        {
+          "addr": 33,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/strategy/unichtozhit-lineynyy-korabl-dolgushin-notebook.txt"
+    }
+  ]
+}

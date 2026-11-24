@@ -1,0 +1,107 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.730Z",
+  "programs": [
+    {
+      "name": "ugaday-chislo-kabardcomp",
+      "section": "logic",
+      "steps": 14,
+      "inputs": [
+        "регистры задавать не нужно"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "1C",
+          "cmd": "028",
+          "note": "Fsin"
+        },
+        {
+          "addr": 1,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 2,
+          "hex": "00",
+          "cmd": "000",
+          "note": "0"
+        },
+        {
+          "addr": 3,
+          "hex": "00",
+          "cmd": "000",
+          "note": "0"
+        },
+        {
+          "addr": 4,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 5,
+          "hex": "34",
+          "cmd": "052",
+          "note": "К[x]"
+        },
+        {
+          "addr": 6,
+          "hex": "41",
+          "cmd": "065",
+          "note": "хП1"
+        },
+        {
+          "addr": 7,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 8,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 9,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 10,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 11,
+          "hex": "32",
+          "cmd": "050",
+          "note": "КЗН"
+        },
+        {
+          "addr": 12,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 13,
+          "hex": "08",
+          "cmd": "08 008",
+          "note": ""
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/logic/ugaday-chislo-kabardcomp.txt"
+    }
+  ]
+}

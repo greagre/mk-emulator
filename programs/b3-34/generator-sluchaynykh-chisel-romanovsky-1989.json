@@ -1,0 +1,185 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.836Z",
+  "programs": [
+    {
+      "name": "generator-sluchaynykh-chisel-romanovsky-1989",
+      "section": "utilities",
+      "steps": 97,
+      "inputs": [
+        "R0, R5, R6, R7, R8, R9, RA, RC — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 70,
+          "hex": "53",
+          "cmd": "083",
+          "note": "ПП"
+        },
+        {
+          "addr": 71,
+          "hex": "75",
+          "cmd": "75 117",
+          "note": ""
+        },
+        {
+          "addr": 72,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 73,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 74,
+          "hex": "70",
+          "cmd": "70 112",
+          "note": ""
+        },
+        {
+          "addr": 75,
+          "hex": "66",
+          "cmd": "102",
+          "note": "Пх6"
+        },
+        {
+          "addr": 76,
+          "hex": "67",
+          "cmd": "103",
+          "note": "Пх7"
+        },
+        {
+          "addr": 77,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 78,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 79,
+          "hex": "53",
+          "cmd": "083",
+          "note": "ПП"
+        },
+        {
+          "addr": 80,
+          "hex": "90",
+          "cmd": "90 144",
+          "note": ""
+        },
+        {
+          "addr": 81,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 82,
+          "hex": "46",
+          "cmd": "070",
+          "note": "хП6"
+        },
+        {
+          "addr": 83,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхС"
+        },
+        {
+          "addr": 84,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 85,
+          "hex": "53",
+          "cmd": "083",
+          "note": "ПП"
+        },
+        {
+          "addr": 86,
+          "hex": "90",
+          "cmd": "90 144",
+          "note": ""
+        },
+        {
+          "addr": 87,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ПхА"
+        },
+        {
+          "addr": 88,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 89,
+          "hex": "52",
+          "cmd": "082",
+          "note": "В/О"
+        },
+        {
+          "addr": 90,
+          "hex": "69",
+          "cmd": "105",
+          "note": "Пх9"
+        },
+        {
+          "addr": 91,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 92,
+          "hex": "68",
+          "cmd": "104",
+          "note": "Пх8"
+        },
+        {
+          "addr": 93,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 94,
+          "hex": "68",
+          "cmd": "104",
+          "note": "Пх8"
+        },
+        {
+          "addr": 95,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 96,
+          "hex": "52",
+          "cmd": "082",
+          "note": "В/О"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/utilities/generator-sluchaynykh-chisel-romanovsky-1989.txt"
+    }
+  ]
+}

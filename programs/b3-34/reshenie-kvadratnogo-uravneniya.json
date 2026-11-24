@@ -1,0 +1,179 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.838Z",
+  "programs": [
+    {
+      "name": "reshenie-kvadratnogo-uravneniya",
+      "section": "utilities",
+      "steps": 26,
+      "inputs": [
+        "RA, RB, RC — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "Пхb"
+        },
+        {
+          "addr": 1,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx^2"
+        },
+        {
+          "addr": 2,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "Пхc"
+        },
+        {
+          "addr": 3,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "Пхa"
+        },
+        {
+          "addr": 4,
+          "hex": "04",
+          "cmd": "004",
+          "note": "4"
+        },
+        {
+          "addr": 5,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 6,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 7,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 8,
+          "hex": "21",
+          "cmd": "033",
+          "note": "F√"
+        },
+        {
+          "addr": 9,
+          "hex": "4D",
+          "cmd": "077",
+          "note": "хПd"
+        },
+        {
+          "addr": 10,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "Пхb"
+        },
+        {
+          "addr": 11,
+          "hex": "0B",
+          "cmd": "011",
+          "note": "/-/"
+        },
+        {
+          "addr": 12,
+          "hex": "4B",
+          "cmd": "075",
+          "note": "хПb"
+        },
+        {
+          "addr": 13,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "Пхd"
+        },
+        {
+          "addr": 14,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 15,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "Пхa"
+        },
+        {
+          "addr": 16,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 17,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 18,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "хПa"
+        },
+        {
+          "addr": 19,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 20,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "Пхb"
+        },
+        {
+          "addr": 21,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "Пхd"
+        },
+        {
+          "addr": 22,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 23,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "Пхa"
+        },
+        {
+          "addr": 24,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 25,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/utilities/reshenie-kvadratnogo-uravneniya.txt"
+    }
+  ]
+}

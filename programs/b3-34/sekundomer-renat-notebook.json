@@ -1,0 +1,71 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.838Z",
+  "programs": [
+    {
+      "name": "sekundomer-renat-notebook",
+      "section": "utilities",
+      "steps": 8,
+      "inputs": [
+        "R9 — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "69",
+          "cmd": "105",
+          "note": "Пх9"
+        },
+        {
+          "addr": 1,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 2,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 3,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 4,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 5,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 6,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 7,
+          "hex": "05",
+          "cmd": "05 005",
+          "note": ""
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/utilities/sekundomer-renat-notebook.txt"
+    }
+  ]
+}

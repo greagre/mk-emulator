@@ -1,0 +1,137 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.674Z",
+  "programs": [
+    {
+      "name": "umeete-li-vy-slushat-gaishtut-1988",
+      "section": "educational",
+      "steps": 19,
+      "inputs": [
+        "регистры задавать не нужно"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "00",
+          "cmd": "000",
+          "note": "0"
+        },
+        {
+          "addr": 1,
+          "hex": "46",
+          "cmd": "070",
+          "note": "хП6"
+        },
+        {
+          "addr": 2,
+          "hex": "41",
+          "cmd": "065",
+          "note": "хП1"
+        },
+        {
+          "addr": 3,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 4,
+          "hex": "00",
+          "cmd": "000",
+          "note": "0"
+        },
+        {
+          "addr": 5,
+          "hex": "40",
+          "cmd": "064",
+          "note": "хП0"
+        },
+        {
+          "addr": 6,
+          "hex": "D6",
+          "cmd": "214",
+          "note": "КПх6"
+        },
+        {
+          "addr": 7,
+          "hex": "66",
+          "cmd": "102",
+          "note": "Пх6"
+        },
+        {
+          "addr": 8,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 9,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 10,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 11,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 12,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 13,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 14,
+          "hex": "41",
+          "cmd": "065",
+          "note": "хП1"
+        },
+        {
+          "addr": 15,
+          "hex": "5D",
+          "cmd": "093",
+          "note": "FL0"
+        },
+        {
+          "addr": 16,
+          "hex": "06",
+          "cmd": "006",
+          "note": "6"
+        },
+        {
+          "addr": 17,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 18,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/educational/umeete-li-vy-slushat-gaishtut-1988.txt"
+    }
+  ]
+}

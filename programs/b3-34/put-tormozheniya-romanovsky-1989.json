@@ -1,0 +1,191 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.837Z",
+  "programs": [
+    {
+      "name": "put-tormozheniya-romanovsky-1989",
+      "section": "utilities",
+      "steps": 28,
+      "inputs": [
+        "R1, R2, R3 — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "4B",
+          "cmd": "075",
+          "note": "хПВ"
+        },
+        {
+          "addr": 1,
+          "hex": "08",
+          "cmd": "008",
+          "note": "8"
+        },
+        {
+          "addr": 2,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 3,
+          "hex": "4C",
+          "cmd": "076",
+          "note": "хПС"
+        },
+        {
+          "addr": 4,
+          "hex": "59",
+          "cmd": "089",
+          "note": "Fx≥0"
+        },
+        {
+          "addr": 5,
+          "hex": "17",
+          "cmd": "17 023",
+          "note": ""
+        },
+        {
+          "addr": 6,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 7,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхС"
+        },
+        {
+          "addr": 8,
+          "hex": "62",
+          "cmd": "098",
+          "note": "Пх2"
+        },
+        {
+          "addr": 9,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 10,
+          "hex": "24",
+          "cmd": "036",
+          "note": "Fx^y"
+        },
+        {
+          "addr": 11,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 12,
+          "hex": "14",
+          "cmd": "020",
+          "note": "<->"
+        },
+        {
+          "addr": 13,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 14,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "хПА"
+        },
+        {
+          "addr": 15,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 16,
+          "hex": "19",
+          "cmd": "19 025",
+          "note": ""
+        },
+        {
+          "addr": 17,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 18,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "хПА"
+        },
+        {
+          "addr": 19,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "ПхВ"
+        },
+        {
+          "addr": 20,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx^2"
+        },
+        {
+          "addr": 21,
+          "hex": "63",
+          "cmd": "099",
+          "note": "Пх3"
+        },
+        {
+          "addr": 22,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 23,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ПхА"
+        },
+        {
+          "addr": 24,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 25,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 26,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 27,
+          "hex": "00",
+          "cmd": "00 000",
+          "note": ""
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/utilities/put-tormozheniya-romanovsky-1989.txt"
+    }
+  ]
+}

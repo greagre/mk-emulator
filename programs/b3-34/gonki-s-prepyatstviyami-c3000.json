@@ -1,0 +1,275 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.801Z",
+  "programs": [
+    {
+      "name": "gonki-s-prepyatstviyami-c3000",
+      "section": "sports",
+      "steps": 42,
+      "inputs": [
+        "RA, RB, RC, RD — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "Пхa"
+        },
+        {
+          "addr": 1,
+          "hex": "1C",
+          "cmd": "028",
+          "note": "Fsin"
+        },
+        {
+          "addr": 2,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "Пхd"
+        },
+        {
+          "addr": 3,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 4,
+          "hex": "DB",
+          "cmd": "219",
+          "note": "КПхb"
+        },
+        {
+          "addr": 5,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 6,
+          "hex": "BB",
+          "cmd": "187",
+          "note": "КхПb"
+        },
+        {
+          "addr": 7,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "Пхa"
+        },
+        {
+          "addr": 8,
+          "hex": "1D",
+          "cmd": "029",
+          "note": "Fcos"
+        },
+        {
+          "addr": 9,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "Пхd"
+        },
+        {
+          "addr": 10,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 11,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "Пхb"
+        },
+        {
+          "addr": 12,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 13,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 14,
+          "hex": "4B",
+          "cmd": "075",
+          "note": "хПb"
+        },
+        {
+          "addr": 15,
+          "hex": "25",
+          "cmd": "037",
+          "note": "F↻"
+        },
+        {
+          "addr": 16,
+          "hex": "DB",
+          "cmd": "219",
+          "note": "КПхb"
+        },
+        {
+          "addr": 17,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 18,
+          "hex": "BB",
+          "cmd": "187",
+          "note": "КхПb"
+        },
+        {
+          "addr": 19,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 20,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "хПa"
+        },
+        {
+          "addr": 21,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "Пхb"
+        },
+        {
+          "addr": 22,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 23,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 24,
+          "hex": "4B",
+          "cmd": "075",
+          "note": "хПb"
+        },
+        {
+          "addr": 25,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "Пхc"
+        },
+        {
+          "addr": 26,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 27,
+          "hex": "5E",
+          "cmd": "094",
+          "note": "Fx=0"
+        },
+        {
+          "addr": 28,
+          "hex": "30",
+          "cmd": "048",
+          "note": "КЧМ"
+        },
+        {
+          "addr": 29,
+          "hex": "4B",
+          "cmd": "075",
+          "note": "хПb"
+        },
+        {
+          "addr": 30,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 31,
+          "hex": "00",
+          "cmd": "000",
+          "note": "0"
+        },
+        {
+          "addr": 32,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "хПa"
+        },
+        {
+          "addr": 33,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "Пхc"
+        },
+        {
+          "addr": 34,
+          "hex": "40",
+          "cmd": "064",
+          "note": "хП0"
+        },
+        {
+          "addr": 35,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 36,
+          "hex": "B0",
+          "cmd": "176",
+          "note": "КхП0"
+        },
+        {
+          "addr": 37,
+          "hex": "60",
+          "cmd": "096",
+          "note": "Пх0"
+        },
+        {
+          "addr": 38,
+          "hex": "5E",
+          "cmd": "094",
+          "note": "Fx=0"
+        },
+        {
+          "addr": 39,
+          "hex": "35",
+          "cmd": "053",
+          "note": "К{x}"
+        },
+        {
+          "addr": 40,
+          "hex": "4B",
+          "cmd": "075",
+          "note": "хПb"
+        },
+        {
+          "addr": 41,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/sports/gonki-s-prepyatstviyami-c3000.txt"
+    }
+  ]
+}

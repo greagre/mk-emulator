@@ -1,0 +1,335 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.736Z",
+  "programs": [
+    {
+      "name": "arkticheskiy-reys-dolgushin-notebook",
+      "section": "simulation",
+      "steps": 52,
+      "inputs": [
+        "R0, R8, R9, RA, RB, RC, RD, RE — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "47",
+          "cmd": "071",
+          "note": "хП7"
+        },
+        {
+          "addr": 1,
+          "hex": "1D",
+          "cmd": "029",
+          "note": "Fcos"
+        },
+        {
+          "addr": 2,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "ПхД"
+        },
+        {
+          "addr": 3,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 4,
+          "hex": "45",
+          "cmd": "069",
+          "note": "хП5"
+        },
+        {
+          "addr": 5,
+          "hex": "67",
+          "cmd": "103",
+          "note": "Пх7"
+        },
+        {
+          "addr": 6,
+          "hex": "1C",
+          "cmd": "028",
+          "note": "Fsin"
+        },
+        {
+          "addr": 7,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "ПхД"
+        },
+        {
+          "addr": 8,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 9,
+          "hex": "46",
+          "cmd": "070",
+          "note": "хП6"
+        },
+        {
+          "addr": 10,
+          "hex": "69",
+          "cmd": "105",
+          "note": "Пх9"
+        },
+        {
+          "addr": 11,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "ПхВ"
+        },
+        {
+          "addr": 12,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 13,
+          "hex": "5C",
+          "cmd": "092",
+          "note": "Fx<0"
+        },
+        {
+          "addr": 14,
+          "hex": "38",
+          "cmd": "38 056",
+          "note": ""
+        },
+        {
+          "addr": 15,
+          "hex": "68",
+          "cmd": "104",
+          "note": "Пх8"
+        },
+        {
+          "addr": 16,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ПхА"
+        },
+        {
+          "addr": 17,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 18,
+          "hex": "59",
+          "cmd": "089",
+          "note": "Fx≥0"
+        },
+        {
+          "addr": 19,
+          "hex": "38",
+          "cmd": "38 056",
+          "note": ""
+        },
+        {
+          "addr": 20,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхС"
+        },
+        {
+          "addr": 21,
+          "hex": "21",
+          "cmd": "033",
+          "note": "F√"
+        },
+        {
+          "addr": 22,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 23,
+          "hex": "16",
+          "cmd": "022",
+          "note": "Fe^x"
+        },
+        {
+          "addr": 24,
+          "hex": "4C",
+          "cmd": "076",
+          "note": "хПС"
+        },
+        {
+          "addr": 25,
+          "hex": "DC",
+          "cmd": "220",
+          "note": "КПхС"
+        },
+        {
+          "addr": 26,
+          "hex": "25",
+          "cmd": "037",
+          "note": "F↻"
+        },
+        {
+          "addr": 27,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхС"
+        },
+        {
+          "addr": 28,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 29,
+          "hex": "4C",
+          "cmd": "076",
+          "note": "хПС"
+        },
+        {
+          "addr": 30,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 31,
+          "hex": "23",
+          "cmd": "035",
+          "note": "F1/x"
+        },
+        {
+          "addr": 32,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 33,
+          "hex": "5C",
+          "cmd": "092",
+          "note": "Fx<0"
+        },
+        {
+          "addr": 34,
+          "hex": "38",
+          "cmd": "38 056",
+          "note": ""
+        },
+        {
+          "addr": 35,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 36,
+          "hex": "45",
+          "cmd": "069",
+          "note": "хП5"
+        },
+        {
+          "addr": 37,
+          "hex": "46",
+          "cmd": "070",
+          "note": "хП6"
+        },
+        {
+          "addr": 38,
+          "hex": "66",
+          "cmd": "102",
+          "note": "Пх6"
+        },
+        {
+          "addr": 39,
+          "hex": "69",
+          "cmd": "105",
+          "note": "Пх9"
+        },
+        {
+          "addr": 40,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 41,
+          "hex": "49",
+          "cmd": "073",
+          "note": "хП9"
+        },
+        {
+          "addr": 42,
+          "hex": "65",
+          "cmd": "101",
+          "note": "Пх5"
+        },
+        {
+          "addr": 43,
+          "hex": "68",
+          "cmd": "104",
+          "note": "Пх8"
+        },
+        {
+          "addr": 44,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 45,
+          "hex": "48",
+          "cmd": "072",
+          "note": "хП8"
+        },
+        {
+          "addr": 46,
+          "hex": "5D",
+          "cmd": "093",
+          "note": "FL0"
+        },
+        {
+          "addr": 47,
+          "hex": "49",
+          "cmd": "49 073",
+          "note": ""
+        },
+        {
+          "addr": 48,
+          "hex": "6E",
+          "cmd": "110",
+          "note": "ПхЕ"
+        },
+        {
+          "addr": 49,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 50,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 51,
+          "hex": "00",
+          "cmd": "00 000",
+          "note": ""
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/simulation/arkticheskiy-reys-dolgushin-notebook.txt"
+    }
+  ]
+}

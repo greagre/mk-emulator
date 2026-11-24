@@ -1,0 +1,179 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.758Z",
+  "programs": [
+    {
+      "name": "kon-tiki-os-2-buffer",
+      "section": "simulation",
+      "steps": 26,
+      "inputs": [
+        "R0, R1, R4, RA, RC — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "47",
+          "cmd": "071",
+          "note": "П7"
+        },
+        {
+          "addr": 1,
+          "hex": "60",
+          "cmd": "096",
+          "note": "ИП0"
+        },
+        {
+          "addr": 2,
+          "hex": "64",
+          "cmd": "100",
+          "note": "ИП4"
+        },
+        {
+          "addr": 3,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 4,
+          "hex": "64",
+          "cmd": "100",
+          "note": "ИП4"
+        },
+        {
+          "addr": 5,
+          "hex": "61",
+          "cmd": "097",
+          "note": "ИП1"
+        },
+        {
+          "addr": 6,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 7,
+          "hex": "0B",
+          "cmd": "011",
+          "note": "/-/"
+        },
+        {
+          "addr": 8,
+          "hex": "44",
+          "cmd": "068",
+          "note": "П4"
+        },
+        {
+          "addr": 9,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ИПА"
+        },
+        {
+          "addr": 10,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 11,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 12,
+          "hex": "40",
+          "cmd": "064",
+          "note": "П0"
+        },
+        {
+          "addr": 13,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ИПС"
+        },
+        {
+          "addr": 14,
+          "hex": "61",
+          "cmd": "097",
+          "note": "ИП1"
+        },
+        {
+          "addr": 15,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 16,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ИПА"
+        },
+        {
+          "addr": 17,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 18,
+          "hex": "4C",
+          "cmd": "076",
+          "note": "ПС"
+        },
+        {
+          "addr": 19,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ИПА"
+        },
+        {
+          "addr": 20,
+          "hex": "61",
+          "cmd": "097",
+          "note": "ИП1"
+        },
+        {
+          "addr": 21,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 22,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "ПА"
+        },
+        {
+          "addr": 23,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 24,
+          "hex": "41",
+          "cmd": "065",
+          "note": "П1"
+        },
+        {
+          "addr": 25,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/simulation/kon-tiki-os-2-buffer.txt"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.680Z",
+  "programs": [
+    {
+      "name": "loterei-kubik-orel-reshka-renat-notebook",
+      "section": "gambling",
+      "steps": 16,
+      "inputs": [
+        "регистры задавать не нужно",
+        "регистры задавать не нужно"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 1,
+          "hex": "06",
+          "cmd": "006",
+          "note": "6"
+        },
+        {
+          "addr": 2,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 3,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 4,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 5,
+          "hex": "04",
+          "cmd": "004",
+          "note": "4"
+        },
+        {
+          "addr": 6,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 7,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 8,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 9,
+          "hex": "03",
+          "cmd": "003",
+          "note": "3"
+        },
+        {
+          "addr": 10,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 11,
+          "hex": "05",
+          "cmd": "005",
+          "note": "5"
+        },
+        {
+          "addr": 12,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 13,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Сх"
+        },
+        {
+          "addr": 14,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 15,
+          "hex": "00",
+          "cmd": "00 000",
+          "note": ""
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/gambling/loterei-kubik-orel-reshka-renat-notebook.txt"
+    }
+  ]
+}

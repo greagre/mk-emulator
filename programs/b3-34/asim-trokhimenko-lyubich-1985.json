@@ -1,0 +1,71 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.684Z",
+  "programs": [
+    {
+      "name": "asim-trokhimenko-lyubich-1985",
+      "section": "logic",
+      "steps": 8,
+      "inputs": [
+        "регистры задавать не нужно"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "хПА"
+        },
+        {
+          "addr": 1,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 2,
+          "hex": "05",
+          "cmd": "005",
+          "note": "5"
+        },
+        {
+          "addr": 3,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ПхА"
+        },
+        {
+          "addr": 4,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 5,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 6,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 7,
+          "hex": "00",
+          "cmd": "00 000",
+          "note": ""
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/logic/asim-trokhimenko-lyubich-1985.txt"
+    }
+  ]
+}

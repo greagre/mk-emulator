@@ -1,0 +1,95 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.839Z",
+  "programs": [
+    {
+      "name": "sum-squares-formula-gaishtut-1988",
+      "section": "utilities",
+      "steps": 12,
+      "inputs": [
+        "регистры задавать не нужно"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx^2"
+        },
+        {
+          "addr": 1,
+          "hex": "0F",
+          "cmd": "015",
+          "note": "FВx"
+        },
+        {
+          "addr": 2,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 3,
+          "hex": "0F",
+          "cmd": "015",
+          "note": "FВx"
+        },
+        {
+          "addr": 4,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 5,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 6,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 7,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 8,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 9,
+          "hex": "06",
+          "cmd": "006",
+          "note": "6"
+        },
+        {
+          "addr": 10,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 11,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/utilities/sum-squares-formula-gaishtut-1988.txt"
+    }
+  ]
+}

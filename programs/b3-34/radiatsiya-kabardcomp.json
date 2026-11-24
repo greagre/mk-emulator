@@ -1,0 +1,239 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.721Z",
+  "programs": [
+    {
+      "name": "radiatsiya-kabardcomp",
+      "section": "logic",
+      "steps": 36,
+      "inputs": [
+        "R5 — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 1,
+          "hex": "3B",
+          "cmd": "059",
+          "note": "КСЧ"
+        },
+        {
+          "addr": 2,
+          "hex": "65",
+          "cmd": "101",
+          "note": "Пх5"
+        },
+        {
+          "addr": 3,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 4,
+          "hex": "34",
+          "cmd": "052",
+          "note": "К[x]"
+        },
+        {
+          "addr": 5,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 6,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 7,
+          "hex": "40",
+          "cmd": "064",
+          "note": "хП0"
+        },
+        {
+          "addr": 8,
+          "hex": "3B",
+          "cmd": "059",
+          "note": "КСЧ"
+        },
+        {
+          "addr": 9,
+          "hex": "65",
+          "cmd": "101",
+          "note": "Пх5"
+        },
+        {
+          "addr": 10,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 11,
+          "hex": "34",
+          "cmd": "052",
+          "note": "К[x]"
+        },
+        {
+          "addr": 12,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 13,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 14,
+          "hex": "44",
+          "cmd": "068",
+          "note": "хП4"
+        },
+        {
+          "addr": 15,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 16,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 17,
+          "hex": "41",
+          "cmd": "065",
+          "note": "хП1"
+        },
+        {
+          "addr": 18,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 19,
+          "hex": "42",
+          "cmd": "066",
+          "note": "хП2"
+        },
+        {
+          "addr": 20,
+          "hex": "64",
+          "cmd": "100",
+          "note": "Пх4"
+        },
+        {
+          "addr": 21,
+          "hex": "62",
+          "cmd": "098",
+          "note": "Пх2"
+        },
+        {
+          "addr": 22,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 23,
+          "hex": "42",
+          "cmd": "066",
+          "note": "хП2"
+        },
+        {
+          "addr": 24,
+          "hex": "60",
+          "cmd": "096",
+          "note": "Пх0"
+        },
+        {
+          "addr": 25,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 26,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 27,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx^2"
+        },
+        {
+          "addr": 28,
+          "hex": "43",
+          "cmd": "067",
+          "note": "хП3"
+        },
+        {
+          "addr": 29,
+          "hex": "62",
+          "cmd": "098",
+          "note": "Пх2"
+        },
+        {
+          "addr": 30,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx^2"
+        },
+        {
+          "addr": 31,
+          "hex": "63",
+          "cmd": "099",
+          "note": "Пх3"
+        },
+        {
+          "addr": 32,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 33,
+          "hex": "21",
+          "cmd": "033",
+          "note": "F√"
+        },
+        {
+          "addr": 34,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 35,
+          "hex": "16",
+          "cmd": "16 022",
+          "note": ""
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/logic/radiatsiya-kabardcomp.txt"
+    }
+  ]
+}

@@ -1,0 +1,287 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.839Z",
+  "programs": [
+    {
+      "name": "triangle-two-sides-included-angle-gaishtut-1988",
+      "section": "utilities",
+      "steps": 44,
+      "inputs": [
+        "регистры задавать не нужно"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "хПa"
+        },
+        {
+          "addr": 1,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx^2"
+        },
+        {
+          "addr": 2,
+          "hex": "14",
+          "cmd": "020",
+          "note": "↔"
+        },
+        {
+          "addr": 3,
+          "hex": "4B",
+          "cmd": "075",
+          "note": "хПb"
+        },
+        {
+          "addr": 4,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx^2"
+        },
+        {
+          "addr": 5,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 6,
+          "hex": "14",
+          "cmd": "020",
+          "note": "↔"
+        },
+        {
+          "addr": 7,
+          "hex": "41",
+          "cmd": "065",
+          "note": "хП1"
+        },
+        {
+          "addr": 8,
+          "hex": "1D",
+          "cmd": "029",
+          "note": "Fcos"
+        },
+        {
+          "addr": 9,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "Пхb"
+        },
+        {
+          "addr": 10,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 11,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "Пхa"
+        },
+        {
+          "addr": 12,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 13,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 14,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 15,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 16,
+          "hex": "21",
+          "cmd": "033",
+          "note": "F√"
+        },
+        {
+          "addr": 17,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 18,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "Пхb"
+        },
+        {
+          "addr": 19,
+          "hex": "14",
+          "cmd": "020",
+          "note": "↔"
+        },
+        {
+          "addr": 20,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 21,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 22,
+          "hex": "1C",
+          "cmd": "028",
+          "note": "Fsin"
+        },
+        {
+          "addr": 23,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 24,
+          "hex": "19",
+          "cmd": "025",
+          "note": "Farcsin"
+        },
+        {
+          "addr": 25,
+          "hex": "42",
+          "cmd": "066",
+          "note": "хП2"
+        },
+        {
+          "addr": 26,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 27,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 28,
+          "hex": "1C",
+          "cmd": "028",
+          "note": "Fsin"
+        },
+        {
+          "addr": 29,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "Пхb"
+        },
+        {
+          "addr": 30,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 31,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "Пхa"
+        },
+        {
+          "addr": 32,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 33,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 34,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 35,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 36,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 37,
+          "hex": "08",
+          "cmd": "008",
+          "note": "8"
+        },
+        {
+          "addr": 38,
+          "hex": "00",
+          "cmd": "000",
+          "note": "0"
+        },
+        {
+          "addr": 39,
+          "hex": "62",
+          "cmd": "098",
+          "note": "Пх2"
+        },
+        {
+          "addr": 40,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 41,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 42,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 43,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/utilities/triangle-two-sides-included-angle-gaishtut-1988.txt"
+    }
+  ]
+}

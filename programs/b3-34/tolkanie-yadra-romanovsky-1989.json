@@ -1,0 +1,263 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.811Z",
+  "programs": [
+    {
+      "name": "tolkanie-yadra-romanovsky-1989",
+      "section": "sports",
+      "steps": 40,
+      "inputs": [
+        "R1, R2, R3, R4 — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 1,
+          "hex": "45",
+          "cmd": "069",
+          "note": "хП5"
+        },
+        {
+          "addr": 2,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 3,
+          "hex": "B5",
+          "cmd": "181",
+          "note": "КхП5"
+        },
+        {
+          "addr": 4,
+          "hex": "65",
+          "cmd": "101",
+          "note": "Пх5"
+        },
+        {
+          "addr": 5,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 6,
+          "hex": "B5",
+          "cmd": "181",
+          "note": "КхП5"
+        },
+        {
+          "addr": 7,
+          "hex": "65",
+          "cmd": "101",
+          "note": "Пх5"
+        },
+        {
+          "addr": 8,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 9,
+          "hex": "B5",
+          "cmd": "181",
+          "note": "КхП5"
+        },
+        {
+          "addr": 10,
+          "hex": "1C",
+          "cmd": "028",
+          "note": "Fsin"
+        },
+        {
+          "addr": 11,
+          "hex": "62",
+          "cmd": "098",
+          "note": "Пх2"
+        },
+        {
+          "addr": 12,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 13,
+          "hex": "40",
+          "cmd": "064",
+          "note": "хП0"
+        },
+        {
+          "addr": 14,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx^2"
+        },
+        {
+          "addr": 15,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 16,
+          "hex": "63",
+          "cmd": "099",
+          "note": "Пх3"
+        },
+        {
+          "addr": 17,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 18,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 19,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 20,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 21,
+          "hex": "21",
+          "cmd": "033",
+          "note": "F√"
+        },
+        {
+          "addr": 22,
+          "hex": "60",
+          "cmd": "096",
+          "note": "Пх0"
+        },
+        {
+          "addr": 23,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 24,
+          "hex": "64",
+          "cmd": "100",
+          "note": "Пх4"
+        },
+        {
+          "addr": 25,
+          "hex": "1D",
+          "cmd": "029",
+          "note": "Fcos"
+        },
+        {
+          "addr": 26,
+          "hex": "62",
+          "cmd": "098",
+          "note": "Пх2"
+        },
+        {
+          "addr": 27,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 28,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 29,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 30,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 31,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 32,
+          "hex": "0C",
+          "cmd": "012",
+          "note": "ВП"
+        },
+        {
+          "addr": 33,
+          "hex": "05",
+          "cmd": "005",
+          "note": "5"
+        },
+        {
+          "addr": 34,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 35,
+          "hex": "0F",
+          "cmd": "015",
+          "note": "FВx"
+        },
+        {
+          "addr": 36,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 37,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 38,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 39,
+          "hex": "00",
+          "cmd": "00 000",
+          "note": ""
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/sports/tolkanie-yadra-romanovsky-1989.txt"
+    }
+  ]
+}

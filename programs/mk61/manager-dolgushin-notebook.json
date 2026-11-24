@@ -1,0 +1,623 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "mk61",
+  "saved": "2026-11-24T00:31:33.769Z",
+  "programs": [
+    {
+      "name": "manager-dolgushin-notebook",
+      "section": "simulation",
+      "steps": 100,
+      "inputs": [
+        "R0, R3, R9, RB, RD, RE — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "Пхd"
+        },
+        {
+          "addr": 1,
+          "hex": "6B",
+          "cmd": "107",
+          "note": "ПхB"
+        },
+        {
+          "addr": 2,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 3,
+          "hex": "4D",
+          "cmd": "077",
+          "note": "хПd"
+        },
+        {
+          "addr": 4,
+          "hex": "21",
+          "cmd": "033",
+          "note": "F√"
+        },
+        {
+          "addr": 5,
+          "hex": "60",
+          "cmd": "096",
+          "note": "Пх0"
+        },
+        {
+          "addr": 6,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 7,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "хПA"
+        },
+        {
+          "addr": 8,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 9,
+          "hex": "35",
+          "cmd": "053",
+          "note": "K{x}"
+        },
+        {
+          "addr": 10,
+          "hex": "5E",
+          "cmd": "094",
+          "note": "Fx=0"
+        },
+        {
+          "addr": 11,
+          "hex": "23",
+          "cmd": "23 035",
+          "note": ""
+        },
+        {
+          "addr": 12,
+          "hex": "3B",
+          "cmd": "059",
+          "note": "КСЧ"
+        },
+        {
+          "addr": 13,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 14,
+          "hex": "3B",
+          "cmd": "059",
+          "note": "КСЧ"
+        },
+        {
+          "addr": 15,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 16,
+          "hex": "23",
+          "cmd": "035",
+          "note": "F1/x"
+        },
+        {
+          "addr": 17,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 18,
+          "hex": "32",
+          "cmd": "050",
+          "note": "КЗН"
+        },
+        {
+          "addr": 19,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 20,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 21,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 22,
+          "hex": "35",
+          "cmd": "053",
+          "note": "K{x}"
+        },
+        {
+          "addr": 23,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 24,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 25,
+          "hex": "4C",
+          "cmd": "076",
+          "note": "хПC"
+        },
+        {
+          "addr": 26,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 27,
+          "hex": "7E",
+          "cmd": "126",
+          "note": "Kx≠0E"
+        },
+        {
+          "addr": 28,
+          "hex": "5C",
+          "cmd": "092",
+          "note": "Fx<0"
+        },
+        {
+          "addr": 29,
+          "hex": "41",
+          "cmd": "41 065",
+          "note": ""
+        },
+        {
+          "addr": 30,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 31,
+          "hex": "35",
+          "cmd": "053",
+          "note": "K{x}"
+        },
+        {
+          "addr": 32,
+          "hex": "57",
+          "cmd": "087",
+          "note": "Fx≠0"
+        },
+        {
+          "addr": 33,
+          "hex": "26",
+          "cmd": "26 038",
+          "note": ""
+        },
+        {
+          "addr": 34,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 35,
+          "hex": "34",
+          "cmd": "052",
+          "note": "K[x]"
+        },
+        {
+          "addr": 36,
+          "hex": "BA",
+          "cmd": "186",
+          "note": "КхПA"
+        },
+        {
+          "addr": 37,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "Пхd"
+        },
+        {
+          "addr": 38,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 39,
+          "hex": "4D",
+          "cmd": "077",
+          "note": "хПd"
+        },
+        {
+          "addr": 40,
+          "hex": "8E",
+          "cmd": "142",
+          "note": "KБПE"
+        },
+        {
+          "addr": 41,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 42,
+          "hex": "35",
+          "cmd": "053",
+          "note": "K{x}"
+        },
+        {
+          "addr": 43,
+          "hex": "5E",
+          "cmd": "094",
+          "note": "Fx=0"
+        },
+        {
+          "addr": 44,
+          "hex": "26",
+          "cmd": "26 038",
+          "note": ""
+        },
+        {
+          "addr": 45,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "Пхd"
+        },
+        {
+          "addr": 46,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 47,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 48,
+          "hex": "4D",
+          "cmd": "077",
+          "note": "хПd"
+        },
+        {
+          "addr": 49,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхC"
+        },
+        {
+          "addr": 50,
+          "hex": "35",
+          "cmd": "053",
+          "note": "K{x}"
+        },
+        {
+          "addr": 51,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 52,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 53,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 54,
+          "hex": "3B",
+          "cmd": "059",
+          "note": "КСЧ"
+        },
+        {
+          "addr": 55,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 56,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 57,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 58,
+          "hex": "BA",
+          "cmd": "186",
+          "note": "КхПA"
+        },
+        {
+          "addr": 59,
+          "hex": "09",
+          "cmd": "009",
+          "note": "9"
+        },
+        {
+          "addr": 60,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "хПA"
+        },
+        {
+          "addr": 61,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 62,
+          "hex": "35",
+          "cmd": "053",
+          "note": "K{x}"
+        },
+        {
+          "addr": 63,
+          "hex": "57",
+          "cmd": "087",
+          "note": "Fx≠0"
+        },
+        {
+          "addr": 64,
+          "hex": "79",
+          "cmd": "79 121",
+          "note": ""
+        },
+        {
+          "addr": 65,
+          "hex": "4C",
+          "cmd": "076",
+          "note": "хПC"
+        },
+        {
+          "addr": 66,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 67,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 68,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 69,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 70,
+          "hex": "BA",
+          "cmd": "186",
+          "note": "КхПA"
+        },
+        {
+          "addr": 71,
+          "hex": "21",
+          "cmd": "033",
+          "note": "F√"
+        },
+        {
+          "addr": 72,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхC"
+        },
+        {
+          "addr": 73,
+          "hex": "13",
+          "cmd": "019",
+          "note": "÷"
+        },
+        {
+          "addr": 74,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "Пхd"
+        },
+        {
+          "addr": 75,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 76,
+          "hex": "4D",
+          "cmd": "077",
+          "note": "хПd"
+        },
+        {
+          "addr": 77,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 78,
+          "hex": "93",
+          "cmd": "93 147",
+          "note": ""
+        },
+        {
+          "addr": 79,
+          "hex": "3B",
+          "cmd": "059",
+          "note": "КСЧ"
+        },
+        {
+          "addr": 80,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 81,
+          "hex": "3B",
+          "cmd": "059",
+          "note": "КСЧ"
+        },
+        {
+          "addr": 82,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 83,
+          "hex": "23",
+          "cmd": "035",
+          "note": "F1/x"
+        },
+        {
+          "addr": 84,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 85,
+          "hex": "32",
+          "cmd": "050",
+          "note": "КЗН"
+        },
+        {
+          "addr": 86,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 87,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 88,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 89,
+          "hex": "DA",
+          "cmd": "218",
+          "note": "КПхA"
+        },
+        {
+          "addr": 90,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 91,
+          "hex": "34",
+          "cmd": "052",
+          "note": "K[x]"
+        },
+        {
+          "addr": 92,
+          "hex": "BA",
+          "cmd": "186",
+          "note": "КхПA"
+        },
+        {
+          "addr": 93,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ПхA"
+        },
+        {
+          "addr": 94,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 95,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 96,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "хПA"
+        },
+        {
+          "addr": 97,
+          "hex": "5E",
+          "cmd": "094",
+          "note": "Fx=0"
+        },
+        {
+          "addr": 98,
+          "hex": "61",
+          "cmd": "61 097",
+          "note": ""
+        },
+        {
+          "addr": 99,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/simulation/manager-dolgushin-notebook.txt"
+    }
+  ]
+}

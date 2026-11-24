@@ -1,0 +1,269 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.706Z",
+  "programs": [
+    {
+      "name": "krestiki-noliki-shapiro-boyko-1989",
+      "section": "logic",
+      "steps": 41,
+      "inputs": [
+        "регистры задавать не нужно"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 1,
+          "hex": "09",
+          "cmd": "009",
+          "note": "9"
+        },
+        {
+          "addr": 2,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 3,
+          "hex": "41",
+          "cmd": "065",
+          "note": "хП1"
+        },
+        {
+          "addr": 4,
+          "hex": "42",
+          "cmd": "066",
+          "note": "хП2"
+        },
+        {
+          "addr": 5,
+          "hex": "53",
+          "cmd": "083",
+          "note": "ПП"
+        },
+        {
+          "addr": 6,
+          "hex": "26",
+          "cmd": "26 038",
+          "note": ""
+        },
+        {
+          "addr": 7,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 8,
+          "hex": "09",
+          "cmd": "009",
+          "note": "9"
+        },
+        {
+          "addr": 9,
+          "hex": "00",
+          "cmd": "000",
+          "note": "0"
+        },
+        {
+          "addr": 10,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 11,
+          "hex": "1C",
+          "cmd": "028",
+          "note": "Fsin"
+        },
+        {
+          "addr": 12,
+          "hex": "5E",
+          "cmd": "094",
+          "note": "Fx=0"
+        },
+        {
+          "addr": 13,
+          "hex": "20",
+          "cmd": "20 032",
+          "note": ""
+        },
+        {
+          "addr": 14,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 15,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 16,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 17,
+          "hex": "53",
+          "cmd": "083",
+          "note": "ПП"
+        },
+        {
+          "addr": 18,
+          "hex": "28",
+          "cmd": "28 040",
+          "note": ""
+        },
+        {
+          "addr": 19,
+          "hex": "27",
+          "cmd": "039",
+          "note": "К-"
+        },
+        {
+          "addr": 20,
+          "hex": "53",
+          "cmd": "083",
+          "note": "ПП"
+        },
+        {
+          "addr": 21,
+          "hex": "26",
+          "cmd": "26 038",
+          "note": ""
+        },
+        {
+          "addr": 22,
+          "hex": "53",
+          "cmd": "083",
+          "note": "ПП"
+        },
+        {
+          "addr": 23,
+          "hex": "26",
+          "cmd": "26 038",
+          "note": ""
+        },
+        {
+          "addr": 24,
+          "hex": "20",
+          "cmd": "032",
+          "note": "Fπ"
+        },
+        {
+          "addr": 25,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 26,
+          "hex": "D2",
+          "cmd": "210",
+          "note": "КПх2"
+        },
+        {
+          "addr": 27,
+          "hex": "62",
+          "cmd": "098",
+          "note": "Пх2"
+        },
+        {
+          "addr": 28,
+          "hex": "5E",
+          "cmd": "094",
+          "note": "Fx=0"
+        },
+        {
+          "addr": 29,
+          "hex": "31",
+          "cmd": "31 049",
+          "note": ""
+        },
+        {
+          "addr": 30,
+          "hex": "08",
+          "cmd": "008",
+          "note": "8"
+        },
+        {
+          "addr": 31,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 32,
+          "hex": "42",
+          "cmd": "066",
+          "note": "хП2"
+        },
+        {
+          "addr": 33,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 34,
+          "hex": "22",
+          "cmd": "034",
+          "note": "Fx²"
+        },
+        {
+          "addr": 35,
+          "hex": "21",
+          "cmd": "033",
+          "note": "F√"
+        },
+        {
+          "addr": 36,
+          "hex": "04",
+          "cmd": "004",
+          "note": "4"
+        },
+        {
+          "addr": 37,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 38,
+          "hex": "5E",
+          "cmd": "094",
+          "note": "Fx=0"
+        },
+        {
+          "addr": 39,
+          "hex": "19",
+          "cmd": "19 025",
+          "note": ""
+        },
+        {
+          "addr": 40,
+          "hex": "52",
+          "cmd": "082",
+          "note": "В/О"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/logic/krestiki-noliki-shapiro-boyko-1989.txt"
+    }
+  ]
+}

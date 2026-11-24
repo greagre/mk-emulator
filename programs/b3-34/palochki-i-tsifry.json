@@ -1,0 +1,269 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.719Z",
+  "programs": [
+    {
+      "name": "palochki-i-tsifry",
+      "section": "logic",
+      "steps": 41,
+      "inputs": [
+        "регистры задавать не нужно"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 1,
+          "hex": "07",
+          "cmd": "007",
+          "note": "7"
+        },
+        {
+          "addr": 2,
+          "hex": "40",
+          "cmd": "064",
+          "note": "хП0"
+        },
+        {
+          "addr": 3,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 4,
+          "hex": "41",
+          "cmd": "065",
+          "note": "хП1"
+        },
+        {
+          "addr": 5,
+          "hex": "4C",
+          "cmd": "076",
+          "note": "хПС"
+        },
+        {
+          "addr": 6,
+          "hex": "15",
+          "cmd": "021",
+          "note": "F10^x"
+        },
+        {
+          "addr": 7,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "хПА"
+        },
+        {
+          "addr": 8,
+          "hex": "61",
+          "cmd": "097",
+          "note": "Пх1"
+        },
+        {
+          "addr": 9,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхС"
+        },
+        {
+          "addr": 10,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 11,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 12,
+          "hex": "4C",
+          "cmd": "076",
+          "note": "хПС"
+        },
+        {
+          "addr": 13,
+          "hex": "14",
+          "cmd": "020",
+          "note": "↔"
+        },
+        {
+          "addr": 14,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ПхА"
+        },
+        {
+          "addr": 15,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 16,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 17,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 18,
+          "hex": "BC",
+          "cmd": "188",
+          "note": "КхПС"
+        },
+        {
+          "addr": 19,
+          "hex": "5D",
+          "cmd": "093",
+          "note": "FL0"
+        },
+        {
+          "addr": 20,
+          "hex": "09",
+          "cmd": "09 009",
+          "note": ""
+        },
+        {
+          "addr": 21,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 22,
+          "hex": "40",
+          "cmd": "064",
+          "note": "хП0"
+        },
+        {
+          "addr": 23,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 24,
+          "hex": "4D",
+          "cmd": "077",
+          "note": "хПД"
+        },
+        {
+          "addr": 25,
+          "hex": "09",
+          "cmd": "009",
+          "note": "9"
+        },
+        {
+          "addr": 26,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 27,
+          "hex": "5C",
+          "cmd": "092",
+          "note": "Fx<0"
+        },
+        {
+          "addr": 28,
+          "hex": "32",
+          "cmd": "32 050",
+          "note": ""
+        },
+        {
+          "addr": 29,
+          "hex": "DD",
+          "cmd": "221",
+          "note": "КПхД"
+        },
+        {
+          "addr": 30,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 31,
+          "hex": "23",
+          "cmd": "23 035",
+          "note": ""
+        },
+        {
+          "addr": 32,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "ПхД"
+        },
+        {
+          "addr": 33,
+          "hex": "17",
+          "cmd": "023",
+          "note": "Flg"
+        },
+        {
+          "addr": 34,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 35,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 36,
+          "hex": "4D",
+          "cmd": "077",
+          "note": "хПД"
+        },
+        {
+          "addr": 37,
+          "hex": "DD",
+          "cmd": "221",
+          "note": "КПхД"
+        },
+        {
+          "addr": 38,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "ПхД"
+        },
+        {
+          "addr": 39,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 40,
+          "hex": "23",
+          "cmd": "23 035",
+          "note": ""
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/logic/palochki-i-tsifry.txt"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+beskonechnaya-istoriya — adventure
+модель: mk61, шагов: 100
+
+Причины:
+- адрес 0 задан дважды

@@ -1,0 +1,191 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.720Z",
+  "programs": [
+    {
+      "name": "pmk-otgadyvaet-tsifry-shapiro-boyko-1989",
+      "section": "logic",
+      "steps": 28,
+      "inputs": [
+        "регистры задавать не нужно"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 1,
+          "hex": "45",
+          "cmd": "069",
+          "note": "хП5"
+        },
+        {
+          "addr": 2,
+          "hex": "46",
+          "cmd": "070",
+          "note": "хП6"
+        },
+        {
+          "addr": 3,
+          "hex": "04",
+          "cmd": "004",
+          "note": "4"
+        },
+        {
+          "addr": 4,
+          "hex": "14",
+          "cmd": "020",
+          "note": "↔"
+        },
+        {
+          "addr": 5,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 6,
+          "hex": "40",
+          "cmd": "064",
+          "note": "хП0"
+        },
+        {
+          "addr": 7,
+          "hex": "57",
+          "cmd": "087",
+          "note": "Fx≠0"
+        },
+        {
+          "addr": 8,
+          "hex": "25",
+          "cmd": "25 037",
+          "note": ""
+        },
+        {
+          "addr": 9,
+          "hex": "65",
+          "cmd": "101",
+          "note": "Пх5"
+        },
+        {
+          "addr": 10,
+          "hex": "B6",
+          "cmd": "182",
+          "note": "КхП6"
+        },
+        {
+          "addr": 11,
+          "hex": "5D",
+          "cmd": "093",
+          "note": "FL0"
+        },
+        {
+          "addr": 12,
+          "hex": "10",
+          "cmd": "10 016",
+          "note": ""
+        },
+        {
+          "addr": 13,
+          "hex": "D5",
+          "cmd": "213",
+          "note": "КПх5"
+        },
+        {
+          "addr": 14,
+          "hex": "04",
+          "cmd": "004",
+          "note": "4"
+        },
+        {
+          "addr": 15,
+          "hex": "40",
+          "cmd": "064",
+          "note": "хП0"
+        },
+        {
+          "addr": 16,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 17,
+          "hex": "46",
+          "cmd": "070",
+          "note": "хП6"
+        },
+        {
+          "addr": 18,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 19,
+          "hex": "00",
+          "cmd": "000",
+          "note": "0"
+        },
+        {
+          "addr": 20,
+          "hex": "12",
+          "cmd": "018",
+          "note": "×"
+        },
+        {
+          "addr": 21,
+          "hex": "D6",
+          "cmd": "214",
+          "note": "КПх6"
+        },
+        {
+          "addr": 22,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 23,
+          "hex": "5D",
+          "cmd": "093",
+          "note": "FL0"
+        },
+        {
+          "addr": 24,
+          "hex": "18",
+          "cmd": "18 024",
+          "note": ""
+        },
+        {
+          "addr": 25,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 26,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 27,
+          "hex": "02",
+          "cmd": "02 002",
+          "note": ""
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/logic/pmk-otgadyvaet-tsifry-shapiro-boyko-1989.txt"
+    }
+  ]
+}

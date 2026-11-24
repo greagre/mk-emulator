@@ -1,0 +1,71 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.664Z",
+  "programs": [
+    {
+      "name": "kon-tiki-multfilm",
+      "section": "educational",
+      "steps": 8,
+      "inputs": [
+        "RE — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Сх"
+        },
+        {
+          "addr": 1,
+          "hex": "09",
+          "cmd": "009",
+          "note": "9"
+        },
+        {
+          "addr": 2,
+          "hex": "40",
+          "cmd": "064",
+          "note": "П0"
+        },
+        {
+          "addr": 3,
+          "hex": "DE",
+          "cmd": "222",
+          "note": "КИПЕ"
+        },
+        {
+          "addr": 4,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 5,
+          "hex": "5D",
+          "cmd": "093",
+          "note": "FL0"
+        },
+        {
+          "addr": 6,
+          "hex": "03",
+          "cmd": "03 003",
+          "note": ""
+        },
+        {
+          "addr": 7,
+          "hex": "52",
+          "cmd": "082",
+          "note": "В/О"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/educational/kon-tiki-multfilm.txt"
+    }
+  ]
+}

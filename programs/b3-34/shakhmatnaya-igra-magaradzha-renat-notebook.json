@@ -1,0 +1,281 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.722Z",
+  "programs": [
+    {
+      "name": "shakhmatnaya-igra-magaradzha-renat-notebook",
+      "section": "logic",
+      "steps": 43,
+      "inputs": [
+        "RC, RD — задать значения"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Сх"
+        },
+        {
+          "addr": 1,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 2,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 3,
+          "hex": "40",
+          "cmd": "064",
+          "note": "хП0"
+        },
+        {
+          "addr": 4,
+          "hex": "60",
+          "cmd": "096",
+          "note": "Пх0"
+        },
+        {
+          "addr": 5,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 6,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 7,
+          "hex": "57",
+          "cmd": "087",
+          "note": "Fx≠0"
+        },
+        {
+          "addr": 8,
+          "hex": "13",
+          "cmd": "13 019",
+          "note": ""
+        },
+        {
+          "addr": 9,
+          "hex": "D0",
+          "cmd": "208",
+          "note": "КПх0"
+        },
+        {
+          "addr": 10,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 11,
+          "hex": "51",
+          "cmd": "081",
+          "note": "БП"
+        },
+        {
+          "addr": 12,
+          "hex": "04",
+          "cmd": "04 004",
+          "note": ""
+        },
+        {
+          "addr": 13,
+          "hex": "04",
+          "cmd": "004",
+          "note": "4"
+        },
+        {
+          "addr": 14,
+          "hex": "04",
+          "cmd": "004",
+          "note": "4"
+        },
+        {
+          "addr": 15,
+          "hex": "05",
+          "cmd": "005",
+          "note": "5"
+        },
+        {
+          "addr": 16,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 17,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 18,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 19,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 20,
+          "hex": "07",
+          "cmd": "007",
+          "note": "7"
+        },
+        {
+          "addr": 21,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 22,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 23,
+          "hex": "08",
+          "cmd": "008",
+          "note": "8"
+        },
+        {
+          "addr": 24,
+          "hex": "07",
+          "cmd": "007",
+          "note": "7"
+        },
+        {
+          "addr": 25,
+          "hex": "08",
+          "cmd": "008",
+          "note": "8"
+        },
+        {
+          "addr": 26,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 27,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "В↑"
+        },
+        {
+          "addr": 28,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 29,
+          "hex": "06",
+          "cmd": "006",
+          "note": "6"
+        },
+        {
+          "addr": 30,
+          "hex": "11",
+          "cmd": "017",
+          "note": "-"
+        },
+        {
+          "addr": 31,
+          "hex": "5E",
+          "cmd": "094",
+          "note": "Fx=0"
+        },
+        {
+          "addr": 32,
+          "hex": "38",
+          "cmd": "38 056",
+          "note": ""
+        },
+        {
+          "addr": 33,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхC"
+        },
+        {
+          "addr": 34,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 35,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "Пхd"
+        },
+        {
+          "addr": 36,
+          "hex": "00",
+          "cmd": "000",
+          "note": "0"
+        },
+        {
+          "addr": 37,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 38,
+          "hex": "6D",
+          "cmd": "109",
+          "note": "Пхd"
+        },
+        {
+          "addr": 39,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 40,
+          "hex": "6C",
+          "cmd": "108",
+          "note": "ПхC"
+        },
+        {
+          "addr": 41,
+          "hex": "00",
+          "cmd": "000",
+          "note": "0"
+        },
+        {
+          "addr": 42,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/logic/shakhmatnaya-igra-magaradzha-renat-notebook.txt"
+    }
+  ]
+}

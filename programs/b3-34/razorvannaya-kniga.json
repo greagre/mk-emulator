@@ -1,0 +1,167 @@
+{
+  "app": "mk-emulator",
+  "format": "programs",
+  "version": 2,
+  "model": "b3-34",
+  "saved": "2026-11-24T00:31:33.837Z",
+  "programs": [
+    {
+      "name": "razorvannaya-kniga",
+      "section": "utilities",
+      "steps": 24,
+      "inputs": [
+        "регистры задавать не нужно"
+      ],
+      "prog": [
+        {
+          "addr": 0,
+          "hex": "0E",
+          "cmd": "014",
+          "note": "↑"
+        },
+        {
+          "addr": 1,
+          "hex": "09",
+          "cmd": "009",
+          "note": "9"
+        },
+        {
+          "addr": 2,
+          "hex": "07",
+          "cmd": "007",
+          "note": "7"
+        },
+        {
+          "addr": 3,
+          "hex": "40",
+          "cmd": "064",
+          "note": "П0"
+        },
+        {
+          "addr": 4,
+          "hex": "01",
+          "cmd": "001",
+          "note": "1"
+        },
+        {
+          "addr": 5,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "ПА"
+        },
+        {
+          "addr": 6,
+          "hex": "02",
+          "cmd": "002",
+          "note": "2"
+        },
+        {
+          "addr": 7,
+          "hex": "45",
+          "cmd": "069",
+          "note": "П5"
+        },
+        {
+          "addr": 8,
+          "hex": "6A",
+          "cmd": "106",
+          "note": "ИПА"
+        },
+        {
+          "addr": 9,
+          "hex": "65",
+          "cmd": "101",
+          "note": "ИП5"
+        },
+        {
+          "addr": 10,
+          "hex": "10",
+          "cmd": "016",
+          "note": "+"
+        },
+        {
+          "addr": 11,
+          "hex": "4A",
+          "cmd": "074",
+          "note": "ПА"
+        },
+        {
+          "addr": 12,
+          "hex": "21",
+          "cmd": "033",
+          "note": "F√"
+        },
+        {
+          "addr": 13,
+          "hex": "35",
+          "cmd": "053",
+          "note": "К{x}"
+        },
+        {
+          "addr": 14,
+          "hex": "5E",
+          "cmd": "094",
+          "note": "Fx=0"
+        },
+        {
+          "addr": 15,
+          "hex": "19",
+          "cmd": "19 025",
+          "note": ""
+        },
+        {
+          "addr": 16,
+          "hex": "65",
+          "cmd": "101",
+          "note": "ИП5"
+        },
+        {
+          "addr": 17,
+          "hex": "0F",
+          "cmd": "015",
+          "note": "FBx"
+        },
+        {
+          "addr": 18,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        },
+        {
+          "addr": 19,
+          "hex": "D5",
+          "cmd": "213",
+          "note": "КИП5"
+        },
+        {
+          "addr": 20,
+          "hex": "5D",
+          "cmd": "093",
+          "note": "FL0"
+        },
+        {
+          "addr": 21,
+          "hex": "08",
+          "cmd": "08 008",
+          "note": ""
+        },
+        {
+          "addr": 22,
+          "hex": "0D",
+          "cmd": "013",
+          "note": "Cx"
+        },
+        {
+          "addr": 23,
+          "hex": "50",
+          "cmd": "080",
+          "note": "С/П"
+        }
+      ],
+      "data": {},
+      "layout": {},
+      "notes": [],
+      "src": "MKPro/readable/utilities/razorvannaya-kniga.txt"
+    }
+  ]
+}
