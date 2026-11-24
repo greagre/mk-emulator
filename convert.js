@@ -1,5 +1,6 @@
 /* convert.js — импорт файлов каталога programs/*.json прямо в корпусе.
-   Надстройка: ядро (core.js), библиотека (shelf.js) и разметка не меняются.
+   Вкладка-надстройка: ядро (core.js), библиотека (shelf.js) и разметка корпуса не меняются,
+   кроме одной строки подключения в index.html.
    Каталог хранит prog как массив объектов {addr, hex, cmd, note} —
    здесь он переводится в плоский массив кодов, который понимает core.js.
    Нераспознанное ("??") не превращается в 0: такой шаг попадает в missing. */
@@ -48,7 +49,6 @@
 
     var arr = Array.isArray(obj.programs) ? obj.programs : null;
     if (!arr && (obj.prog || obj.data)) arr = [obj];
-
     if (!arr) return list;
 
     for (i = 0; i < arr.length; i++) {
@@ -82,15 +82,18 @@
   }
 
   function buildUI() {
-    var btn = style('button', '', 'Файл .json');
-    btn.id = 'convBtn';
-    btn.title = 'Импорт файлов каталога programs/*.json';
-    var ref = byId('decodeBtn');
-    if (ref && ref.className) btn.className = ref.className;
-    else btn.className = 'hbtn';
-
-    var head = ref ? ref.parentNode : (byId('head') || document.body);
-    head.appendChild(btn);
+    var btn = byId('convBtn');
+    if (!btn) {
+      btn = style('button', '', 'Файл');
+      btn.id = 'convBtn';
+      btn.className = 'topbtn';
+      btn.title = 'Импорт файлов каталога programs/*.json';
+      var anchor = byId('shelfOpen');
+      var bar = anchor ? anchor.parentNode : document.body;
+      bar.appendChild(btn);
+    } else if (!btn.title) {
+      btn.title = 'Импорт файлов каталога programs/*.json';
+    }
 
     var wrap = style('div',
       'position:fixed;inset:0;z-index:9999;display:none;background:rgba(0,0,0,.55);' +
@@ -98,27 +101,29 @@
     wrap.id = 'convWrap';
 
     var box = style('div',
-      'background:var(--bg,#fff);color:inherit;max-width:720px;width:100%;border-radius:14px;' +
-      'padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:15px;');
+      'background:var(--bg,#fff);color:var(--text,inherit);max-width:720px;width:100%;border-radius:14px;' +
+      'padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:15px;border:1px solid var(--line,#ccc);');
 
-    var title = style('div', 'font-weight:700;font-size:18px;margin-bottom:4px;', 'Импорт файлов каталога');
-    var hint = style('div', 'opacity:.7;font-size:13px;margin-bottom:12px;',
-      'Файлы programs/*.json. Нераспознанные команды ("??") не превращаются в 0 — программа с ними не откроется, пока не снята галочка.');
+    var title = style('div', 'font-weight:700;font-size:17px;margin-bottom:4px;', 'Импорт файлов каталога');
+    var hint = style('div', 'opacity:.75;font-size:12px;line-height:1.4;margin-bottom:12px;',
+      'Файлы programs/*.json (объекты addr/hex). Нераспознанные команды «??» не заменяются нулём: ' +
+      'программа с ними не откроется в корпусе.');
 
-    var pick = style('input', 'margin:6px 0 10px;');
+    var pick = style('input', 'margin:6px 0 10px;max-width:100%;');
     pick.type = 'file';
     pick.accept = '.json,application/json';
     pick.multiple = true;
 
     var drop = style('div',
-      'border:2px dashed currentColor;border-radius:10px;padding:18px;text-align:center;opacity:.75;margin-bottom:12px;',
-      'или перетащите .json сюда');
+      'border:2px dashed var(--line,currentColor);border-radius:10px;padding:18px;text-align:center;' +
+      'opacity:.7;margin-bottom:12px;font-size:13px;', 'или перетащите .json сюда');
 
-    var list = style('div', 'display:flex;flex-direction:column;gap:8px;max-height:48vh;overflow:auto;');
+    var list = style('div', 'display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow:auto;');
     list.id = 'convList';
 
     var actions = style('div', 'display:flex;gap:8px;justify-content:flex-end;margin-top:12px;');
-    var closeB = style('button', 'padding:8px 14px;border-radius:8px;', 'Закрыть');
+    var closeB = style('button', 'padding:8px 14px;border-radius:8px;border:1px solid var(--line,#ccc);' +
+      'background:var(--chip,#f2f2f2);color:inherit;font:inherit;cursor:pointer;', 'Закрыть');
 
     actions.appendChild(closeB);
     box.appendChild(title);
@@ -130,10 +135,8 @@
     wrap.appendChild(box);
     document.body.appendChild(wrap);
 
-    function open() { wrap.style.display = 'flex'; }
     function close() { wrap.style.display = 'none'; }
-
-    btn.onclick = open;
+    btn.onclick = function () { wrap.style.display = 'flex'; };
     closeB.onclick = close;
     wrap.onclick = function (e) { if (e.target === wrap) close(); };
 
@@ -145,14 +148,14 @@
     ['dragenter', 'dragover'].forEach(function (ev) {
       drop.addEventListener(ev, function (e) { e.preventDefault(); drop.style.opacity = '1'; });
     });
-    drop.addEventListener('dragleave', function () { drop.style.opacity = '.75'; });
+    drop.addEventListener('dragleave', function () { drop.style.opacity = '.7'; });
     drop.addEventListener('drop', function (e) {
       e.preventDefault();
-      drop.style.opacity = '.75';
+      drop.style.opacity = '.7';
       addFiles(e.dataTransfer.files);
     });
 
-    return { open: open };
+    return { close: close };
   }
 
   function addFiles(fileList) {
@@ -191,20 +194,19 @@
     list.innerHTML = '';
 
     if (!items.length) {
-      list.appendChild(style('div', 'opacity:.6;', 'Файлы ещё не выбраны.'));
+      list.appendChild(style('div', 'opacity:.6;font-size:13px;', 'Файлы ещё не выбраны.'));
       return;
     }
 
     items.forEach(function (p, idx) {
       var row = style('div',
-        'border:1px solid rgba(128,128,128,.35);border-radius:10px;padding:10px;display:flex;' +
-        'flex-direction:column;gap:6px;');
+        'border:1px solid var(--line,rgba(128,128,128,.35));border-radius:10px;padding:10px;' +
+        'display:flex;flex-direction:column;gap:6px;');
 
-      var nameRow = style('div', 'font-weight:600;word-break:break-word;', p.name);
-      row.appendChild(nameRow);
+      row.appendChild(style('div', 'font-weight:600;word-break:break-word;font-size:14px;', p.name));
 
       if (p.error) {
-        row.appendChild(style('div', 'color:#c0392b;font-size:13px;', p.error));
+        row.appendChild(style('div', 'color:#c0392b;font-size:12px;', p.error));
         list.appendChild(row);
         return;
       }
@@ -215,25 +217,30 @@
       info += p.missing.length
         ? ' · не распознано: ' + p.missing.length + ' (адреса ' + p.missing.join(', ') + ')'
         : ' · все ячейки известны';
-      var infoRow = style('div', 'font-size:13px;opacity:.8;', info);
-      if (p.missing.length) infoRow.style.color = '#c0392b';
+
+      var infoRow = style('div', 'font-size:12px;opacity:.85;', info);
+      if (p.missing.length) { infoRow.style.color = '#c0392b'; infoRow.style.opacity = '1'; }
       row.appendChild(infoRow);
 
       var rowActions = style('div', 'display:flex;gap:8px;flex-wrap:wrap;');
+      var bcss = 'padding:6px 12px;border-radius:8px;border:1px solid var(--line,#ccc);' +
+        'background:var(--chip,#f2f2f2);color:inherit;font:inherit;font-size:12px;cursor:pointer;';
 
-      var saveB = style('button', 'padding:6px 12px;border-radius:8px;', 'Скачать для корпуса');
+      var saveB = style('button', bcss, 'Скачать для корпуса');
       saveB.onclick = function () { downloadOne(p); };
       rowActions.appendChild(saveB);
 
-      var openB = style('button', 'padding:6px 12px;border-radius:8px;', 'Открыть в корпусе');
+      var openB = style('button', bcss, 'Открыть в корпусе');
       if (p.missing.length) {
         openB.disabled = true;
+        openB.style.opacity = '.5';
+        openB.style.cursor = 'not-allowed';
         openB.title = 'Есть нераспознанные команды: ' + p.missing.join(', ');
       }
       openB.onclick = function () { openInBody(p); };
       rowActions.appendChild(openB);
 
-      var delB = style('button', 'padding:6px 12px;border-radius:8px;opacity:.7;', 'Убрать');
+      var delB = style('button', bcss + 'opacity:.7;', 'Убрать');
       delB.onclick = function () { items.splice(idx, 1); render(); };
       rowActions.appendChild(delB);
 
@@ -298,8 +305,7 @@
   }
 
   function boot() {
-    if (byId('convBtn')) return;
-    buildUI();
+    if (!byId('convWrap')) buildUI();
     render();
   }
 
