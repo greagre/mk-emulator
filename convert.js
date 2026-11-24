@@ -5,17 +5,15 @@
    здесь он переводится в плоский массив кодов, который понимает core.js.
    Нераспознанное ("??") не превращается в 0: такой шаг попадает в missing.
 
-   v2: добавлена инъекция стилей.
-   Причина была не в шелфе и не в кнопке «Файл», а в строке шапки:
-   .top — flex без переноса, select растянут на всё свободное место.
-   Семью элементами шапка становилась шире телефона, документ получал
-   горизонтальную прокрутку, и всё содержимое (включая окно «Программы»)
-   уезжало вбок и обрезалось с обеих сторон. Здесь перенос включается,
-   а select больше не может выдавить кнопки за край. */
+   v3: шапка — строго ОДНА строка.
+   В v2 был flex-wrap: wrap, из-за чего «Дек» падал на второй ряд.
+   Теперь переноса нет, а список моделей не растягивается: он получает
+   фиксированную ширину 96px и сжимается первым, поэтому остальные
+   кнопки всегда остаются на месте и видны целиком. */
 (function () {
   'use strict';
 
-  var VERSION = 2;
+  var VERSION = 3;
   var FIX_ID = 'mkLayoutFix';
 
   function byId(id) { return document.getElementById(id); }
@@ -25,15 +23,17 @@
     /* горизонтальная прокрутка страницы не нужна никогда */
     'html, body { overflow-x: hidden; max-width: 100%; }',
 
-    /* шапка: переносится, кнопки не растягиваются, список моделей не выдавливает */
-    '.top { flex-wrap: wrap; align-items: center; gap: 6px; }',
+    /* шапка: одна строка, ничего не переносится и не уезжает за край */
+    '.top { display: flex; flex-wrap: nowrap; align-items: center; gap: 4px; }',
     '.top > label { flex: 0 0 auto; }',
-    '.top > select, #model { flex: 1 1 120px; min-width: 0; max-width: 100%; }',
-    '.top > .topbtn { flex: 0 0 auto; }',
-    '.top > a.topbtn { white-space: nowrap; }',
+    '.top > select, #model { flex: 0 1 96px; width: 96px; min-width: 0; max-width: 96px;' +
+      ' padding: 9px 6px; font-size: 13px; text-overflow: ellipsis; }',
+    '.top > .topbtn { flex: 0 0 auto; padding: 9px 7px; font-size: 13px; }',
+    '.top > a.topbtn { flex: 0 0 auto; padding: 9px 7px; font-size: 11px; white-space: nowrap; }',
+    '#themeBtn { min-width: 34px; }',
 
     /* окно «Программы»: не шире экрана, даже если что-то внутри попытается вырасти */
-    '.shelf { max-width: 100vw; }',
+    '.shelf { max-width: 100vw; padding: 8px; }',
     '.shelf-card { min-width: 0; max-width: min(520px, 100%); }',
     '.shelf-head, .shelf-tools, .shelf-list { min-width: 0; }',
     '.shelf-tools button { min-width: 0; flex: 1 1 130px; overflow: hidden; text-overflow: ellipsis; }',
@@ -44,12 +44,18 @@
     '#convWrap { max-width: 100vw; }',
     '#convWrap > div, #convList { min-width: 0; }',
 
-    /* на узком экране подпись «Модель» убирается — она и так понятна по названию */
-    '@media (max-width: 380px) {',
+    /* очень узкий экран: подпись «Модель» скрывается, отступы кнопок меньше */
+    '@media (max-width: 430px) {',
     '  .top > label { display: none; }',
-    '  .top > .topbtn { padding: 8px 8px; font-size: 13px; }',
-    '  .top > a.topbtn { font-size: 11px; }',
-    '  #themeBtn { min-width: 34px; }',
+    '  .top { gap: 3px; }',
+    '  .top > .topbtn { padding: 8px 6px; font-size: 13px; }',
+    '  .top > a.topbtn { padding: 8px 6px; font-size: 10.5px; }',
+    '  #themeBtn { min-width: 32px; }',
+    '}',
+    '@media (max-width: 345px) {',
+    '  .top > select, #model { flex: 0 1 76px; width: 76px; max-width: 76px; font-size: 12px; }',
+    '  .top > a.topbtn { padding: 8px 5px; font-size: 10px; }',
+    '  .top > .topbtn { padding: 8px 5px; }',
     '}'
   ].join('\n');
 
