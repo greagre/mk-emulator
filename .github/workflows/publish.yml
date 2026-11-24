@@ -1,53 +1,60 @@
 name: Publish programs
 
+# Ручной запуск: Actions -> Publish programs -> Run workflow.
+# Генератор разбирает MKPro/readable и коммитит результат в programs/.
+
 on:
   workflow_dispatch:
-    inputs:
-      src:
-        description: 'Путь к каталогу readable (по умолчанию ../MKPro/readable)'
-        required: false
-        default: ''
+
+permissions:
+  contents: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout mk-emulator
+      - name: Забрать эмулятор
         uses: actions/checkout@v4
+        with:
+          path: app
 
-      - name: Checkout MKPro (источник листингов)
+      - name: Забрать MKPro
         uses: actions/checkout@v4
         with:
           repository: greagre/MKPro
           path: .src-MKPro
-        continue-on-error: true
 
-      - name: Setup Node
+      - name: Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
 
-      - name: Publish
+      - name: Проверить источник
         run: |
-          SRC="${{ github.event.inputs.src }}"
-          if [ -z "$SRC" ]; then SRC="$GITHUB_WORKSPACE/.src-MKPro/readable"; fi
-          echo "Источник: $SRC"
-          node publish.cjs --src "$SRC" --out ./programs
+          test -d "$GITHUB_WORKSPACE/.src-MKPro/readable" \
+            && echo "Источник на месте" \
+            || (echo "Нет папки .src-MKPro/readable" && exit 1)
 
-      - name: Summary
+      - name: Разобрать программы
+        working-directory: app
+        env:
+          MKPRO_DIR: ${{ github.workspace }}/.src-MKPro/readable
+        run: node publish.cjs
+
+      - name: Показать итог
+        working-directory: app
         run: |
-          node -e "
-            const c=require('./programs/_catalog.json');
-            let s='## Публикация программ\n\n';
-            s+='| Показатель | Значение |\n|:---|---:|\n';
-            s+='| Всего файлов | '+c.total+' |\n';
-            s+='| Готово | '+c.ready+' |\n';
-            s+='| Не разобрано | '+c.unresolved+' |\n';
-            require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY,s);
-          "
+          node -e "const c=require('./programs/_catalog.json');console.log('всего '+c.total+', готово '+c.ready+', не разобрано '+c.unresolved)"
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: programs
-          path: programs/
+      - name: Закоммитить программы
+        working-directory: app
+        run: |
+          git config user.name "programs-bot"
+          git config user.email "programs-bot@users.noreply.github.com"
+          git add programs
+          if git diff --staged --quiet; then
+            echo "Изменений нет"
+          else
+            git commit -m "programs: каталог обновлён генератором"
+            git push
+          fi
