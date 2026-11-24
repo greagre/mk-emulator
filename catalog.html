@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Каталог → корпус · mk-emulator</title>
+<style>
+  :root{
+    --bg:#f4f1ea; --panel:#fffdf8; --ink:#20201d; --dim:#6b675f;
+    --line:#d9d3c6; --accent:#1a7f47; --bad:#c0392b; --warn:#a86a00;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#17181a; --panel:#202225; --ink:#e9e7e2; --dim:#9b968d;
+           --line:#34373b; --accent:#3fbf78; --bad:#ef6a5a; --warn:#e0a94a; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:16px 14px 40px;background:var(--bg);color:var(--ink);
+       font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  h1{font-size:19px;margin:0 0 6px}
+  .lead{color:var(--dim);font-size:13.5px;margin:0 0 14px;max-width:60ch}
+  .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;
+       border:1px solid var(--line);background:var(--panel);color:var(--ink);
+       font:600 13.5px/1 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;cursor:pointer}
+  .btn:hover{border-color:var(--accent)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .chk{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--dim)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+        padding:12px 14px;margin-bottom:10px}
+  .card h2{font-size:15px;margin:0 0 4px}
+  .meta{font-size:12.5px;color:var(--dim);margin-bottom:8px}
+  .tag{display:inline-block;padding:2px 7px;border-radius:6px;font-size:11.5px;
+       border:1px solid var(--line);margin-right:5px}
+  .tag.ok{color:var(--accent);border-color:var(--accent)}
+  .tag.bad{color:var(--bad);border-color:var(--bad)}
+  .tag.warn{color:var(--warn);border-color:var(--warn)}
+  .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+  .holes{font-size:12.5px;color:var(--bad);margin-top:6px;word-break:break-word}
+  .empty{color:var(--dim);font-size:13.5px}
+  code{font:12.5px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;
+       background:rgba(127,127,127,.13);padding:1px 4px;border-radius:4px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<h1>Каталог → корпус</h1>
+<p class="lead">
+  Файлы из <code>programs/b3-34</code>, <code>programs/mk61</code> и <code>programs/partial</code>
+  хранят программу как список объектов <code>{addr, hex, cmd, note}</code> — это удобно читать,
+  но ядро корпуса ждёт плоский массив кодов. Эта страница переводит одно в другое.
+  Корпус и <code>shelf.js</code> не меняются.
+</p>
+
+<div class="bar">
+  <label class="btn primary">Выбрать файл .json
+    <input type="file" id="file" accept=".json,application/json" multiple hidden>
+  </label>
+  <label class="chk"><input type="checkbox" id="strict" checked>
+    не открывать программу, где есть нераспознанные команды</label>
+</div>
+
+<div id="out"><div class="empty">Файл не выбран.</div></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var LIB_KEY = 'mk-emulator/library';
+  var BRIDGE_KEY = 'mk-emulator/bridge';
+
+  var out = document.getElementById('out');
+  var input = document.getElementById('file');
+  var strictBox = document.getElementById('strict');
+
+  /* hex-ячейка → код для ядра. "14" → 0x14 (20), как в shelf.js */
+  function hexToCode(h) {
+    if (typeof h === 'number') {
+      return (isFinite(h) && h >= 0 && h <= 255) ? (h | 0) : null;
+    }
+    if (typeof h !== 'string') return null;
+    var s = h.trim();
+    if (!/^[0-9a-fA-F]{1,2}$/.test(s)) return null;
+    return parseInt(s, 16);
+  }
+
+  /* главное: prog (объекты или строки) → {codes, holes} */
+  function toCodes(prog) {
+    var codes = [], holes = [];
+    if (!Array.isArray(prog)) return { codes: codes, holes: [{ addr: 0, label: 'поле prog не массив' }] };
+
+    prog.forEach(function (el, i) {
+      if (typeof el === 'number' || typeof el === 'string') {
+        var c = hexToCode(el);
+        if (c === null) { holes.push({ addr: i, label: String(el) }); codes.push(null); }
+        else codes.push(c);
+        return;
+      }
+      if (el && typeof el === 'object') {
+        var addr = (typeof el.addr === 'number') ? el.addr : i;
+        var code = hexToCode(el.hex);
+        if (code === null) {
+          holes.push({ addr: addr, label: el.note || el.hex || '?' });
+          codes.push(null);
+        } else codes.push(code);
+        return;
+      }
+      holes.push({ addr: i, label: '?' });
+      codes.push(null);
+    });
+
+    return { codes: codes, holes: holes };
+  }
+
+  /* все программы из одного файла: programs[] или одиночная prog[] */
+  function programsFrom(obj) {
+    if (!obj) return [];
+    if (Array.isArray(obj.programs)) return obj.programs;
+    if (Array.isArray(obj.prog)) return [obj];
+    if (Array.isArray(obj)) return obj;
+    return [];
+  }
+
+  function fmtHoles(holes) {
+    return holes.map(function (h) {
+      return 'адрес ' + h.addr + ' — ' + h.label;
+    }).join('; ');
+  }
+
+  function el(tag, cls, text) {
+    var d = document.createElement(tag);
+    if (cls) d.className = cls;
+    if (text !== undefined) d.textContent = text;
+    return d;
+  }
+
+  function download(obj, name) {
+    var blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+
+  /* собрать запись для библиотеки корпуса (формат shelf.js) */
+  function libEntry(item) {
+    var e = {
+      name: item.name,
+      prog: item.codes,
+      data: (item.data && typeof item.data === 'object') ? item.data : {},
+      savedAt: Date.now()
+    };
+    if (item.inputs) e.inputs = item.inputs;
+    if (item.src) e.src = item.src;
+    return e;
+  }
+
+  function openInBody(item) {
+    try {
+      var arr = [];
+      var raw = localStorage.getItem(LIB_KEY);
+      if (raw) { var p = JSON.parse(raw); if (Array.isArray(p)) arr = p; }
+
+      var entry = libEntry(item);
+      var idx = -1;
+      for (var i = 0; i < arr.length; i++) if (arr[i].name === entry.name) { idx = i; break; }
+      if (idx < 0) arr.push(entry); else arr[idx] = entry;
+      localStorage.setItem(LIB_KEY, JSON.stringify(arr));
+
+      /* мост: shelf.js заберёт его сам при старте корпуса */
+      localStorage.setItem(BRIDGE_KEY, JSON.stringify({
+        from: item.name,
+        prog: item.codes,
+        data: entry.data
+      }));
+    } catch (e) {
+      alert('Не смог сохранить в память браузера: ' + e.message);
+      return;
+    }
+    location.href = 'index.html';
+  }
+
+  function card(item, model) {
+    var d = el('div', 'card');
+    d.appendChild(el('h2', null, item.name));
+
+    var m = el('div', 'meta');
+    m.appendChild(el('span', 'tag', 'шагов ' + item.codes.length));
+    if (item.holes.length) {
+      m.appendChild(el('span', 'tag bad', 'не разобрано ' + item.holes.length));
+    } else {
+      m.appendChild(el('span', 'tag ok', 'все ячейки известны'));
+    }
+    if (model) m.appendChild(el('span', 'tag', 'модель ' + model));
+    if (item.status === 'partial') m.appendChild(el('span', 'tag warn', 'status: partial'));
+    if (item.section) m.appendChild(el('span', 'tag', item.section));
+    d.appendChild(m);
+
+    if (item.holes.length) {
+      var h = el('div', 'holes', 'Не переведено: ' + fmtHoles(item.holes));
+      d.appendChild(h);
+    }
+
+    var acts = el('div', 'acts');
+
+    var bDownload = el('button', 'btn', 'Скачать для корпуса');
+    bDownload.type = 'button';
+    bDownload.addEventListener('click', function () {
+      download({
+        app: 'mk-emulator',
+        format: 'programs',
+        version: 2,
+        model: model || 'b3-34',
+        saved: new Date().toISOString(),
+        programs: [{
+          name: item.name,
+          prog: item.codes.filter(function (c) { return c !== null; }),
+          data: item.data || {},
+          inputs: item.inputs || [],
+          src: item.src || ''
+        }]
+      }, item.name + '.prog.json');
+    });
+    acts.appendChild(bDownload);
+
+    var bOpen = el('button', 'btn primary', 'Открыть в корпусе');
+    bOpen.type = 'button';
+    if (item.holes.length && strictBox.checked) {
+      bOpen.disabled = true;
+      bOpen.title = 'В программе есть нераспознанные команды';
+    }
+    bOpen.addEventListener('click', function () { openInBody(item); });
+    acts.appendChild(bOpen);
+
+    d.appendChild(acts);
+    return d;
+  }
+
+  function handleFiles(files) {
+    if (!files || !files.length) return;
+    out.innerHTML = '';
+    Array.prototype.slice.call(files).forEach(function (f) {
+      var reader = new FileReader();
+      reader.onload = function () {
+        var obj;
+        try { obj = JSON.parse(String(reader.result)); }
+        catch (e) {
+          out.appendChild(el('div', 'card', f.name + ': это не JSON — ' + e.message));
+          return;
+        }
+
+        var list = programsFrom(obj);
+        if (!list.length) {
+          out.appendChild(el('div', 'card', f.name + ': внутри нет programs[] или prog[]'));
+          return;
+        }
+
+        var head = el('div', 'meta', f.name + ' · программ: ' + list.length);
+        out.appendChild(head);
+
+        list.forEach(function (p) {
+          var conv = toCodes(p.prog);
+          var item = {
+            name: String(p.name || p.title || 'Без названия'),
+            codes: conv.codes,
+            holes: conv.holes,
+            data: p.data || {},
+            inputs: p.inputs || [],
+            src: p.src || f.name,
+            status: p.status || '',
+            section: p.section || ''
+          };
+          out.appendChild(card(item, obj.model || p.model || ''));
+        });
+      };
+      reader.onerror = function () {
+        out.appendChild(el('div', 'card', f.name + ': не смог прочитать файл'));
+      };
+      reader.readAsText(f);
+    });
+  }
+
+  input.addEventListener('change', function () {
+    handleFiles(input.files);
+    input.value = '';
+  });
+
+  /* перетаскивание файла — на десктопе */
+  document.addEventListener('dragover', function (e) { e.preventDefault(); });
+  document.addEventListener('drop', function (e) {
+    e.preventDefault();
+    if (e.dataTransfer && e.dataTransfer.files) handleFiles(e.dataTransfer.files);
+  });
+
+  /* если открыт локально (file://), предупредим: мост работает только на http(s) */
+  if (location.protocol === 'file:') {
+    var w = el('div', 'card',
+      'Страница открыта как файл. Кнопка «Скачать для корпуса» работает и так, ' +
+      'а «Открыть в корпусе» требует http(s) — иначе браузер не даст общий localStorage.');
+    out.appendChild(w);
+  }
+})();
+</script>
+</body>
+</html>
