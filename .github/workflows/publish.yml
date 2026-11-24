@@ -2,9 +2,17 @@ name: Publish programs
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'publish.cjs'
+      - '.github/workflows/publish.yml'
 
 permissions:
   contents: write
+
+concurrency:
+  group: publish-programs
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -14,12 +22,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: app
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Забрать MKPro
         uses: actions/checkout@v4
         with:
           repository: greagre/MKPro
-          path: app/.src-MKPro
+          path: .src-MKPro
 
       - name: Node
         uses: actions/setup-node@v4
@@ -27,31 +37,57 @@ jobs:
           node-version: 20
 
       - name: Проверить источник
+        run: |
+          echo "Источник: $GITHUB_WORKSPACE/.src-MKPro"
+          ls -la "$GITHUB_WORKSPACE/.src-MKPro" | head -30
+          if [ ! -d "$GITHUB_WORKSPACE/.src-MKPro/games" ]; then
+            echo "::error::В MKPro нет папки games"
+            exit 1
+          fi
+          echo "Листингов в games: $(find "$GITHUB_WORKSPACE/.src-MKPro/games" -name '*.txt' | wc -l)"
+          if [ -d "$GITHUB_WORKSPACE/.src-MKPro/readable" ]; then
+            echo "Листингов в readable: $(find "$GITHUB_WORKSPACE/.src-MKPro/readable" -name '*.txt' | wc -l)"
+          fi
+
+      - name: Подложить источник на оба известных пути
         working-directory: app
         run: |
-          test -d .src-MKPro/games || { echo "Нет папки .src-MKPro/games"; exit 1; }
-          echo "Файлов листингов: $(find .src-MKPro/games -name '*.txt' | wc -l)"
+          mkdir -p MKPro
+          ln -sfn "$GITHUB_WORKSPACE/.src-MKPro/games" MKPro/games
+          if [ -d "$GITHUB_WORKSPACE/.src-MKPro/readable" ]; then
+            ln -sfn "$GITHUB_WORKSPACE/.src-MKPro/readable" MKPro/readable
+          fi
+          ls -la MKPro
 
-      - name: Собрать программы
+      - name: Разобрать программы
         working-directory: app
         env:
-          MKPRO_GAMES: ${{ github.workspace }}/app/.src-MKPro/games
+          MKPRO_GAMES: ${{ github.workspace }}/.src-MKPro/games
+          MKPRO_DIR: ${{ github.workspace }}/.src-MKPro/games
         run: node publish.cjs
 
-      - name: Итог в Job Summary
+      - name: Итог разбора
+        if: always()
         working-directory: app
         run: |
-          node -e "const c=require('./programs/_catalog.json');console.log('всего '+c.total+', готово '+c.ready+' (Б3-34 '+c.byModel['b3-34']+', МК-61 '+c.byModel.mk61+'), не разобрано '+c.unresolved)" | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ -f programs/_catalog.json ]; then
+            node -e "const c=require('./programs/_catalog.json');console.log('всего:',c.total,'| готово:',c.ready,'| не разобрано:',c.unresolved);if(c.byModel)console.log('по моделям:',JSON.stringify(c.byModel));"
+          else
+            echo "::error::_catalog.json не создан"
+            exit 1
+          fi
 
       - name: Закоммитить программы
         working-directory: app
         run: |
           git config user.name "programs-bot"
           git config user.email "programs-bot@users.noreply.github.com"
+          rm -f MKPro/games MKPro/readable
           git add programs
           if git diff --staged --quiet; then
-            echo "Изменений нет"
-          else
-            git commit -m "programs: пересобрано из MKPro/games (publish.cjs rev3)"
-            git push
+            echo "Изменений нет — каталог уже актуален"
+            exit 0
           fi
+          git commit -m "programs: пересборка каталога (publish.cjs v3)"
+          git pull --rebase origin main
+          git push origin HEAD:main
