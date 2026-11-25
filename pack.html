@@ -31,12 +31,14 @@
     white-space: pre-wrap; word-break: break-word;
     background: #23211c; color: #d9d5c7;
     border-radius: 10px; padding: 12px; margin: 0;
-    min-height: 90px;
+    min-height: 120px; max-height: 60vh; overflow: auto;
   }
   .ok { color: #7fd18b; }
   .err { color: #ff9a8b; }
+  .warn { color: #e8c579; }
   ol { padding-left: 20px; margin: 0; }
   li { margin: 0 0 6px; }
+  code { font: 13px ui-monospace, Menlo, Consolas, monospace; }
 </style>
 </head>
 <body>
@@ -44,20 +46,22 @@
 <h1>Автономный файл эмулятора</h1>
 
 <div class="card">
-  <p><b>Зачем.</b> Если открыть <code>index.html</code> прямо из архива или файлового менеджера,
-  браузер не читает соседние <code>core.js</code>, <code>ui.js</code>, <code>layout.css</code> —
-  получится голая разметка без клавиатуры. Эта страница собирает всё в <b>один файл</b>:
-  он открывается с телефона без интернета и без сервера.</p>
-  <button id="go">Собрать и скачать mk-offline.html</button>
+  <p><b>Полная сборка.</b> Вшивает в один файл корпус Б3-34, стили и скрипты,
+  <b>все программы из каталога</b> и панель «Каталог» внизу экрана.
+  Файл открывается с телефона или планшета без интернета и без сервера.
+  Сборка читает программы с сайта — нужен интернет на время сборки.</p>
+  <button id="go">Собрать полную версию (с каталогом)</button>
+  <button id="lite">Только калькулятор (быстро, без каталога)</button>
   <button id="view" hidden>Открыть собранный файл здесь же</button>
 </div>
 
 <div class="card">
-  <p><b>Что делать с файлом:</b></p>
+  <p><b>Что дальше:</b></p>
   <ol>
-    <li>Нажми кнопку — браузер скачает <code>mk-offline.html</code> в папку «Загрузки».</li>
-    <li>Открой его тем же файловым менеджером, что и раньше, — на этот раз корпус и клавиатура заработают.</li>
-    <li>Для удобства добавь файл на главный экран через меню Chrome → «Добавить на главный экран».</li>
+    <li>Нажми кнопку. Браузер скачает <code>mk-offline.html</code> в «Загрузки».</li>
+    <li>Открой его файловым менеджером — корпус, клавиатура и каталог заработают.</li>
+    <li>Перенеси файл на планшет как обычный файл и открой там в Chrome.</li>
+    <li>Кнопка «Каталог» внизу справа — поиск по 704 программам и загрузка в корпус.</li>
   </ol>
 </div>
 
@@ -68,16 +72,21 @@
   'use strict';
 
   var FILES = ['layout.css', 'core.js', 'profiles.js', 'ui.js', 'shelf.js', 'convert.js'];
+  var CATALOG = 'programs/_catalog.json';
+
+  /* ссылки на отдельные страницы в офлайн-файле не открыть —
+     подменяем их на заглушку с пояснением */
   var PAGES = ['lang.html', 'b3-decode.html', 'tests.html', 'algo.html',
                'algo-v7.html', 'algo-v8.html', 'catalog.html', 'import.html'];
 
   var logEl = document.getElementById('log');
   var goBtn = document.getElementById('go');
+  var liteBtn = document.getElementById('lite');
   var viewBtn = document.getElementById('view');
   var lastUrl = null;
 
   function log(text, cls) {
-    var line = cls ? '<span class="' + cls + '">' + text + '</span>' : text;
+    var line = cls ? '<span class="' + cls + '">' + String(text) + '</span>' : String(text);
     logEl.innerHTML += '\n' + line;
     logEl.scrollTop = logEl.scrollHeight;
   }
@@ -85,7 +94,7 @@
   function reset() { logEl.innerHTML = 'собираю…'; }
 
   function get(file) {
-    return fetch(file + '?nocache=' + Date.now(), { cache: 'no-store' })
+    return fetch(file + '?v=' + Date.now(), { cache: 'no-store' })
       .then(function (r) {
         if (!r.ok) throw new Error(file + ' → HTTP ' + r.status);
         return r.text();
@@ -96,9 +105,210 @@
     return js.replace(/<\/(script)/gi, '<\\/$1');
   }
 
-  // Закрывающие теги ниже намеренно разорваны символом "\/".
-  // Иначе браузер закроет ЭТОТ скрипт на середине и остаток кода
-  // вывалится на страницу обычным текстом.
+  /* hex-ячейка → код для ядра: "14" → 0x14 */
+  function toCodes(prog) {
+    var out = [];
+    if (!Array.isArray(prog)) return out;
+    prog.forEach(function (el) {
+      var c = null;
+      if (typeof el === 'number') c = el;
+      else if (typeof el === 'string') {
+        var s = el.trim();
+        if (/^[0-9a-fA-F]{1,2}$/.test(s)) c = parseInt(s, 16);
+      } else if (el && typeof el === 'object') {
+        if (typeof el.hex === 'number') c = el.hex;
+        else if (typeof el.hex === 'string' && /^[0-9a-fA-F]{1,2}$/.test(el.hex.trim())) {
+          c = parseInt(el.hex.trim(), 16);
+        }
+      }
+      if (c !== null && isFinite(c) && c >= 0 && c <= 255) out.push(c);
+    });
+    return out;
+  }
+
+  /* панель каталога внутри собранного файла.
+     Функция сериализуется в текст — поэтому она не должна зависеть
+     ни от чего снаружи, кроме документа и данных в #mkCatalogData. */
+  function panelCode() {
+    var dataEl = document.getElementById('mkCatalogData');
+    if (!dataEl) return;
+    var items = [];
+    try { items = JSON.parse(dataEl.textContent) || []; } catch (e) { return; }
+    if (!items.length) return;
+
+    var css = document.createElement('style');
+    css.textContent = [
+      '#mkCatBtn{position:fixed;right:14px;bottom:14px;z-index:9998;',
+      'background:#2f2b24;color:#f6f3ea;border:0;border-radius:14px;',
+      'padding:12px 16px;font:600 14px system-ui,-apple-system,Roboto,sans-serif;',
+      'box-shadow:0 6px 18px rgba(0,0,0,.35);cursor:pointer}',
+      '#mkCatOv{position:fixed;inset:0;z-index:9999;background:rgba(20,19,17,.55);display:none}',
+      '#mkCatOv.on{display:block}',
+      '#mkCatBox{position:absolute;inset:8px;background:#f7f4ec;border-radius:16px;',
+      'display:flex;flex-direction:column;overflow:hidden;max-width:760px;margin:0 auto;',
+      'font:14px/1.4 system-ui,-apple-system,Roboto,sans-serif;color:#20201d}',
+      '.mkHd{display:flex;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid #d9d3c6}',
+      '.mkHd b{font-size:15px;flex:1}',
+      '.mkClose{background:#e6e1d5;border:0;border-radius:8px;padding:7px 11px;',
+      'font:600 13px system-ui;cursor:pointer}',
+      '.mkBar{display:flex;gap:8px;padding:8px 12px;border-bottom:1px solid #d9d3c6}',
+      '.mkInp{flex:1;min-width:0;border:1px solid #cfc8b8;border-radius:9px;',
+      'padding:9px 11px;font:14px system-ui;background:#fff}',
+      '.mkSel{border:1px solid #cfc8b8;border-radius:9px;padding:9px;',
+      'font:13px system-ui;background:#fff}',
+      '.mkList{flex:1;overflow:auto;padding:6px 10px 16px;-webkit-overflow-scrolling:touch}',
+      '.mkRow{display:flex;gap:10px;align-items:center;padding:10px 8px;border-bottom:1px solid #e4dfd3}',
+      '.mkRow:active{background:#efeade}',
+      '.mkNm{flex:1;min-width:0}',
+      '.mkT{font-weight:600;word-break:break-word}',
+      '.mkS{font-size:12px;color:#6b675f;margin-top:2px}',
+      '.mkGo{background:#1a7f47;color:#fff;border:0;border-radius:9px;padding:9px 12px;',
+      'font:600 13px system-ui;cursor:pointer;white-space:nowrap}',
+      '.mkEmpty{padding:24px;text-align:center;color:#6b675f}',
+      '.mkCnt{font-size:12px;color:#6b675f;padding:0 12px 8px}'
+    ].join('');
+    document.head.appendChild(css);
+
+    var btn = document.createElement('button');
+    btn.id = 'mkCatBtn';
+    btn.type = 'button';
+    btn.textContent = 'Каталог · ' + items.length;
+    document.body.appendChild(btn);
+
+    var ov = document.createElement('div');
+    ov.id = 'mkCatOv';
+    ov.innerHTML =
+      '<div id="mkCatBox">' +
+        '<div class="mkHd"><b>Каталог программ</b>' +
+          '<button class="mkClose" type="button">Закрыть</button></div>' +
+        '<div class="mkBar">' +
+          '<input class="mkInp" type="search" placeholder="поиск по названию">' +
+          '<select class="mkSel">' +
+            '<option value="">все</option>' +
+            '<option value="b3-34">Б3-34</option>' +
+            '<option value="mk61">МК-61</option>' +
+          '</select>' +
+        '</div>' +
+        '<div class="mkCnt"></div>' +
+        '<div class="mkList"></div>' +
+      '</div>';
+    document.body.appendChild(ov);
+
+    var listEl = ov.querySelector('.mkList');
+    var inp = ov.querySelector('.mkInp');
+    var sel = ov.querySelector('.mkSel');
+    var cntEl = ov.querySelector('.mkCnt');
+
+    var filtered = items.slice();
+    var rendered = 0;
+    var STEP = 120;
+
+    function row(item) {
+      var d = document.createElement('div');
+      d.className = 'mkRow';
+
+      var nm = document.createElement('div');
+      nm.className = 'mkNm';
+
+      var t = document.createElement('div');
+      t.className = 'mkT';
+      t.textContent = item.n;
+
+      var s = document.createElement('div');
+      s.className = 'mkS';
+      s.textContent = (item.m === 'mk61' ? 'МК-61' : 'Б3-34') +
+        (item.s ? ' · ' + item.s : '') + ' · ' + item.p.length + ' шагов';
+
+      nm.appendChild(t);
+      nm.appendChild(s);
+
+      var b = document.createElement('button');
+      b.className = 'mkGo';
+      b.type = 'button';
+      b.textContent = 'В корпус';
+      b.addEventListener('click', function () { load(item); });
+
+      d.appendChild(nm);
+      d.appendChild(b);
+      return d;
+    }
+
+    function chunk() {
+      var frag = document.createDocumentFragment();
+      var end = Math.min(rendered + STEP, filtered.length);
+      for (var i = rendered; i < end; i++) frag.appendChild(row(filtered[i]));
+      listEl.appendChild(frag);
+      rendered = end;
+    }
+
+    function rerender() {
+      listEl.innerHTML = '';
+      rendered = 0;
+      cntEl.textContent = 'найдено: ' + filtered.length;
+      if (!filtered.length) {
+        var e = document.createElement('div');
+        e.className = 'mkEmpty';
+        e.textContent = 'Ничего не найдено. Попробуй короче или смени модель.';
+        listEl.appendChild(e);
+        return;
+      }
+      chunk();
+    }
+
+    function applyFilter() {
+      var q = inp.value.trim().toLowerCase();
+      var m = sel.value;
+      filtered = items.filter(function (it) {
+        if (m && it.m !== m) return false;
+        if (q && it.n.toLowerCase().indexOf(q) < 0) return false;
+        return true;
+      });
+      rerender();
+    }
+
+    listEl.addEventListener('scroll', function () {
+      if (listEl.scrollTop + listEl.clientHeight >= listEl.scrollHeight - 200) {
+        if (rendered < filtered.length) chunk();
+      }
+    });
+
+    inp.addEventListener('input', applyFilter);
+    sel.addEventListener('change', applyFilter);
+
+    function load(item) {
+      if (!window.MKUI || !window.MKUI.loadProgram) {
+        alert('Корпус ещё не готов — подожди секунду и нажми снова.');
+        return;
+      }
+      try {
+        window.MKUI.loadProgram(item.p, item.d || {}, { num: null, title: item.n });
+      } catch (e) {
+        alert('Не удалось загрузить: ' + e.message);
+        return;
+      }
+      var tab = document.querySelector('#tabs button[data-tab="code"]');
+      if (tab) tab.click();
+      ov.classList.remove('on');
+      if (window.MKSHELF && window.MKSHELF.toast) {
+        window.MKSHELF.toast('Загружено «' + item.n + '»\n' + item.p.length + ' ячеек', 'ok');
+      }
+    }
+
+    btn.addEventListener('click', function () {
+      ov.classList.add('on');
+      if (!rendered) rerender();
+    });
+    ov.querySelector('.mkClose').addEventListener('click', function () {
+      ov.classList.remove('on');
+    });
+    ov.addEventListener('click', function (e) {
+      if (e.target === ov) ov.classList.remove('on');
+    });
+  }
+
+  /* Закрывающие теги ниже намеренно разорваны символом "\/".
+     Иначе браузер закроет ЭТОТ скрипт на середине и остаток кода
+     вывалится на страницу обычным текстом. */
   var SHIM = [
     '<script>',
     '/* офлайн-сборка: страховка хранилища */',
@@ -129,8 +339,8 @@
     '  while (t && t !== document) {',
     '    if (t.getAttribute && t.getAttribute("data-offline")) {',
     '      e.preventDefault();',
-    '      alert("Офлайн-сборка: страница " + t.getAttribute("data-offline") +',
-    '            " лежит отдельным файлом в репозитории. В этом одном файле её нет.");',
+    '      alert("В этом одном файле нет отдельной страницы «" + t.getAttribute("data-offline") +',
+    '            "». Калькулятор и каталог программ работают полностью.");',
     '      return;',
     '    }',
     '    t = t.parentNode;',
@@ -139,7 +349,7 @@
     '<\/script>'
   ].join('\n');
 
-  function assemble(src) {
+  function assemble(src, items) {
     var html = src['index.html'];
 
     html = html.replace(/<link\s+rel="stylesheet"\s+href="([^"?]+)(?:\?[^"]*)?"\s*\/?>/g,
@@ -163,19 +373,101 @@
       html = html.split('href="' + page + '"').join('href="#" data-offline="' + page + '"');
     });
 
-    html = html.replace('</body>', LINK_SHIM + '\n</body>');
+    var extra = LINK_SHIM;
+
+    if (items && items.length) {
+      var json = JSON.stringify(items).replace(/</g, '\\u003c');
+      extra =
+        '<script id="mkCatalogData" type="application/json">' + json + '<\/script>\n' +
+        '<script>(' + panelCode.toString() + ')();<\/script>\n' +
+        LINK_SHIM;
+    }
+
+    html = html.replace('</body>', extra + '\n</body>');
     html = html.replace('<title>', '<title>офлайн · ');
     return html;
   }
 
-  function build() {
-    goBtn.disabled = true;
-    reset();
+  /* загрузка пачкой: 6 файлов одновременно, чтобы телефон не захлебнулся */
+  function pool(list, limit, worker, onDone) {
+    return new Promise(function (resolve) {
+      var i = 0, active = 0, done = 0, failed = 0;
 
+      function next() {
+        if (i >= list.length && active === 0) {
+          resolve({ done: done, failed: failed });
+          return;
+        }
+        while (active < limit && i < list.length) {
+          (function (item) {
+            active++;
+            var p;
+            try { p = worker(item); } catch (e) { p = Promise.reject(e); }
+            p.then(function () { active--; done++; onDone(done, list.length, failed); next(); },
+                   function () { active--; done++; failed++; onDone(done, list.length, failed); next(); });
+          })(list[i++]);
+        }
+      }
+      next();
+    });
+  }
+
+  function loadCatalog() {
+    log('');
+    log('читаю каталог: ' + CATALOG);
+    return get(CATALOG).then(function (text) {
+      var cat = JSON.parse(text);
+      var entries = (cat.programs || []).filter(function (p) { return p.json; });
+
+      var summary = cat.summary || {};
+      log('  в каталоге: ' + entries.length +
+          (summary.ready ? ' (готовых ' + summary.ready + ')' : ''), 'ok');
+      log('  качаю программы с сайта — это самая долгая часть…');
+
+      var out = [];
+
+      return pool(entries, 6, function (p) {
+        return get(p.json).then(function (t) {
+          var obj = JSON.parse(t);
+          var progs = [];
+          if (Array.isArray(obj.programs)) progs = obj.programs;
+          else if (Array.isArray(obj.prog)) progs = [obj];
+
+          progs.forEach(function (pr) {
+            var codes = toCodes(pr.prog);
+            if (!codes.length) return;
+            out.push({
+              n: String(pr.name || p.file || 'Без названия'),
+              m: String(pr.model || p.model || obj.model || 'b3-34'),
+              s: String(pr.section || p.section || ''),
+              p: codes,
+              d: (pr.data && typeof pr.data === 'object') ? pr.data : {}
+            });
+          });
+        });
+      }, function (done, total, failed) {
+        if (done % 25 === 0 || done === total) {
+          log('  ' + done + ' / ' + total + (failed ? ' (ошибок ' + failed + ')' : ''));
+        }
+      }).then(function (res) {
+        out.sort(function (a, b) { return a.n.localeCompare(b.n, 'ru'); });
+
+        var steps = 0;
+        out.forEach(function (x) { steps += x.p.length; });
+
+        log('');
+        log('программ в сборке: ' + out.length + ' (шагов ' + steps + ')', 'ok');
+        if (res.failed) log('не прочитано файлов: ' + res.failed, 'warn');
+        return out;
+      });
+    });
+  }
+
+  function collect(mode) {
     var names = ['index.html'].concat(FILES);
     var src = {};
 
-    names.reduce(function (chain, file) {
+    return names.reduce(function (chain, file) {
       return chain.then(function () {
         log('читаю ' + file + '…');
         return get(file).then(function (text) {
@@ -183,35 +475,53 @@
           log('  ' + file + ' — ' + text.length + ' симв.', 'ok');
         });
       });
-    }, Promise.resolve())
-      .then(function () {
-        var html = assemble(src);
-        var bytes = new Blob([html]).size;
+    }, Promise.resolve()).then(function () {
+      if (mode === 'lite') return [];
+      return loadCatalog();
+    }).then(function (items) {
+      return { src: src, items: items };
+    });
+  }
 
-        var left = [];
-        if (/<link\s+rel="stylesheet"\s+href="/.test(html)) left.push('внешний CSS');
-        if (/<script\s+src="/.test(html)) left.push('внешний скрипт');
+  function finish(pack) {
+    var html = assemble(pack.src, pack.items);
+    var bytes = new Blob([html]).size;
 
-        log('');
-        log('размер: ' + (bytes / 1024).toFixed(1) + ' КБ', 'ok');
-        if (left.length) log('ВНИМАНИЕ: остались ' + left.join(', '), 'err');
-        else log('внешних зависимостей нет — файл автономный', 'ok');
+    var left = [];
+    if (/<link\s+rel="stylesheet"\s+href="[^"#]/.test(html)) left.push('внешний CSS');
+    if (/<script\s+src="[^"#]/.test(html)) left.push('внешний скрипт');
 
-        var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-        if (lastUrl) URL.revokeObjectURL(lastUrl);
-        lastUrl = URL.createObjectURL(blob);
+    log('');
+    log('размер файла: ' + (bytes / 1048576).toFixed(2) + ' МБ', 'ok');
+    if (left.length) log('ВНИМАНИЕ: остались ' + left.join(', '), 'err');
+    else log('внешних зависимостей нет — файл автономный', 'ok');
 
-        var a = document.createElement('a');
-        a.href = lastUrl;
-        a.download = 'mk-offline.html';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+    var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    if (lastUrl) URL.revokeObjectURL(lastUrl);
+    lastUrl = URL.createObjectURL(blob);
 
-        log('');
-        log('файл скачан: mk-offline.html', 'ok');
-        viewBtn.hidden = false;
-      })
+    var a = document.createElement('a');
+    a.href = lastUrl;
+    a.download = 'mk-offline.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    log('');
+    log('файл скачан: mk-offline.html', 'ok');
+    if (pack.items && pack.items.length) {
+      log('внутри каталог на ' + pack.items.length + ' программ — кнопка внизу справа', 'ok');
+    }
+    viewBtn.hidden = false;
+  }
+
+  function run(mode) {
+    goBtn.disabled = true;
+    liteBtn.disabled = true;
+    reset();
+
+    collect(mode)
+      .then(finish)
       .catch(function (e) {
         log('');
         log('не получилось: ' + e.message, 'err');
@@ -219,10 +529,12 @@
       })
       .then(function () {
         goBtn.disabled = false;
+        liteBtn.disabled = false;
       });
   }
 
-  goBtn.addEventListener('click', build);
+  goBtn.addEventListener('click', function () { run('full'); });
+  liteBtn.addEventListener('click', function () { run('lite'); });
 
   viewBtn.addEventListener('click', function () {
     if (lastUrl) window.open(lastUrl, '_blank');
