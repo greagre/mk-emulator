@@ -12,6 +12,9 @@
    Название загруженной программы (номер + имя) показывается
    в двух местах: чипом под дисплеем и на кнопке библиотеки.
 
+   Под дисплеем, кроме режима/слоя/угла/адреса, есть счётчик —
+   сколько команд выполнено с последнего сброса (id stSteps).
+
    Наружу отдаёт мост window.MKUI — им пользуется shelf.js
    (библиотека программ): загрузка, прогон для проверки, подсказка.
    ========================================================= */
@@ -49,6 +52,7 @@
     mode: document.getElementById('stMode'),
     layer: document.getElementById('stLayer'),
     step: document.getElementById('stStep'),
+    steps: document.getElementById('stSteps'),
     stack: document.getElementById('stack'),
     regs: document.getElementById('tabRegs'),
     keys: document.getElementById('keys'),
@@ -265,6 +269,7 @@
     el.mode.textContent = st.mode === 'PRG' ? 'ПРГ' : 'АВТ';
     el.layer.textContent = st.layer === 'f' ? 'F' : (st.layer === 'k' ? 'K' : '—');
     el.step.textContent = pad2(st.ip);
+    if (el.steps) el.steps.textContent = String(stepCount);
 
     renderPanes();
     renderKeys();
