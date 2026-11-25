@@ -79,16 +79,19 @@
   var RAW = 'https://raw.githubusercontent.com/greagre/mk-emulator/main/';
 
   /* Отдельные страницы, которые вшиваются внутрь файла и открываются
-     по кнопкам. lang.html — это редирект на algo.html, поэтому
-     для обеих ссылок берём настоящий редактор. */
+     по кнопкам. Слева — имя, которое просит ссылка в корпусе,
+     справа — настоящий файл в репозитории. */
   var EXTRA_MAP = {
     'algo.html': 'algo.html',
     'lang.html': 'algo.html',
-    'b3-decode.html': 'b3-decode.html'
+    'algo': 'algo.html',
+    'b3-decode.html': 'b3-decode.html',
+    'decoder.html': 'b3-decode.html',
+    'decode.html': 'b3-decode.html'
   };
   var EXTRA_LOAD = ['algo.html', 'b3-decode.html'];
 
-  /* чего в файле нет — на то ставим заглушку с пояснением */
+  /* чего в файле нет — на то ставим пометку, чтобы не было пустой страницы */
   var STUB_PAGES = ['tests.html', 'catalog.html', 'import.html'];
 
   var logEl = document.getElementById('log');
@@ -357,35 +360,54 @@
     '<\/script>';
 
   /* Открытие вшитых страниц (Алго, декодер) из blob-адреса.
-     Ключи берутся из data-offline, данные — из #mkPagesData. */
+     Ищем страницу по адресу ссылки и по её синонимам: кнопки в корпусе
+     зовут редактор lang.html, а внутри файла он лежит как algo.html. */
   var PAGE_SHIM =
     '<script>\n' +
     '(function () {\n' +
     '  var el = document.getElementById("mkPagesData");\n' +
+    '  if (!el) return;\n' +
     '  var pages = {};\n' +
     '  try { pages = JSON.parse(el.textContent) || {}; } catch (e) { pages = {}; }\n' +
+    '  var ALIAS = {\n' +
+    '    "lang.html": "algo.html", "algo": "algo.html", "algo.html": "algo.html",\n' +
+    '    "decoder.html": "b3-decode.html", "decode.html": "b3-decode.html",\n' +
+    '    "b3-decode.html": "b3-decode.html"\n' +
+    '  };\n' +
     '  var urls = {};\n' +
+    '  function keyOf(href) {\n' +
+    '    return String(href || "").split("?")[0].split("#")[0].split("/").pop();\n' +
+    '  }\n' +
+    '  function open(key) {\n' +
+    '    var real = ALIAS[key] || key;\n' +
+    '    var html = pages[real] || pages[key];\n' +
+    '    if (!html) return false;\n' +
+    '    if (!urls[real]) {\n' +
+    '      urls[real] = URL.createObjectURL(\n' +
+    '        new Blob([html], { type: "text/html;charset=utf-8" }));\n' +
+    '    }\n' +
+    '    var w = window.open(urls[real], "_blank");\n' +
+    '    if (!w) { location.href = urls[real]; }\n' +
+    '    return true;\n' +
+    '  }\n' +
     '  document.addEventListener("click", function (e) {\n' +
     '    var t = e.target;\n' +
     '    while (t && t !== document) {\n' +
-    '      if (t.getAttribute && t.getAttribute("data-offline")) {\n' +
-    '        var key = t.getAttribute("data-offline");\n' +
-    '        e.preventDefault();\n' +
-    '        if (!pages[key]) {\n' +
-    '          alert("В этом одном файле нет страницы «" + key +\n' +
-    '                "». Калькулятор, каталог, Алго и декодер работают полностью.");\n' +
+    '      if (t.getAttribute) {\n' +
+    '        var off = t.getAttribute("data-offline");\n' +
+    '        if (off) {\n' +
+    '          if (open(off)) e.preventDefault();\n' +
     '          return;\n' +
     '        }\n' +
-    '        if (!urls[key]) {\n' +
-    '          var blob = new Blob([pages[key]], { type: "text/html;charset=utf-8" });\n' +
-    '          urls[key] = URL.createObjectURL(blob);\n' +
+    '        if (t.tagName === "A") {\n' +
+    '          var href = t.getAttribute("href") || "";\n' +
+    '          if (/\\.html?$/i.test(href) && open(keyOf(href))) e.preventDefault();\n' +
+    '          return;\n' +
     '        }\n' +
-    '        window.open(urls[key], "_blank");\n' +
-    '        return;\n' +
     '      }\n' +
     '      t = t.parentNode;\n' +
     '    }\n' +
-    '  });\n' +
+    '  }, true);\n' +
     '})();\n' +
     '<\/script>';
 
@@ -434,24 +456,23 @@
     var at = html.indexOf('<script');
     if (at > 0) html = html.slice(0, at) + STORE_SHIM + '\n' + html.slice(at);
 
-    /* вшитые страницы: ключ ссылки → готовый html */
+    /* вшитые страницы: сначала настоящие имена, потом синонимы */
     var pages = {};
-    var keys = Object.keys(EXTRA_MAP);
-    keys.forEach(function (link) {
-      var real = EXTRA_MAP[link];
+    EXTRA_LOAD.forEach(function (real) {
       if (!src[real]) return;
-      if (!pages[real]) {
-        pages[real] = inlinePage(src[real], src);
-        log('страница вшита: ' + real + ' (' + pages[real].length + ' симв.)', 'ok');
-      }
-      pages[link] = pages[real];
+      pages[real] = inlinePage(src[real], src);
+      log('страница вшита: ' + real + ' (' + pages[real].length + ' симв.)', 'ok');
+    });
+
+    Object.keys(EXTRA_MAP).forEach(function (link) {
+      var real = EXTRA_MAP[link];
+      if (pages[real] && !pages[link]) pages[link] = pages[real];
     });
 
     var known = Object.keys(pages);
-    var stub = STUB_PAGES.slice();
 
-    /* ссылки: на вшитые страницы — перехват, на остальные — заглушка */
-    known.concat(stub).forEach(function (page) {
+    /* ссылки на вшитые страницы помечаем, чтобы их перехватить */
+    known.forEach(function (page) {
       html = html.split('href="' + page + '"').join('href="#" data-offline="' + page + '"');
     });
 
