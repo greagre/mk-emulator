@@ -47,11 +47,12 @@
 
 <div class="card">
   <p><b>Полная сборка.</b> Вшивает в один файл корпус Б3-34, стили и скрипты,
-  <b>все программы из каталога</b> и панель «Каталог» внизу экрана.
-  Файл открывается с телефона или планшета без интернета и без сервера.
-  Сборка читает программы с сайта — нужен интернет на время сборки.
-  Если сайт не отдаёт файл каталога, сборщик берёт его напрямую с GitHub.</p>
-  <button id="go">Собрать полную версию (с каталогом)</button>
+  <b>все программы из каталога</b>, панель «Каталог» внизу экрана,
+  <b>редактор «Алго»</b> и <b>декодер</b>. Файл открывается с телефона
+  или планшета без интернета и без сервера. Сборка читает программы
+  с сайта — нужен интернет на время сборки. Если сайт не отдаёт файл
+  каталога, сборщик берёт его напрямую с GitHub.</p>
+  <button id="go">Собрать полную версию (каталог + Алго + декодер)</button>
   <button id="lite">Только калькулятор (быстро, без каталога)</button>
   <button id="view" hidden>Открыть собранный файл здесь же</button>
 </div>
@@ -62,7 +63,8 @@
     <li>Нажми кнопку. Браузер скачает <code>mk-offline.html</code> в «Загрузки».</li>
     <li>Открой его файловым менеджером — корпус, клавиатура и каталог заработают.</li>
     <li>Перенеси файл на планшет как обычный файл и открой там в Chrome.</li>
-    <li>Кнопка «Каталог» внизу справа — поиск по 704 программам и загрузка в корпус.</li>
+    <li>Кнопка «Каталог» внизу справа — поиск по программам и загрузка в корпус.</li>
+    <li>Кнопки «Алго» и «Дек» открывают редактор и декодер из этого же файла.</li>
   </ol>
 </div>
 
@@ -76,10 +78,18 @@
   var CATALOG = 'programs/_catalog.json';
   var RAW = 'https://raw.githubusercontent.com/greagre/mk-emulator/main/';
 
-  /* ссылки на отдельные страницы в офлайн-файле не открыть —
-     подменяем их на заглушку с пояснением */
-  var PAGES = ['lang.html', 'b3-decode.html', 'tests.html', 'algo.html',
-               'algo-v7.html', 'algo-v8.html', 'catalog.html', 'import.html'];
+  /* Отдельные страницы, которые вшиваются внутрь файла и открываются
+     по кнопкам. lang.html — это редирект на algo.html, поэтому
+     для обеих ссылок берём настоящий редактор. */
+  var EXTRA_MAP = {
+    'algo.html': 'algo.html',
+    'lang.html': 'algo.html',
+    'b3-decode.html': 'b3-decode.html'
+  };
+  var EXTRA_LOAD = ['algo.html', 'b3-decode.html'];
+
+  /* чего в файле нет — на то ставим заглушку с пояснением */
+  var STUB_PAGES = ['tests.html', 'catalog.html', 'import.html'];
 
   var logEl = document.getElementById('log');
   var goBtn = document.getElementById('go');
@@ -323,48 +333,86 @@
     });
   }
 
-  /* Закрывающие теги ниже намеренно разорваны символом "\/".
-     Иначе браузер закроет ЭТОТ скрипт на середине и остаток кода
-     вывалится на страницу обычным текстом. */
-  var SHIM = [
-    '<script>',
-    '/* офлайн-сборка: страховка хранилища */',
-    '(function () {',
-    '  var ok = false;',
-    '  try { window.localStorage.setItem("__mk_probe", "1");',
-    '        window.localStorage.removeItem("__mk_probe"); ok = true; } catch (e) { ok = false; }',
-    '  if (ok) return;',
-    '  var mem = {};',
-    '  var store = {',
-    '    getItem: function (k) { return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null; },',
-    '    setItem: function (k, v) { mem[k] = String(v); },',
-    '    removeItem: function (k) { delete mem[k]; },',
-    '    clear: function () { mem = {}; },',
-    '    key: function (i) { return Object.keys(mem)[i] || null; },',
-    '    get length() { return Object.keys(mem).length; }',
-    '  };',
-    '  try { Object.defineProperty(window, "localStorage", { configurable: true, value: store }); }',
-    '  catch (e2) {}',
-    '})();',
-    '<\/script>'
-  ].join('\n');
+  /* Страховка хранилища: при открытии с диска браузер может запретить
+     localStorage — тогда данные живут в памяти. */
+  var STORE_SHIM =
+    '<script>\n' +
+    '(function () {\n' +
+    '  var ok = false;\n' +
+    '  try { window.localStorage.setItem("__mk_probe", "1");\n' +
+    '        window.localStorage.removeItem("__mk_probe"); ok = true; } catch (e) { ok = false; }\n' +
+    '  if (ok) return;\n' +
+    '  var mem = {};\n' +
+    '  var store = {\n' +
+    '    getItem: function (k) { return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null; },\n' +
+    '    setItem: function (k, v) { mem[k] = String(v); },\n' +
+    '    removeItem: function (k) { delete mem[k]; },\n' +
+    '    clear: function () { mem = {}; },\n' +
+    '    key: function (i) { return Object.keys(mem)[i] || null; },\n' +
+    '    get length() { return Object.keys(mem).length; }\n' +
+    '  };\n' +
+    '  try { Object.defineProperty(window, "localStorage", { configurable: true, value: store }); }\n' +
+    '  catch (e2) {}\n' +
+    '})();\n' +
+    '<\/script>';
 
-  var LINK_SHIM = [
-    '<script>',
-    'document.addEventListener("click", function (e) {',
-    '  var t = e.target;',
-    '  while (t && t !== document) {',
-    '    if (t.getAttribute && t.getAttribute("data-offline")) {',
-    '      e.preventDefault();',
-    '      alert("В этом одном файле нет отдельной страницы «" + t.getAttribute("data-offline") +',
-    '            "». Калькулятор и каталог программ работают полностью.");',
-    '      return;',
-    '    }',
-    '    t = t.parentNode;',
-    '  }',
-    '});',
-    '<\/script>'
-  ].join('\n');
+  /* Открытие вшитых страниц (Алго, декодер) из blob-адреса.
+     Ключи берутся из data-offline, данные — из #mkPagesData. */
+  var PAGE_SHIM =
+    '<script>\n' +
+    '(function () {\n' +
+    '  var el = document.getElementById("mkPagesData");\n' +
+    '  var pages = {};\n' +
+    '  try { pages = JSON.parse(el.textContent) || {}; } catch (e) { pages = {}; }\n' +
+    '  var urls = {};\n' +
+    '  document.addEventListener("click", function (e) {\n' +
+    '    var t = e.target;\n' +
+    '    while (t && t !== document) {\n' +
+    '      if (t.getAttribute && t.getAttribute("data-offline")) {\n' +
+    '        var key = t.getAttribute("data-offline");\n' +
+    '        e.preventDefault();\n' +
+    '        if (!pages[key]) {\n' +
+    '          alert("В этом одном файле нет страницы «" + key +\n' +
+    '                "». Калькулятор, каталог, Алго и декодер работают полностью.");\n' +
+    '          return;\n' +
+    '        }\n' +
+    '        if (!urls[key]) {\n' +
+    '          var blob = new Blob([pages[key]], { type: "text/html;charset=utf-8" });\n' +
+    '          urls[key] = URL.createObjectURL(blob);\n' +
+    '        }\n' +
+    '        window.open(urls[key], "_blank");\n' +
+    '        return;\n' +
+    '      }\n' +
+    '      t = t.parentNode;\n' +
+    '    }\n' +
+    '  });\n' +
+    '})();\n' +
+    '<\/script>';
+
+  /* вставка внешних css/js внутрь отдельной страницы */
+  function inlinePage(html, src) {
+    var out = html;
+
+    out = out.replace(/<link\s+rel="stylesheet"\s+href="([^"?]+)(?:\?[^"]*)?"\s*\/?>/g,
+      function (m, href) {
+        if (!src[href]) return m;
+        return '<style>\n' + src[href] + '\n</style>';
+      });
+
+    out = out.replace(/<script\s+src="([^"?]+)(?:\?[^"]*)?"\s*><\/script>/g,
+      function (m, file) {
+        if (!src[file]) return m;
+        return '<script>\n' + escapeScript(src[file]) + '\n<\/script>';
+      });
+
+    /* редирект внутри файла не сработает — убираем meta refresh */
+    out = out.replace(/<meta\s+http-equiv="refresh"[^>]*>/gi, '');
+
+    if (out.indexOf('__mk_probe') < 0) {
+      out = out.replace(/<head([^>]*)>/i, '<head$1>\n' + STORE_SHIM);
+    }
+    return out;
+  }
 
   function assemble(src, items) {
     var html = src['index.html'];
@@ -384,21 +432,43 @@
       });
 
     var at = html.indexOf('<script');
-    if (at > 0) html = html.slice(0, at) + SHIM + '\n' + html.slice(at);
+    if (at > 0) html = html.slice(0, at) + STORE_SHIM + '\n' + html.slice(at);
 
-    PAGES.forEach(function (page) {
+    /* вшитые страницы: ключ ссылки → готовый html */
+    var pages = {};
+    var keys = Object.keys(EXTRA_MAP);
+    keys.forEach(function (link) {
+      var real = EXTRA_MAP[link];
+      if (!src[real]) return;
+      if (!pages[real]) {
+        pages[real] = inlinePage(src[real], src);
+        log('страница вшита: ' + real + ' (' + pages[real].length + ' симв.)', 'ok');
+      }
+      pages[link] = pages[real];
+    });
+
+    var known = Object.keys(pages);
+    var stub = STUB_PAGES.slice();
+
+    /* ссылки: на вшитые страницы — перехват, на остальные — заглушка */
+    known.concat(stub).forEach(function (page) {
       html = html.split('href="' + page + '"').join('href="#" data-offline="' + page + '"');
     });
 
-    var extra = LINK_SHIM;
+    var extra = '';
 
     if (items && items.length) {
       var json = JSON.stringify(items).replace(/</g, '\\u003c');
-      extra =
-        '<script id="mkCatalogData" type="application/json">' + json + '<\/script>\n' +
-        '<script>(' + panelCode.toString() + ')();<\/script>\n' +
-        LINK_SHIM;
+      extra += '<script id="mkCatalogData" type="application/json">' + json + '<\/script>\n' +
+               '<script>(' + panelCode.toString() + ')();<\/script>\n';
     }
+
+    if (known.length) {
+      var pagesJson = JSON.stringify(pages).replace(/</g, '\\u003c');
+      extra += '<script id="mkPagesData" type="application/json">' + pagesJson + '<\/script>\n';
+    }
+
+    extra += PAGE_SHIM;
 
     html = html.replace('</body>', extra + '\n</body>');
     html = html.replace('<title>', '<title>офлайн · ');
@@ -482,6 +552,7 @@
 
   function collect(mode) {
     var names = ['index.html'].concat(FILES);
+    if (mode !== 'lite') names = names.concat(EXTRA_LOAD);
     var src = {};
 
     return names.reduce(function (chain, file) {
@@ -529,6 +600,7 @@
     if (pack.items && pack.items.length) {
       log('внутри каталог на ' + pack.items.length + ' программ — кнопка внизу справа', 'ok');
     }
+    log('внутри Алго и декодер — кнопки вверху', 'ok');
     viewBtn.hidden = false;
   }
 
