@@ -49,7 +49,8 @@
   <p><b>Полная сборка.</b> Вшивает в один файл корпус Б3-34, стили и скрипты,
   <b>все программы из каталога</b> и панель «Каталог» внизу экрана.
   Файл открывается с телефона или планшета без интернета и без сервера.
-  Сборка читает программы с сайта — нужен интернет на время сборки.</p>
+  Сборка читает программы с сайта — нужен интернет на время сборки.
+  Если сайт не отдаёт файл каталога, сборщик берёт его напрямую с GitHub.</p>
   <button id="go">Собрать полную версию (с каталогом)</button>
   <button id="lite">Только калькулятор (быстро, без каталога)</button>
   <button id="view" hidden>Открыть собранный файл здесь же</button>
@@ -73,6 +74,7 @@
 
   var FILES = ['layout.css', 'core.js', 'profiles.js', 'ui.js', 'shelf.js', 'convert.js'];
   var CATALOG = 'programs/_catalog.json';
+  var RAW = 'https://raw.githubusercontent.com/greagre/mk-emulator/main/';
 
   /* ссылки на отдельные страницы в офлайн-файле не открыть —
      подменяем их на заглушку с пояснением */
@@ -84,6 +86,7 @@
   var liteBtn = document.getElementById('lite');
   var viewBtn = document.getElementById('view');
   var lastUrl = null;
+  var warnedRaw = false;
 
   function log(text, cls) {
     var line = cls ? '<span class="' + cls + '">' + String(text) + '</span>' : String(text);
@@ -91,13 +94,27 @@
     logEl.scrollTop = logEl.scrollHeight;
   }
 
-  function reset() { logEl.innerHTML = 'собираю…'; }
+  function reset() { logEl.innerHTML = 'собираю…'; warnedRaw = false; }
 
+  /* Сначала пробуем файл рядом со страницей (GitHub Pages).
+     Если сайт его не отдаёт — 404 или сеть — берём напрямую с GitHub. */
   function get(file) {
     return fetch(file + '?v=' + Date.now(), { cache: 'no-store' })
       .then(function (r) {
-        if (!r.ok) throw new Error(file + ' → HTTP ' + r.status);
+        if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.text();
+      })
+      .catch(function () {
+        if (!warnedRaw) {
+          warnedRaw = true;
+          log('  сайт не отдаёт файлы с подчёркиванием — беру напрямую с GitHub', 'warn');
+        }
+        return fetch(RAW + file, { cache: 'no-store' }).then(function (r) {
+          if (!r.ok) {
+            throw new Error(file + ' → HTTP ' + r.status + ' (нет и на GitHub)');
+          }
+          return r.text();
+        });
       });
   }
 
@@ -422,7 +439,7 @@
       var summary = cat.summary || {};
       log('  в каталоге: ' + entries.length +
           (summary.ready ? ' (готовых ' + summary.ready + ')' : ''), 'ok');
-      log('  качаю программы с сайта — это самая долгая часть…');
+      log('  качаю программы — это самая долгая часть…');
 
       var out = [];
 
@@ -525,7 +542,7 @@
       .catch(function (e) {
         log('');
         log('не получилось: ' + e.message, 'err');
-        log('проверь, что страница открыта по https, а не из файла', 'err');
+        log('проверь интернет и что страница открыта по https, а не из файла', 'err');
       })
       .then(function () {
         goBtn.disabled = false;
