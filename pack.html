@@ -44,7 +44,7 @@
 </head>
 <body>
 
-<h1>Автономный файл эмулятора <span class="v">сборщик 8</span></h1>
+<h1>Автономный файл эмулятора <span class="v">сборщик 9</span></h1>
 
 <div class="card">
   <p><b>Полная сборка.</b> Вшивает в один файл корпус Б3-34, стили и скрипты,
@@ -66,7 +66,9 @@
     <li>Открой последний скачанный файл файловым менеджером.</li>
     <li>Перенеси файл на планшет как обычный файл и открой там в Chrome.</li>
     <li>Кнопка «Каталог» внизу справа — поиск по программам и загрузка в корпус.</li>
-    <li>Кнопки «Алго» и «Дек» открывают редактор и декодер из этого же файла.</li>
+    <li>Кнопки «Алго» и «Дек» открывают редактор и декодер прямо поверх
+        корпуса, в этом же окне. Вверху появится тёмная полоса
+        с кнопкой «Закрыть» — по ней возвращаешься к калькулятору.</li>
   </ol>
 </div>
 
@@ -76,7 +78,7 @@
 (function () {
   'use strict';
 
-  var BUILD = 8;
+  var BUILD = 9;
   var FILES = ['layout.css', 'core.js', 'profiles.js', 'ui.js', 'shelf.js', 'convert.js'];
   var CATALOG = 'programs/_catalog.json';
   var RAW = 'https://raw.githubusercontent.com/greagre/mk-emulator/main/';
@@ -359,21 +361,28 @@
     '})();\n' +
     '<\/script>';
 
-  /* Открытие вшитых страниц (Алго, декодер) из blob-адреса.
+  /* Открытие вшитых страниц (Алго, декодер).
 
-     Важно: этот обработчик ставится ПЕРВЫМ, ещё до ui.js, на window
-     в фазе перехвата. Поэтому он видит нажатие раньше любых других
-     обработчиков и гасит событие, чтобы никто не успел показать
-     «страницы нет». Данные читаются лениво — при первом нажатии,
-     когда разметка уже разобрана. */
+     Способ намеренно простой: страница вставляется в рамку (iframe)
+     прямо внутри этого же документа, поверх корпуса, с тёмной полосой
+     «Закрыть» вверху. Никаких новых вкладок, никаких blob-адресов —
+     ровно потому, что при открытии файла из проводника (content://,
+     file://) Chrome запрещает и то и другое.
+
+     Обработчик ставится ПЕРВЫМ, на window в фазе перехвата, поэтому
+     видит нажатие раньше любых других скриптов корпуса. */
   var PAGE_SHIM =
     '<script>\n' +
     '(function () {\n' +
-    '  var pages = null, urls = {};\n' +
+    '  var pages = null;\n' +
     '  var ALIAS = {\n' +
-    '    "lang.html": "algo.html", "algo": "algo.html", "algo.html": "algo.html",\n' +
-    '    "decoder.html": "b3-decode.html", "decode.html": "b3-decode.html",\n' +
-    '    "b3-decode.html": "b3-decode.html"\n' +
+    '    "algo.html": "algo.html", "lang.html": "algo.html", "algo": "algo.html",\n' +
+    '    "b3-decode.html": "b3-decode.html", "decoder.html": "b3-decode.html",\n' +
+    '    "decode.html": "b3-decode.html"\n' +
+    '  };\n' +
+    '  var TITLE = {\n' +
+    '    "algo.html": "МК-Алго — редактор программ",\n' +
+    '    "b3-decode.html": "Декодер: код Б3-34 в текст"\n' +
     '  };\n' +
     '  function data() {\n' +
     '    if (pages) return pages;\n' +
@@ -385,6 +394,56 @@
     '  function keyOf(href) {\n' +
     '    return String(href || "").split("?")[0].split("#")[0].split("/").pop();\n' +
     '  }\n' +
+    '  function tip(text) {\n' +
+    '    var n = document.createElement("div");\n' +
+    '    n.textContent = text;\n' +
+    '    n.style.cssText = "position:fixed;left:50%;bottom:24px;transform:translateX(-50%);" +\n' +
+    '      "z-index:2147483001;background:rgba(30,28,24,.94);color:#f6f3ea;" +\n' +
+    '      "padding:11px 16px;border-radius:11px;font:600 13px system-ui,sans-serif;" +\n' +
+    '      "max-width:88%;text-align:center";\n' +
+    '    document.body.appendChild(n);\n' +
+    '    setTimeout(function () { if (n.parentNode) n.parentNode.removeChild(n); }, 2600);\n' +
+    '  }\n' +
+    '  function show(real, html) {\n' +
+    '    var old = document.getElementById("mkPageOv");\n' +
+    '    if (old && old.parentNode) old.parentNode.removeChild(old);\n' +
+    '\n' +
+    '    var box = document.createElement("div");\n' +
+    '    box.id = "mkPageOv";\n' +
+    '    box.style.cssText = "position:fixed;top:0;right:0;bottom:0;left:0;" +\n' +
+    '      "z-index:2147483000;background:#fff;display:flex;flex-direction:column";\n' +
+    '\n' +
+    '    var bar = document.createElement("div");\n' +
+    '    bar.style.cssText = "display:flex;align-items:center;gap:8px;padding:9px 12px;" +\n' +
+    '      "background:#2f2b24;color:#f6f3ea;flex:0 0 auto;" +\n' +
+    '      "font:600 14px system-ui,-apple-system,Roboto,sans-serif";\n' +
+    '\n' +
+    '    var ttl = document.createElement("span");\n' +
+    '    ttl.textContent = TITLE[real] || real;\n' +
+    '    ttl.style.cssText = "flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap";\n' +
+    '\n' +
+    '    var close = document.createElement("button");\n' +
+    '    close.type = "button";\n' +
+    '    close.textContent = "Закрыть";\n' +
+    '    close.style.cssText = "border:0;border-radius:8px;padding:8px 14px;" +\n' +
+    '      "font:600 13px system-ui;background:#e6e1d5;color:#23211c;cursor:pointer;flex:0 0 auto";\n' +
+    '    close.addEventListener("click", function () {\n' +
+    '      if (box.parentNode) box.parentNode.removeChild(box);\n' +
+    '    });\n' +
+    '\n' +
+    '    bar.appendChild(ttl);\n' +
+    '    bar.appendChild(close);\n' +
+    '\n' +
+    '    var fr = document.createElement("iframe");\n' +
+    '    fr.setAttribute("sandbox", "allow-scripts allow-modals allow-forms allow-popups allow-downloads");\n' +
+    '    fr.setAttribute("frameborder", "0");\n' +
+    '    fr.style.cssText = "flex:1 1 auto;border:0;width:100%;height:100%;background:#fff";\n' +
+    '    fr.srcdoc = html;\n' +
+    '\n' +
+    '    box.appendChild(bar);\n' +
+    '    box.appendChild(fr);\n' +
+    '    document.body.appendChild(box);\n' +
+    '  }\n' +
     '  function open(href) {\n' +
     '    var P = data();\n' +
     '    if (!P) return false;\n' +
@@ -392,12 +451,7 @@
     '    var real = ALIAS[key] || key;\n' +
     '    var html = P[real] || P[key];\n' +
     '    if (!html) return false;\n' +
-    '    if (!urls[real]) {\n' +
-    '      urls[real] = URL.createObjectURL(\n' +
-    '        new Blob([html], { type: "text/html;charset=utf-8" }));\n' +
-    '    }\n' +
-    '    var w = window.open(urls[real], "_blank");\n' +
-    '    if (!w) location.href = urls[real];\n' +
+    '    show(real, html);\n' +
     '    return true;\n' +
     '  }\n' +
     '  window.addEventListener("click", function (e) {\n' +
@@ -409,6 +463,10 @@
     '          if (open(h)) {\n' +
     '            e.preventDefault();\n' +
     '            e.stopImmediatePropagation();\n' +
+    '          } else {\n' +
+    '            e.preventDefault();\n' +
+    '            e.stopImmediatePropagation();\n' +
+    '            tip("Страница «" + keyOf(h) + "» в этот файл не входит");\n' +
     '          }\n' +
     '        }\n' +
     '        return;\n' +
@@ -534,7 +592,8 @@
             active++;
             var p;
             try { p = worker(item); } catch (e) { p = Promise.reject(e); }
-            p.then(function () { active--; done++; onDone(done, list.length, failed); next(); },
+            p.then(function () { active--; done++; onDone(done, list.length, failed); next(
+); },
                    function () { active--; done++; failed++; onDone(done, list.length, failed); next(); });
           })(list[i++]);
         }
@@ -647,7 +706,9 @@
     if (pack.items && pack.items.length) {
       log('внутри каталог на ' + pack.items.length + ' программ — кнопка внизу справа', 'ok');
     }
-    log('внутри Алго и декодер — кнопки вверху', 'ok');
+    if (pack.src['algo.html'] || pack.src['b3-decode.html']) {
+      log('Алго и декодер открываются поверх корпуса, кнопка «Закрыть» вверху', 'ok');
+    }
     viewBtn.hidden = false;
   }
 
