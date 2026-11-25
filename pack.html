@@ -46,7 +46,7 @@
 <div class="card">
   <p><b>Зачем.</b> Если открыть <code>index.html</code> прямо из архива или файлового менеджера,
   браузер не читает соседние <code>core.js</code>, <code>ui.js</code>, <code>layout.css</code> —
-  получится голая разметка без клавиатуры. Этот страница собирает всё в <b>один файл</b>:
+  получится голая разметка без клавиатуры. Эта страница собирает всё в <b>один файл</b>:
   он открывается с телефона без интернета и без сервера.</p>
   <button id="go">Собрать и скачать mk-offline.html</button>
   <button id="view" hidden>Открыть собранный файл здесь же</button>
@@ -93,9 +93,12 @@
   }
 
   function escapeScript(js) {
-    return js.replace(/<\/script/gi, '<\\/script');
+    return js.replace(/<\/(script)/gi, '<\\/$1');
   }
 
+  // Закрывающие теги ниже намеренно разорваны символом "\/".
+  // Иначе браузер закроет ЭТОТ скрипт на середине и остаток кода
+  // вывалится на страницу обычным текстом.
   var SHIM = [
     '<script>',
     '/* офлайн-сборка: страховка хранилища */',
@@ -116,7 +119,7 @@
     '  try { Object.defineProperty(window, "localStorage", { configurable: true, value: store }); }',
     '  catch (e2) {}',
     '})();',
-    '</script>'
+    '<\/script>'
   ].join('\n');
 
   var LINK_SHIM = [
@@ -133,7 +136,7 @@
     '    t = t.parentNode;',
     '  }',
     '});',
-    '</script>'
+    '<\/script>'
   ].join('\n');
 
   function assemble(src) {
@@ -150,7 +153,7 @@
       function (m, file) {
         if (!src[file]) return m;
         log('скрипт: ' + file, 'ok');
-        return '<script>\n' + escapeScript(src[file]) + '\n</script>';
+        return '<script>\n' + escapeScript(src[file]) + '\n<\/script>';
       });
 
     var at = html.indexOf('<script');
