@@ -39,16 +39,17 @@
   ol { padding-left: 20px; margin: 0; }
   li { margin: 0 0 6px; }
   code { font: 13px ui-monospace, Menlo, Consolas, monospace; }
+  .v { font-size: 12px; opacity: .65; }
 </style>
 </head>
 <body>
 
-<h1>Автономный файл эмулятора</h1>
+<h1>Автономный файл эмулятора <span class="v">сборщик 8</span></h1>
 
 <div class="card">
   <p><b>Полная сборка.</b> Вшивает в один файл корпус Б3-34, стили и скрипты,
   <b>все программы из каталога</b>, панель «Каталог» внизу экрана,
-  <b>редактор «Алго»</b> и <b>декодер</b>. Файл открывается с телефона
+  <b>редактор «Мк-Алго»</b> и <b>декодер</b>. Файл открывается с телефона
   или планшета без интернета и без сервера. Сборка читает программы
   с сайта — нужен интернет на время сборки. Если сайт не отдаёт файл
   каталога, сборщик берёт его напрямую с GitHub.</p>
@@ -60,8 +61,9 @@
 <div class="card">
   <p><b>Что дальше:</b></p>
   <ol>
-    <li>Нажми кнопку. Браузер скачает <code>mk-offline.html</code> в «Загрузки».</li>
-    <li>Открой его файловым менеджером — корпус, клавиатура и каталог заработают.</li>
+    <li>Нажми кнопку. Браузер скачает файл с датой и временем в имени —
+        каждый раз новое имя, так что старые копии не путаются с новой.</li>
+    <li>Открой последний скачанный файл файловым менеджером.</li>
     <li>Перенеси файл на планшет как обычный файл и открой там в Chrome.</li>
     <li>Кнопка «Каталог» внизу справа — поиск по программам и загрузка в корпус.</li>
     <li>Кнопки «Алго» и «Дек» открывают редактор и декодер из этого же файла.</li>
@@ -74,6 +76,7 @@
 (function () {
   'use strict';
 
+  var BUILD = 8;
   var FILES = ['layout.css', 'core.js', 'profiles.js', 'ui.js', 'shelf.js', 'convert.js'];
   var CATALOG = 'programs/_catalog.json';
   var RAW = 'https://raw.githubusercontent.com/greagre/mk-emulator/main/';
@@ -91,9 +94,6 @@
   };
   var EXTRA_LOAD = ['algo.html', 'b3-decode.html'];
 
-  /* чего в файле нет — на то ставим пометку, чтобы не было пустой страницы */
-  var STUB_PAGES = ['tests.html', 'catalog.html', 'import.html'];
-
   var logEl = document.getElementById('log');
   var goBtn = document.getElementById('go');
   var liteBtn = document.getElementById('lite');
@@ -107,7 +107,7 @@
     logEl.scrollTop = logEl.scrollHeight;
   }
 
-  function reset() { logEl.innerHTML = 'собираю…'; warnedRaw = false; }
+  function reset() { logEl.innerHTML = 'собираю… сборщик ' + BUILD; warnedRaw = false; }
 
   /* Сначала пробуем файл рядом со страницей (GitHub Pages).
      Если сайт его не отдаёт — 404 или сеть — берём напрямую с GitHub. */
@@ -360,50 +360,58 @@
     '<\/script>';
 
   /* Открытие вшитых страниц (Алго, декодер) из blob-адреса.
-     Ищем страницу по адресу ссылки и по её синонимам: кнопки в корпусе
-     зовут редактор lang.html, а внутри файла он лежит как algo.html. */
+
+     Важно: этот обработчик ставится ПЕРВЫМ, ещё до ui.js, на window
+     в фазе перехвата. Поэтому он видит нажатие раньше любых других
+     обработчиков и гасит событие, чтобы никто не успел показать
+     «страницы нет». Данные читаются лениво — при первом нажатии,
+     когда разметка уже разобрана. */
   var PAGE_SHIM =
     '<script>\n' +
     '(function () {\n' +
-    '  var el = document.getElementById("mkPagesData");\n' +
-    '  if (!el) return;\n' +
-    '  var pages = {};\n' +
-    '  try { pages = JSON.parse(el.textContent) || {}; } catch (e) { pages = {}; }\n' +
+    '  var pages = null, urls = {};\n' +
     '  var ALIAS = {\n' +
     '    "lang.html": "algo.html", "algo": "algo.html", "algo.html": "algo.html",\n' +
     '    "decoder.html": "b3-decode.html", "decode.html": "b3-decode.html",\n' +
     '    "b3-decode.html": "b3-decode.html"\n' +
     '  };\n' +
-    '  var urls = {};\n' +
+    '  function data() {\n' +
+    '    if (pages) return pages;\n' +
+    '    var el = document.getElementById("mkPagesData");\n' +
+    '    if (!el) return null;\n' +
+    '    try { pages = JSON.parse(el.textContent) || {}; } catch (e) { pages = {}; }\n' +
+    '    return pages;\n' +
+    '  }\n' +
     '  function keyOf(href) {\n' +
     '    return String(href || "").split("?")[0].split("#")[0].split("/").pop();\n' +
     '  }\n' +
-    '  function open(key) {\n' +
+    '  function open(href) {\n' +
+    '    var P = data();\n' +
+    '    if (!P) return false;\n' +
+    '    var key = keyOf(href);\n' +
     '    var real = ALIAS[key] || key;\n' +
-    '    var html = pages[real] || pages[key];\n' +
+    '    var html = P[real] || P[key];\n' +
     '    if (!html) return false;\n' +
     '    if (!urls[real]) {\n' +
     '      urls[real] = URL.createObjectURL(\n' +
     '        new Blob([html], { type: "text/html;charset=utf-8" }));\n' +
     '    }\n' +
     '    var w = window.open(urls[real], "_blank");\n' +
-    '    if (!w) { location.href = urls[real]; }\n' +
+    '    if (!w) location.href = urls[real];\n' +
     '    return true;\n' +
     '  }\n' +
-    '  document.addEventListener("click", function (e) {\n' +
+    '  window.addEventListener("click", function (e) {\n' +
     '    var t = e.target;\n' +
-    '    while (t && t !== document) {\n' +
-    '      if (t.getAttribute) {\n' +
-    '        var off = t.getAttribute("data-offline");\n' +
-    '        if (off) {\n' +
-    '          if (open(off)) e.preventDefault();\n' +
-    '          return;\n' +
+    '    while (t && t.nodeType === 1) {\n' +
+    '      if (t.tagName === "A") {\n' +
+    '        var h = t.getAttribute("data-offline") || t.getAttribute("href") || "";\n' +
+    '        if (h && h !== "#" && /\\.html?$/i.test(keyOf(h))) {\n' +
+    '          if (open(h)) {\n' +
+    '            e.preventDefault();\n' +
+    '            e.stopImmediatePropagation();\n' +
+    '          }\n' +
     '        }\n' +
-    '        if (t.tagName === "A") {\n' +
-    '          var href = t.getAttribute("href") || "";\n' +
-    '          if (/\\.html?$/i.test(href) && open(keyOf(href))) e.preventDefault();\n' +
-    '          return;\n' +
-    '        }\n' +
+    '        return;\n' +
     '      }\n' +
     '      t = t.parentNode;\n' +
     '    }\n' +
@@ -453,8 +461,12 @@
         return '<script>\n' + escapeScript(src[file]) + '\n<\/script>';
       });
 
+    /* оба шима ставим ДО первого скрипта: перехват ссылок должен
+       зарегистрироваться раньше обработчиков ui.js и convert.js */
     var at = html.indexOf('<script');
-    if (at > 0) html = html.slice(0, at) + STORE_SHIM + '\n' + html.slice(at);
+    if (at > 0) {
+      html = html.slice(0, at) + STORE_SHIM + '\n' + PAGE_SHIM + '\n' + html.slice(at);
+    }
 
     /* вшитые страницы: сначала настоящие имена, потом синонимы */
     var pages = {};
@@ -489,11 +501,22 @@
       extra += '<script id="mkPagesData" type="application/json">' + pagesJson + '<\/script>\n';
     }
 
-    extra += PAGE_SHIM;
-
     html = html.replace('</body>', extra + '\n</body>');
-    html = html.replace('<title>', '<title>офлайн · ');
+    html = html.replace('<title>', '<title>офлайн ' + stampShort() + ' · ');
     return html;
+  }
+
+  function stampShort() {
+    var d = new Date();
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return p(d.getDate()) + '.' + p(d.getMonth() + 1) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+
+  function fileStamp() {
+    var d = new Date();
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' +
+           p(d.getHours()) + p(d.getMinutes());
   }
 
   /* загрузка пачкой: 6 файлов одновременно, чтобы телефон не захлебнулся */
@@ -605,19 +628,22 @@
     if (left.length) log('ВНИМАНИЕ: остались ' + left.join(', '), 'err');
     else log('внешних зависимостей нет — файл автономный', 'ok');
 
+    var name = 'mk-emulator-' + fileStamp() + '.html';
+
     var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     if (lastUrl) URL.revokeObjectURL(lastUrl);
     lastUrl = URL.createObjectURL(blob);
 
     var a = document.createElement('a');
     a.href = lastUrl;
-    a.download = 'mk-offline.html';
+    a.download = name;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
 
     log('');
-    log('файл скачан: mk-offline.html', 'ok');
+    log('файл скачан: ' + name, 'ok');
+    log('  старые копии с другими датами можно удалить — эта новее', 'warn');
     if (pack.items && pack.items.length) {
       log('внутри каталог на ' + pack.items.length + ' программ — кнопка внизу справа', 'ok');
     }
